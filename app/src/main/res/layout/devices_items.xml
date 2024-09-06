@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:minHeight="@dimen/listview_item_height"
+    android:paddingTop="@dimen/listview_items_padding_top_bottom"
+    android:paddingBottom="@dimen/listview_items_padding_top_bottom">
+
+    <TextView
+        android:id="@+id/listview_item_line_one"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:duplicateParentState="true"
+        android:ellipsize="marquee"
+        android:maxLength="29"
+        android:layout_marginBottom="5dp"
+        android:paddingLeft="@dimen/listview_items_padding_left_top"
+        android:paddingTop="@dimen/listview_items_padding_top_bottom"
+        android:paddingRight="@dimen/listview_items_padding_right"
+        android:singleLine="true"
+        android:textStyle="bold"
+        android:textSize="@dimen/text_size_large" />
+
+    <ImageView
+        android:id="@+id/listview_item_image"
+        android:layout_width="60dp"
+        android:layout_below="@+id/listview_item_line_one"
+        android:layout_height="60dp"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="@dimen/listview_album_margin"
+        android:background="@drawable/no_art_small"
+        android:scaleType="centerCrop" />
+
+    <TextView
+        android:id="@+id/title_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/listview_item_image"
+        android:ellipsize="end"
+        android:layout_below="@+id/listview_item_line_one"
+        android:paddingLeft="@dimen/listview_items_padding_left_top"
+        android:paddingTop="@dimen/listview_items_padding_small_top"
+        android:paddingRight="@dimen/listview_items_padding_right"
+        android:singleLine="true"
+        android:textSize="@dimen/text_size_medium" />
+
+    <TextView
+        android:id="@+id/artist_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/listview_item_image"
+        android:ellipsize="end"
+        android:layout_below="@+id/title_tv"
+        android:paddingLeft="@dimen/listview_items_padding_left_top"
+        android:paddingTop="@dimen/listview_items_padding_small_top"
+        android:paddingRight="@dimen/listview_items_padding_right"
+        android:singleLine="true"
+        android:textSize="@dimen/text_size_small" />
+
+    <TextView
+        android:id="@+id/listview_item_line_two"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/artist_tv"
+        android:layout_toRightOf="@+id/listview_item_image"
+        android:paddingLeft="@dimen/listview_items_padding_left_top"
+        android:paddingTop="@dimen/listview_items_padding_small_top"
+        android:paddingRight="@dimen/listview_items_padding_right"
+        android:textSize="@dimen/text_size_small" />
+
+</RelativeLayout>

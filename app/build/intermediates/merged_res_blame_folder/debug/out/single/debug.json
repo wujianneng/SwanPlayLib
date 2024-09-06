@@ -1,0 +1,82 @@
+[
+    {
+        "merged": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/build/intermediates/res/merged/debug/drawable_no_art_small.png.flat",
+        "source": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/res/drawable/no_art_small.png"
+    },
+    {
+        "merged": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/build/intermediates/res/merged/debug/drawable_icon_dialog_close.png.flat",
+        "source": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/res/drawable/icon_dialog_close.png"
+    },
+    {
+        "merged": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/build/intermediates/res/merged/debug/drawable_df_cover.png.flat",
+        "source": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/res/drawable/df_cover.png"
+    },
+    {
+        "merged": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/build/intermediates/res/merged/debug/mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/res/mipmap-xhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/build/intermediates/res/merged/debug/drawable_icon_playlist_delete.png.flat",
+        "source": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/res/drawable/icon_playlist_delete.png"
+    },
+    {
+        "merged": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/build/intermediates/res/merged/debug/drawable_check_df.png.flat",
+        "source": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/res/drawable/check_df.png"
+    },
+    {
+        "merged": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/build/intermediates/res/merged/debug/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/res/mipmap-hdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/build/intermediates/res/merged/debug/drawable_ic_action_dock.png.flat",
+        "source": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/res/drawable/ic_action_dock.png"
+    },
+    {
+        "merged": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/build/intermediates/res/merged/debug/drawable_icon_playing_red.png.flat",
+        "source": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/res/drawable/icon_playing_red.png"
+    },
+    {
+        "merged": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/build/intermediates/res/merged/debug/mipmap-mdpi_ic_launcher.png.flat",
+        "source": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/res/mipmap-mdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/build/intermediates/res/merged/debug/layout_activity_main.xml.flat",
+        "source": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/res/layout/activity_main.xml"
+    },
+    {
+        "merged": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/build/intermediates/res/merged/debug/drawable_check_h.png.flat",
+        "source": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/res/drawable/check_h.png"
+    },
+    {
+        "merged": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/build/intermediates/res/merged/debug/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/res/mipmap-xxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/build/intermediates/res/merged/debug/layout_dialog_select_device.xml.flat",
+        "source": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/res/layout/dialog_select_device.xml"
+    },
+    {
+        "merged": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/build/intermediates/res/merged/debug/layout_dialog_play_list.xml.flat",
+        "source": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/res/layout/dialog_play_list.xml"
+    },
+    {
+        "merged": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/build/intermediates/res/merged/debug/layout_select_device_list_item.xml.flat",
+        "source": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/res/layout/select_device_list_item.xml"
+    },
+    {
+        "merged": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/build/intermediates/res/merged/debug/layout_devices_items.xml.flat",
+        "source": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/res/layout/devices_items.xml"
+    },
+    {
+        "merged": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/build/intermediates/res/merged/debug/layout_playlist_list_item.xml.flat",
+        "source": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/res/layout/playlist_list_item.xml"
+    },
+    {
+        "merged": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/build/intermediates/res/merged/debug/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/build/intermediates/res/merged/debug/drawable_icon_wifi_device_tag.png.flat",
+        "source": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/res/drawable/icon_wifi_device_tag.png"
+    }
+]

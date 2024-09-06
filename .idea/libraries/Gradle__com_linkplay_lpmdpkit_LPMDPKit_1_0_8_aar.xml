@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.linkplay.lpmdpkit:LPMDPKit:1.0.8@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

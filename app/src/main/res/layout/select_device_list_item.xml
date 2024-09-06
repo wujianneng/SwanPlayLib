@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    android:layout_height="30dp">
+
+    <ImageView
+        android:id="@+id/checkbox_img"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/check_df" />
+
+    <TextView
+        android:id="@+id/device_name_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="16dp"
+        android:text="设备3"
+        android:textColor="#ff363636"
+        android:textSize="16sp" />
+
+    <ImageView
+        android:id="@+id/tag_img"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginLeft="6dp"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/icon_wifi_device_tag" />
+
+</LinearLayout>

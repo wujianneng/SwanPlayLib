@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "/Users/wutom/Desktop/workspace/SwanPlayLib/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-en/values-en.xml",
+            "map": [
+                {
+                    "source": "/Users/wutom/.gradle/caches/transforms-2/files-2.1/4d9b74c4e6961c8a307f01fc86b3eaba/jetified-BaseRecyclerViewAdapterHelper-2.9.30/res/values-en/values-en.xml",
+                    "from": {
+                        "startLines": "2,3,4",
+                        "startColumns": "4,4,4",
+                        "startOffsets": "55,105,162",
+                        "endColumns": "49,56,46",
+                        "endOffsets": "100,157,204"
+                    }
+                }
+            ]
+        }
+    ]
+}

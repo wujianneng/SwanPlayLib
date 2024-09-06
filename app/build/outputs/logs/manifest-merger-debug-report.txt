@@ -1,0 +1,385 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:2:1-30:12
+INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:2:1-30:12
+INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:2:1-30:12
+INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:2:1-30:12
+MERGED from [:NespCling] /Users/wutom/Desktop/workspace/SwanPlayLib/NespCling/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-37:12
+MERGED from [com.google.android.material:material:1.4.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/35c7fe1e6815342f8dd8d3907b8fdbd1/material-1.4.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /Users/wutom/.gradle/caches/transforms-2/files-2.1/a2a6278ff26956f0ca554dcdae78f874/constraintlayout-2.0.1/AndroidManifest.xml:2:1-11:12
+MERGED from [androidx.appcompat:appcompat:1.3.1] /Users/wutom/.gradle/caches/transforms-2/files-2.1/949aea7e453d171b934b8e953afd9087/appcompat-1.3.1/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.core:core-ktx:1.2.0-alpha02] /Users/wutom/.gradle/caches/transforms-2/files-2.1/1d8b207e5837e284f23d4c2a06266c50/core-ktx-1.2.0-alpha02/AndroidManifest.xml:2:1-9:12
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/2f7a91665fbd75daf9619c51503c961c/swiperefreshlayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.viewpager2:viewpager2:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/7254442e15767a4a8f22755be82e663f/jetified-viewpager2-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.recyclerview:recyclerview:1.1.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/dbab14e2d376bf80dd0cd9af0d50d87e/recyclerview-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30] /Users/wutom/.gradle/caches/transforms-2/files-2.1/4d9b74c4e6961c8a307f01fc86b3eaba/jetified-BaseRecyclerViewAdapterHelper-2.9.30/AndroidManifest.xml:2:1-11:12
+MERGED from [androidx.fragment:fragment:1.3.6] /Users/wutom/.gradle/caches/transforms-2/files-2.1/1e1a31d4b97ce9f6192e07871f6205f4/fragment-1.3.6/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.activity:activity:1.2.4] /Users/wutom/.gradle/caches/transforms-2/files-2.1/c74603c9d0a0cfd7abea74b050c74b83/jetified-activity-1.2.4/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.appcompat:appcompat-resources:1.3.1] /Users/wutom/.gradle/caches/transforms-2/files-2.1/a54085b43ca0b73c65384aa152ebeb64/jetified-appcompat-resources-1.3.1/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/413ecf1c4f75d143331139b55755a13b/drawerlayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/9ee3237f46384bffa3d52b238960eab1/coordinatorlayout-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/7e02fe05fbea77bb17d51ac61858c20b/dynamicanimation-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.transition:transition:1.2.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/8ec1301d0aa8def0b3f6a36ea9e2b7de/transition-1.2.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/6c995f8b0742a0b797a0a9c4293dcd39/vectordrawable-animated-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/c1ad11170dbc2fb22a6757091bab30d6/vectordrawable-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/a09d1b85203bd8bff08b80323dcd4e63/viewpager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/71ff9bd7ef3119655f4644245d315724/legacy-support-core-utils-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.loader:loader:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/8602fa570e243f53b150d00b4f236db2/loader-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.customview:customview:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/81db7011d8746e5bd2ea2b0abaf8784e/customview-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.core:core:1.5.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/be9131e5c57cd9a659fa3dce89e9e6bd/core-1.5.0/AndroidManifest.xml:17:1-26:12
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/07b58b8321c9f3afe8940701f3b83a4a/cursoradapter-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.1] /Users/wutom/.gradle/caches/transforms-2/files-2.1/494f6440aeeca1746b4cbc33af21a561/jetified-lifecycle-viewmodel-savedstate-2.3.1/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.savedstate:savedstate:1.1.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/42243c4c03a7cd70ab866d3dd949d42f/jetified-savedstate-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.lifecycle:lifecycle-process:2.2.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bba453ac189dca779052644db6578dc4/jetified-lifecycle-process-2.2.0/AndroidManifest.xml:17:1-32:12
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.3.1] /Users/wutom/.gradle/caches/transforms-2/files-2.1/998a7deb9cc9bb0a4a3ddfffafc8ce78/lifecycle-runtime-2.3.1/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.3.1] /Users/wutom/.gradle/caches/transforms-2/files-2.1/0dea12f3f0484f97a42fd8e864237ea6/lifecycle-viewmodel-2.3.1/AndroidManifest.xml:17:1-24:12
+MERGED from [com.github.smart-fun:XmlToJson:1.4.5] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3a8bd2047405ae33ccef55a74213f5ba/jetified-XmlToJson-1.4.5/AndroidManifest.xml:2:1-11:12
+MERGED from [androidx.cardview:cardview:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/049615616cffcc90c8e8b142fee7d07b/cardview-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/6c3030015d9f51bcbb8651592f29db84/interpolator-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/wutom/.gradle/caches/transforms-2/files-2.1/cb688971001479ceabc16e7233d39ddc/versionedparcelable-1.1.1/AndroidManifest.xml:17:1-27:12
+MERGED from [androidx.tracing:tracing:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/f8ecac03520c566ab8f92b67258d9912/jetified-tracing-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/4d2fa1e7637a23b8140d2a6cb92df90c/lifecycle-livedata-2.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.3.1] /Users/wutom/.gradle/caches/transforms-2/files-2.1/1bab8c31a273a537bf49681c9a49e6e4/lifecycle-livedata-core-2.3.1/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.arch.core:core-runtime:2.1.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/d32e62685b59fb7188e843bcbff1a2d4/core-runtime-2.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/7596c5143b57a62e3f67d4565a3bb924/documentfile-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/4b19eb515ed5b94a7247bb4ec1c0087d/localbroadcastmanager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.print:print:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/e47531bab1c127f264a7b5da1c4799ce/print-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:2:1-41:12
+MERGED from [com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:2:1-32:12
+MERGED from [com.linkplay.musickit:LPMusicKit:1.2.6] /Users/wutom/.gradle/caches/transforms-2/files-2.1/56ad76d460ff3726a5b5273849942ce5/jetified-LPMusicKit-1.2.6/AndroidManifest.xml:2:1-13:12
+MERGED from [com.linkplay.mdnskit:LPMDNSKit:1.0.2] /Users/wutom/.gradle/caches/transforms-2/files-2.1/b7f8d21f7328df579f096c8be2208d06/jetified-LPMDNSKit-1.0.2/AndroidManifest.xml:2:1-12:12
+MERGED from [org.greenrobot:eventbus:3.3.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/9437d516aad5dfa8f33bfbb8573d9908/jetified-eventbus-3.3.0/AndroidManifest.xml:2:1-9:12
+MERGED from [androidx.annotation:annotation-experimental:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/b7f83ce2523ef517fca884d1605bb930/jetified-annotation-experimental-1.0.0/AndroidManifest.xml:17:1-24:12
+INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:2:1-30:12
+INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:2:1-30:12
+INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:2:1-30:12
+	package
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:3:5-40
+		INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:2:1-30:12
+		INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:2:1-30:12
+		INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:2:11-69
+application
+ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:5:5-28:19
+MERGED from [:NespCling] /Users/wutom/Desktop/workspace/SwanPlayLib/NespCling/build/intermediates/library_manifest/debug/AndroidManifest.xml:17:5-35:19
+MERGED from [:NespCling] /Users/wutom/Desktop/workspace/SwanPlayLib/NespCling/build/intermediates/library_manifest/debug/AndroidManifest.xml:17:5-35:19
+MERGED from [com.google.android.material:material:1.4.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/35c7fe1e6815342f8dd8d3907b8fdbd1/material-1.4.0/AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.material:material:1.4.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/35c7fe1e6815342f8dd8d3907b8fdbd1/material-1.4.0/AndroidManifest.xml:22:5-20
+MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /Users/wutom/.gradle/caches/transforms-2/files-2.1/a2a6278ff26956f0ca554dcdae78f874/constraintlayout-2.0.1/AndroidManifest.xml:9:5-20
+MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /Users/wutom/.gradle/caches/transforms-2/files-2.1/a2a6278ff26956f0ca554dcdae78f874/constraintlayout-2.0.1/AndroidManifest.xml:9:5-20
+MERGED from [androidx.core:core:1.5.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/be9131e5c57cd9a659fa3dce89e9e6bd/core-1.5.0/AndroidManifest.xml:24:5-89
+MERGED from [androidx.core:core:1.5.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/be9131e5c57cd9a659fa3dce89e9e6bd/core-1.5.0/AndroidManifest.xml:24:5-89
+MERGED from [androidx.lifecycle:lifecycle-process:2.2.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bba453ac189dca779052644db6578dc4/jetified-lifecycle-process-2.2.0/AndroidManifest.xml:24:5-30:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.2.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bba453ac189dca779052644db6578dc4/jetified-lifecycle-process-2.2.0/AndroidManifest.xml:24:5-30:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/wutom/.gradle/caches/transforms-2/files-2.1/cb688971001479ceabc16e7233d39ddc/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/wutom/.gradle/caches/transforms-2/files-2.1/cb688971001479ceabc16e7233d39ddc/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+MERGED from [com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:9:5-39:19
+MERGED from [com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:9:5-39:19
+MERGED from [com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:13:5-30:19
+MERGED from [com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:13:5-30:19
+	android:requestLegacyExternalStorage
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:9:9-52
+	android:appComponentFactory
+		ADDED from [androidx.core:core:1.5.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/be9131e5c57cd9a659fa3dce89e9e6bd/core-1.5.0/AndroidManifest.xml:24:18-86
+	android:supportsRtl
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:11:9-35
+	android:roundIcon
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:10:9-48
+	android:largeHeap
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:8:9-33
+	android:icon
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:7:9-43
+	android:allowBackup
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:6:9-35
+	android:usesCleartextTraffic
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:12:9-44
+activity#com.MainActivity
+ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:14:9-23:20
+	android:exported
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:15:13-36
+	android:theme
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:16:13-57
+	android:name
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:14:19-50
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:18:13-22:29
+action#android.intent.action.MAIN
+ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:19:17-69
+	android:name
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:19:25-66
+category#android.intent.category.LAUNCHER
+ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:21:17-77
+	android:name
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:21:27-74
+service#org.teleal.cling.android.AndroidUpnpServiceImpl
+ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:25:9-27:39
+	android:exported
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:27:13-36
+	android:name
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:26:13-75
+uses-sdk
+INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml
+INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml
+MERGED from [:NespCling] /Users/wutom/Desktop/workspace/SwanPlayLib/NespCling/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [:NespCling] /Users/wutom/Desktop/workspace/SwanPlayLib/NespCling/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [com.google.android.material:material:1.4.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/35c7fe1e6815342f8dd8d3907b8fdbd1/material-1.4.0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.material:material:1.4.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/35c7fe1e6815342f8dd8d3907b8fdbd1/material-1.4.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /Users/wutom/.gradle/caches/transforms-2/files-2.1/a2a6278ff26956f0ca554dcdae78f874/constraintlayout-2.0.1/AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /Users/wutom/.gradle/caches/transforms-2/files-2.1/a2a6278ff26956f0ca554dcdae78f874/constraintlayout-2.0.1/AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.appcompat:appcompat:1.3.1] /Users/wutom/.gradle/caches/transforms-2/files-2.1/949aea7e453d171b934b8e953afd9087/appcompat-1.3.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat:1.3.1] /Users/wutom/.gradle/caches/transforms-2/files-2.1/949aea7e453d171b934b8e953afd9087/appcompat-1.3.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.core:core-ktx:1.2.0-alpha02] /Users/wutom/.gradle/caches/transforms-2/files-2.1/1d8b207e5837e284f23d4c2a06266c50/core-ktx-1.2.0-alpha02/AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.core:core-ktx:1.2.0-alpha02] /Users/wutom/.gradle/caches/transforms-2/files-2.1/1d8b207e5837e284f23d4c2a06266c50/core-ktx-1.2.0-alpha02/AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/2f7a91665fbd75daf9619c51503c961c/swiperefreshlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/2f7a91665fbd75daf9619c51503c961c/swiperefreshlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager2:viewpager2:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/7254442e15767a4a8f22755be82e663f/jetified-viewpager2-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.viewpager2:viewpager2:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/7254442e15767a4a8f22755be82e663f/jetified-viewpager2-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.recyclerview:recyclerview:1.1.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/dbab14e2d376bf80dd0cd9af0d50d87e/recyclerview-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.recyclerview:recyclerview:1.1.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/dbab14e2d376bf80dd0cd9af0d50d87e/recyclerview-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30] /Users/wutom/.gradle/caches/transforms-2/files-2.1/4d9b74c4e6961c8a307f01fc86b3eaba/jetified-BaseRecyclerViewAdapterHelper-2.9.30/AndroidManifest.xml:7:5-9:41
+MERGED from [com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30] /Users/wutom/.gradle/caches/transforms-2/files-2.1/4d9b74c4e6961c8a307f01fc86b3eaba/jetified-BaseRecyclerViewAdapterHelper-2.9.30/AndroidManifest.xml:7:5-9:41
+MERGED from [androidx.fragment:fragment:1.3.6] /Users/wutom/.gradle/caches/transforms-2/files-2.1/1e1a31d4b97ce9f6192e07871f6205f4/fragment-1.3.6/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment:1.3.6] /Users/wutom/.gradle/caches/transforms-2/files-2.1/1e1a31d4b97ce9f6192e07871f6205f4/fragment-1.3.6/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.activity:activity:1.2.4] /Users/wutom/.gradle/caches/transforms-2/files-2.1/c74603c9d0a0cfd7abea74b050c74b83/jetified-activity-1.2.4/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.activity:activity:1.2.4] /Users/wutom/.gradle/caches/transforms-2/files-2.1/c74603c9d0a0cfd7abea74b050c74b83/jetified-activity-1.2.4/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat-resources:1.3.1] /Users/wutom/.gradle/caches/transforms-2/files-2.1/a54085b43ca0b73c65384aa152ebeb64/jetified-appcompat-resources-1.3.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat-resources:1.3.1] /Users/wutom/.gradle/caches/transforms-2/files-2.1/a54085b43ca0b73c65384aa152ebeb64/jetified-appcompat-resources-1.3.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/413ecf1c4f75d143331139b55755a13b/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/413ecf1c4f75d143331139b55755a13b/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/9ee3237f46384bffa3d52b238960eab1/coordinatorlayout-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/9ee3237f46384bffa3d52b238960eab1/coordinatorlayout-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/7e02fe05fbea77bb17d51ac61858c20b/dynamicanimation-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/7e02fe05fbea77bb17d51ac61858c20b/dynamicanimation-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.transition:transition:1.2.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/8ec1301d0aa8def0b3f6a36ea9e2b7de/transition-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.transition:transition:1.2.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/8ec1301d0aa8def0b3f6a36ea9e2b7de/transition-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/6c995f8b0742a0b797a0a9c4293dcd39/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/6c995f8b0742a0b797a0a9c4293dcd39/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/c1ad11170dbc2fb22a6757091bab30d6/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/c1ad11170dbc2fb22a6757091bab30d6/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/a09d1b85203bd8bff08b80323dcd4e63/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/a09d1b85203bd8bff08b80323dcd4e63/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/71ff9bd7ef3119655f4644245d315724/legacy-support-core-utils-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/71ff9bd7ef3119655f4644245d315724/legacy-support-core-utils-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/8602fa570e243f53b150d00b4f236db2/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/8602fa570e243f53b150d00b4f236db2/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/81db7011d8746e5bd2ea2b0abaf8784e/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/81db7011d8746e5bd2ea2b0abaf8784e/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.5.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/be9131e5c57cd9a659fa3dce89e9e6bd/core-1.5.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.core:core:1.5.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/be9131e5c57cd9a659fa3dce89e9e6bd/core-1.5.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/07b58b8321c9f3afe8940701f3b83a4a/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/07b58b8321c9f3afe8940701f3b83a4a/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.1] /Users/wutom/.gradle/caches/transforms-2/files-2.1/494f6440aeeca1746b4cbc33af21a561/jetified-lifecycle-viewmodel-savedstate-2.3.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.1] /Users/wutom/.gradle/caches/transforms-2/files-2.1/494f6440aeeca1746b4cbc33af21a561/jetified-lifecycle-viewmodel-savedstate-2.3.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.savedstate:savedstate:1.1.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/42243c4c03a7cd70ab866d3dd949d42f/jetified-savedstate-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.savedstate:savedstate:1.1.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/42243c4c03a7cd70ab866d3dd949d42f/jetified-savedstate-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-process:2.2.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bba453ac189dca779052644db6578dc4/jetified-lifecycle-process-2.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-process:2.2.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bba453ac189dca779052644db6578dc4/jetified-lifecycle-process-2.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.3.1] /Users/wutom/.gradle/caches/transforms-2/files-2.1/998a7deb9cc9bb0a4a3ddfffafc8ce78/lifecycle-runtime-2.3.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.3.1] /Users/wutom/.gradle/caches/transforms-2/files-2.1/998a7deb9cc9bb0a4a3ddfffafc8ce78/lifecycle-runtime-2.3.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.3.1] /Users/wutom/.gradle/caches/transforms-2/files-2.1/0dea12f3f0484f97a42fd8e864237ea6/lifecycle-viewmodel-2.3.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.3.1] /Users/wutom/.gradle/caches/transforms-2/files-2.1/0dea12f3f0484f97a42fd8e864237ea6/lifecycle-viewmodel-2.3.1/AndroidManifest.xml:20:5-22:41
+MERGED from [com.github.smart-fun:XmlToJson:1.4.5] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3a8bd2047405ae33ccef55a74213f5ba/jetified-XmlToJson-1.4.5/AndroidManifest.xml:7:5-9:41
+MERGED from [com.github.smart-fun:XmlToJson:1.4.5] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3a8bd2047405ae33ccef55a74213f5ba/jetified-XmlToJson-1.4.5/AndroidManifest.xml:7:5-9:41
+MERGED from [androidx.cardview:cardview:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/049615616cffcc90c8e8b142fee7d07b/cardview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cardview:cardview:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/049615616cffcc90c8e8b142fee7d07b/cardview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/6c3030015d9f51bcbb8651592f29db84/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/6c3030015d9f51bcbb8651592f29db84/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/wutom/.gradle/caches/transforms-2/files-2.1/cb688971001479ceabc16e7233d39ddc/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/wutom/.gradle/caches/transforms-2/files-2.1/cb688971001479ceabc16e7233d39ddc/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.tracing:tracing:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/f8ecac03520c566ab8f92b67258d9912/jetified-tracing-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.tracing:tracing:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/f8ecac03520c566ab8f92b67258d9912/jetified-tracing-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/4d2fa1e7637a23b8140d2a6cb92df90c/lifecycle-livedata-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/4d2fa1e7637a23b8140d2a6cb92df90c/lifecycle-livedata-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.3.1] /Users/wutom/.gradle/caches/transforms-2/files-2.1/1bab8c31a273a537bf49681c9a49e6e4/lifecycle-livedata-core-2.3.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.3.1] /Users/wutom/.gradle/caches/transforms-2/files-2.1/1bab8c31a273a537bf49681c9a49e6e4/lifecycle-livedata-core-2.3.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.arch.core:core-runtime:2.1.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/d32e62685b59fb7188e843bcbff1a2d4/core-runtime-2.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.arch.core:core-runtime:2.1.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/d32e62685b59fb7188e843bcbff1a2d4/core-runtime-2.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/7596c5143b57a62e3f67d4565a3bb924/documentfile-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/7596c5143b57a62e3f67d4565a3bb924/documentfile-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/4b19eb515ed5b94a7247bb4ec1c0087d/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/4b19eb515ed5b94a7247bb4ec1c0087d/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/e47531bab1c127f264a7b5da1c4799ce/print-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/e47531bab1c127f264a7b5da1c4799ce/print-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:7:5-44
+MERGED from [com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:7:5-44
+MERGED from [com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:5:5-7:41
+MERGED from [com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:5:5-7:41
+MERGED from [com.linkplay.musickit:LPMusicKit:1.2.6] /Users/wutom/.gradle/caches/transforms-2/files-2.1/56ad76d460ff3726a5b5273849942ce5/jetified-LPMusicKit-1.2.6/AndroidManifest.xml:5:5-7:41
+MERGED from [com.linkplay.musickit:LPMusicKit:1.2.6] /Users/wutom/.gradle/caches/transforms-2/files-2.1/56ad76d460ff3726a5b5273849942ce5/jetified-LPMusicKit-1.2.6/AndroidManifest.xml:5:5-7:41
+MERGED from [com.linkplay.mdnskit:LPMDNSKit:1.0.2] /Users/wutom/.gradle/caches/transforms-2/files-2.1/b7f8d21f7328df579f096c8be2208d06/jetified-LPMDNSKit-1.0.2/AndroidManifest.xml:5:5-7:41
+MERGED from [com.linkplay.mdnskit:LPMDNSKit:1.0.2] /Users/wutom/.gradle/caches/transforms-2/files-2.1/b7f8d21f7328df579f096c8be2208d06/jetified-LPMDNSKit-1.0.2/AndroidManifest.xml:5:5-7:41
+MERGED from [org.greenrobot:eventbus:3.3.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/9437d516aad5dfa8f33bfbb8573d9908/jetified-eventbus-3.3.0/AndroidManifest.xml:5:5-7:41
+MERGED from [org.greenrobot:eventbus:3.3.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/9437d516aad5dfa8f33bfbb8573d9908/jetified-eventbus-3.3.0/AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.annotation:annotation-experimental:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/b7f83ce2523ef517fca884d1605bb930/jetified-annotation-experimental-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.annotation:annotation-experimental:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/b7f83ce2523ef517fca884d1605bb930/jetified-annotation-experimental-1.0.0/AndroidManifest.xml:20:5-22:41
+INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml
+INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml
+uses-permission#android.permission.INTERNET
+ADDED from [:NespCling] /Users/wutom/Desktop/workspace/SwanPlayLib/NespCling/build/intermediates/library_manifest/debug/AndroidManifest.xml:11:5-67
+MERGED from [com.linkplay.musickit:LPMusicKit:1.2.6] /Users/wutom/.gradle/caches/transforms-2/files-2.1/56ad76d460ff3726a5b5273849942ce5/jetified-LPMusicKit-1.2.6/AndroidManifest.xml:11:5-67
+MERGED from [com.linkplay.musickit:LPMusicKit:1.2.6] /Users/wutom/.gradle/caches/transforms-2/files-2.1/56ad76d460ff3726a5b5273849942ce5/jetified-LPMusicKit-1.2.6/AndroidManifest.xml:11:5-67
+MERGED from [com.linkplay.mdnskit:LPMDNSKit:1.0.2] /Users/wutom/.gradle/caches/transforms-2/files-2.1/b7f8d21f7328df579f096c8be2208d06/jetified-LPMDNSKit-1.0.2/AndroidManifest.xml:10:5-67
+MERGED from [com.linkplay.mdnskit:LPMDNSKit:1.0.2] /Users/wutom/.gradle/caches/transforms-2/files-2.1/b7f8d21f7328df579f096c8be2208d06/jetified-LPMDNSKit-1.0.2/AndroidManifest.xml:10:5-67
+	android:name
+		ADDED from [:NespCling] /Users/wutom/Desktop/workspace/SwanPlayLib/NespCling/build/intermediates/library_manifest/debug/AndroidManifest.xml:11:22-64
+uses-permission#android.permission.ACCESS_WIFI_STATE
+ADDED from [:NespCling] /Users/wutom/Desktop/workspace/SwanPlayLib/NespCling/build/intermediates/library_manifest/debug/AndroidManifest.xml:12:5-76
+MERGED from [com.linkplay.musickit:LPMusicKit:1.2.6] /Users/wutom/.gradle/caches/transforms-2/files-2.1/56ad76d460ff3726a5b5273849942ce5/jetified-LPMusicKit-1.2.6/AndroidManifest.xml:10:5-76
+MERGED from [com.linkplay.musickit:LPMusicKit:1.2.6] /Users/wutom/.gradle/caches/transforms-2/files-2.1/56ad76d460ff3726a5b5273849942ce5/jetified-LPMusicKit-1.2.6/AndroidManifest.xml:10:5-76
+	android:name
+		ADDED from [:NespCling] /Users/wutom/Desktop/workspace/SwanPlayLib/NespCling/build/intermediates/library_manifest/debug/AndroidManifest.xml:12:22-73
+uses-permission#android.permission.CHANGE_WIFI_MULTICAST_STATE
+ADDED from [:NespCling] /Users/wutom/Desktop/workspace/SwanPlayLib/NespCling/build/intermediates/library_manifest/debug/AndroidManifest.xml:13:5-86
+MERGED from [com.linkplay.mdnskit:LPMDNSKit:1.0.2] /Users/wutom/.gradle/caches/transforms-2/files-2.1/b7f8d21f7328df579f096c8be2208d06/jetified-LPMDNSKit-1.0.2/AndroidManifest.xml:9:5-86
+MERGED from [com.linkplay.mdnskit:LPMDNSKit:1.0.2] /Users/wutom/.gradle/caches/transforms-2/files-2.1/b7f8d21f7328df579f096c8be2208d06/jetified-LPMDNSKit-1.0.2/AndroidManifest.xml:9:5-86
+	android:name
+		ADDED from [:NespCling] /Users/wutom/Desktop/workspace/SwanPlayLib/NespCling/build/intermediates/library_manifest/debug/AndroidManifest.xml:13:22-83
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from [:NespCling] /Users/wutom/Desktop/workspace/SwanPlayLib/NespCling/build/intermediates/library_manifest/debug/AndroidManifest.xml:14:5-79
+MERGED from [com.linkplay.musickit:LPMusicKit:1.2.6] /Users/wutom/.gradle/caches/transforms-2/files-2.1/56ad76d460ff3726a5b5273849942ce5/jetified-LPMusicKit-1.2.6/AndroidManifest.xml:9:5-79
+MERGED from [com.linkplay.musickit:LPMusicKit:1.2.6] /Users/wutom/.gradle/caches/transforms-2/files-2.1/56ad76d460ff3726a5b5273849942ce5/jetified-LPMusicKit-1.2.6/AndroidManifest.xml:9:5-79
+	android:name
+		ADDED from [:NespCling] /Users/wutom/Desktop/workspace/SwanPlayLib/NespCling/build/intermediates/library_manifest/debug/AndroidManifest.xml:14:22-76
+uses-permission#android.permission.WAKE_LOCK
+ADDED from [:NespCling] /Users/wutom/Desktop/workspace/SwanPlayLib/NespCling/build/intermediates/library_manifest/debug/AndroidManifest.xml:15:5-68
+	android:name
+		ADDED from [:NespCling] /Users/wutom/Desktop/workspace/SwanPlayLib/NespCling/build/intermediates/library_manifest/debug/AndroidManifest.xml:15:22-65
+uses-library#org.apache.http.legacy
+ADDED from [:NespCling] /Users/wutom/Desktop/workspace/SwanPlayLib/NespCling/build/intermediates/library_manifest/debug/AndroidManifest.xml:18:9-20:40
+	android:required
+		ADDED from [:NespCling] /Users/wutom/Desktop/workspace/SwanPlayLib/NespCling/build/intermediates/library_manifest/debug/AndroidManifest.xml:20:13-37
+	android:name
+		ADDED from [:NespCling] /Users/wutom/Desktop/workspace/SwanPlayLib/NespCling/build/intermediates/library_manifest/debug/AndroidManifest.xml:19:13-50
+service#com.nesp.android.cling.service.ClingUpnpService
+ADDED from [:NespCling] /Users/wutom/Desktop/workspace/SwanPlayLib/NespCling/build/intermediates/library_manifest/debug/AndroidManifest.xml:22:9-24:40
+	android:exported
+		ADDED from [:NespCling] /Users/wutom/Desktop/workspace/SwanPlayLib/NespCling/build/intermediates/library_manifest/debug/AndroidManifest.xml:24:13-37
+	android:name
+		ADDED from [:NespCling] /Users/wutom/Desktop/workspace/SwanPlayLib/NespCling/build/intermediates/library_manifest/debug/AndroidManifest.xml:23:13-75
+provider#com.nesp.android.cling.util.UtilsFileProvider
+ADDED from [:NespCling] /Users/wutom/Desktop/workspace/SwanPlayLib/NespCling/build/intermediates/library_manifest/debug/AndroidManifest.xml:26:9-34:20
+	android:grantUriPermissions
+		ADDED from [:NespCling] /Users/wutom/Desktop/workspace/SwanPlayLib/NespCling/build/intermediates/library_manifest/debug/AndroidManifest.xml:30:13-47
+	android:authorities
+		ADDED from [:NespCling] /Users/wutom/Desktop/workspace/SwanPlayLib/NespCling/build/intermediates/library_manifest/debug/AndroidManifest.xml:28:13-69
+	android:exported
+		ADDED from [:NespCling] /Users/wutom/Desktop/workspace/SwanPlayLib/NespCling/build/intermediates/library_manifest/debug/AndroidManifest.xml:29:13-37
+	android:name
+		ADDED from [:NespCling] /Users/wutom/Desktop/workspace/SwanPlayLib/NespCling/build/intermediates/library_manifest/debug/AndroidManifest.xml:27:13-73
+meta-data#android.support.FILE_PROVIDER_PATHS
+ADDED from [:NespCling] /Users/wutom/Desktop/workspace/SwanPlayLib/NespCling/build/intermediates/library_manifest/debug/AndroidManifest.xml:31:13-33:68
+	android:resource
+		ADDED from [:NespCling] /Users/wutom/Desktop/workspace/SwanPlayLib/NespCling/build/intermediates/library_manifest/debug/AndroidManifest.xml:33:17-65
+	android:name
+		ADDED from [:NespCling] /Users/wutom/Desktop/workspace/SwanPlayLib/NespCling/build/intermediates/library_manifest/debug/AndroidManifest.xml:32:17-67
+provider#androidx.lifecycle.ProcessLifecycleOwnerInitializer
+ADDED from [androidx.lifecycle:lifecycle-process:2.2.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bba453ac189dca779052644db6578dc4/jetified-lifecycle-process-2.2.0/AndroidManifest.xml:25:9-29:43
+	android:authorities
+		ADDED from [androidx.lifecycle:lifecycle-process:2.2.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bba453ac189dca779052644db6578dc4/jetified-lifecycle-process-2.2.0/AndroidManifest.xml:27:13-69
+	android:multiprocess
+		ADDED from [androidx.lifecycle:lifecycle-process:2.2.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bba453ac189dca779052644db6578dc4/jetified-lifecycle-process-2.2.0/AndroidManifest.xml:29:13-40
+	android:exported
+		ADDED from [androidx.lifecycle:lifecycle-process:2.2.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bba453ac189dca779052644db6578dc4/jetified-lifecycle-process-2.2.0/AndroidManifest.xml:28:13-37
+	android:name
+		ADDED from [androidx.lifecycle:lifecycle-process:2.2.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bba453ac189dca779052644db6578dc4/jetified-lifecycle-process-2.2.0/AndroidManifest.xml:26:13-79
+activity#com.blankj.utilcode.util.UtilsTransActivity4MainProcess
+ADDED from [com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:10:9-14:75
+	android:windowSoftInputMode
+		ADDED from [com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:14:13-72
+	android:configChanges
+		ADDED from [com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:12:13-74
+	android:theme
+		ADDED from [com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:13:13-55
+	android:name
+		ADDED from [com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:11:13-83
+activity#com.blankj.utilcode.util.UtilsTransActivity
+ADDED from [com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:15:9-20:75
+	android:multiprocess
+		ADDED from [com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:18:13-40
+	android:windowSoftInputMode
+		ADDED from [com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:20:13-72
+	android:configChanges
+		ADDED from [com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:17:13-74
+	android:theme
+		ADDED from [com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:19:13-55
+	android:name
+		ADDED from [com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:16:13-71
+provider#com.blankj.utilcode.util.UtilsFileProvider
+ADDED from [com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:22:9-30:20
+	android:grantUriPermissions
+		ADDED from [com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:26:13-47
+	android:authorities
+		ADDED from [com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:24:13-69
+	android:exported
+		ADDED from [com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:25:13-37
+	android:name
+		ADDED from [com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:23:13-70
+service#com.blankj.utilcode.util.MessengerUtils$ServerService
+ADDED from [com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:32:9-38:19
+	android:exported
+		ADDED from [com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:34:13-37
+	android:name
+		ADDED from [com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:33:13-81
+intent-filter#action:name:${applicationId}.messenger
+ADDED from [com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:35:13-37:29
+intent-filter#action:name:com.cn.huiweilink.messenger
+ADDED from [com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:35:13-37:29
+action#${applicationId}.messenger
+ADDED from [com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:36:17-69
+	android:name
+		ADDED from [com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:36:25-66
+action#com.cn.huiweilink.messenger
+ADDED from [com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:36:17-69
+	android:name
+		ADDED from [com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:36:25-66
+queries
+ADDED from [com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:9:5-11:15
+package#com.android.chrome
+ADDED from [com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:10:9-54
+	android:name
+		ADDED from [com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:10:18-51
+activity#com.linkplay.lpmdpkit.utils.LPCustomTabsCallbackActivity
+ADDED from [com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:16:9-29:20
+	android:exported
+		ADDED from [com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:18:13-36
+	android:name
+		ADDED from [com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:17:13-84
+intent-filter#action:name:android.intent.action.VIEW+category:name:android.intent.category.BROWSABLE+category:name:android.intent.category.DEFAULT+data:host:@string/lp_custom_tabs_deep_link_host+data:scheme:@string/lp_custom_tabs_deep_link_scheme
+ADDED from [com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:19:13-28:29
+	android:autoVerify
+		ADDED from [com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:19:28-53
+action#android.intent.action.VIEW
+ADDED from [com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:20:17-69
+	android:name
+		ADDED from [com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:20:25-66
+category#android.intent.category.BROWSABLE
+ADDED from [com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:22:17-78
+	android:name
+		ADDED from [com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:22:27-75
+category#android.intent.category.DEFAULT
+ADDED from [com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:23:17-76
+	android:name
+		ADDED from [com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:23:27-73
+data
+ADDED from [com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:25:17-27:80
+	android:host
+		ADDED from [com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:26:21-73
+	android:scheme
+		ADDED from [com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:27:21-77

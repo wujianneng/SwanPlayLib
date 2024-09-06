@@ -1,0 +1,65 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 28
+    configurations {
+        // 配置排除某个类
+        all*.exclude group: 'com.linkplay.musickit', module: 'org.teleal.cling.android.AndroidWifiSwitchableRouter'
+    }
+
+    defaultConfig {
+        minSdkVersion 24
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
+        }
+        packagingOptions {
+            exclude 'META-INF/LICENSE.txt'
+            exclude 'META-INF/beans.xml'
+        }
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    // SDK在解析请求返回的JSON数据时用到
+    api 'com.google.code.gson:gson:2.8.1'
+    implementation 'androidx.appcompat:appcompat:1.1.0-beta01'
+    testImplementation 'junit:junit:4.13-beta-3'
+    androidTestImplementation 'androidx.test:runner:1.3.0-alpha01'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0-alpha01'
+//    api project(path: ':clinglibrary')
+
+    // Cling library
+    implementation "androidx.lifecycle:lifecycle-process:2.2.0"
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.19'
+    api 'com.linkplay.lpmdpkit:LPMDPKit:1.0.8'
+    api 'com.linkplay.musickit:LPMusicKit:1.2.6'
+    api 'com.linkplay.mdnskit:LPMDNSKit:1.0.2'
+    api 'org.greenrobot:eventbus:3.3.0'
+    // Jetty library
+    implementation 'org.eclipse.jetty:jetty-server:8.1.12.v20130726'
+    implementation 'org.eclipse.jetty:jetty-servlet:8.1.12.v20130726'
+    implementation 'org.eclipse.jetty:jetty-client:8.1.12.v20130726'
+    implementation 'org.slf4j:slf4j-simple:1.7.21'
+    implementation 'com.koushikdutta.urlimageviewhelper:urlimageviewhelper:1.0.4'
+    //// SDK联网框架使用okhttp
+    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+//// SDK联网框架使用okhttp
+    implementation 'com.squareup.okio:okio:1.15.0'
+//    implementation 'com.blankj:utilcodex:1.30.0'
+    implementation 'com.github.smart-fun:XmlToJson:1.4.5'
+}
