@@ -182,7 +182,11 @@ public class SWPlayControl implements IPlayControl {
 
     }
 
-
+    /**
+     * 播放某一个序号的播放列表里的歌曲
+     * @param index
+     * @param listener
+     */
     public void playQueueWithIndex(int index, final LPDevicePlayerListener listener) {
 
         final Service avtService = SWDeviceUtils.findServiceFromSelectedDevice(ServiceId.valueOf("urn:wiimu-com:serviceId:PlayQueue"));
@@ -223,7 +227,7 @@ public class SWPlayControl implements IPlayControl {
     }
 
 
-    public void appendTracksInQueue(ControlPoint controlPointImpl, String queueContext, Service avtService, LPDevicePlayerListener listener) {
+    private void appendTracksInQueue(ControlPoint controlPointImpl, String queueContext, Service avtService, LPDevicePlayerListener listener) {
         controlPointImpl.execute(new AppendTracksInQueue(avtService, queueContext) {
             public void failure(ActionInvocation arg0, UpnpResponse arg1, String arg2) {
                 super.failure(arg0, arg1, arg2);
@@ -482,7 +486,7 @@ public class SWPlayControl implements IPlayControl {
 
 
     @Override
-    public void seek(int pos, final ControlCallback callback) {
+    public void seek(int currentProgressPercent, final ControlCallback callback) {
         final Service avtService = SWDeviceUtils.findServiceFromSelectedDevice(SWDeviceManager.AV_TRANSPORT_SERVICE);
         if (Utils.isNull(avtService)) {
             return;
@@ -493,8 +497,8 @@ public class SWPlayControl implements IPlayControl {
             return;
         }
 
-        String time = Utils.getStringTime(pos);
-        Log.e(TAG, "seek->pos: " + pos + ", time: " + time);
+        String time = Utils.getStringTime(currentProgressPercent);
+        Log.e(TAG, "seek->pos: " + currentProgressPercent + ", time: " + time);
         controlPointImpl.execute(new Seek(avtService, time) {
 
             @Override
@@ -563,47 +567,6 @@ public class SWPlayControl implements IPlayControl {
 
             @Override
             public void success(ActionInvocation invocation) {
-                if (Utils.isNotNull(callback)) {
-                    callback.success(new ClingResponse(invocation));
-                }
-            }
-
-            @Override
-            public void failure(ActionInvocation invocation, UpnpResponse operation, String defaultMsg) {
-                if (Utils.isNotNull(callback)) {
-                    callback.fail(new ClingResponse(invocation, operation, defaultMsg));
-                }
-            }
-        });
-    }
-
-    /**
-     * 设置片源，用于首次播放
-     *
-     * @param callback 回调
-     */
-    private void setAVTransportURI(List<LPMSLibraryPlayItem> playlist, int playIndex, final ControlCallback callback) {
-        if (Utils.isNull(playlist)) {
-            return;
-        }
-
-        String metadata = pushMediaToRender(playlist, playIndex);
-
-        final Service avtService = SWDeviceUtils.findServiceFromSelectedDevice(SWDeviceManager.AV_TRANSPORT_SERVICE);
-        if (Utils.isNull(avtService)) {
-            return;
-        }
-
-        final ControlPoint controlPointImpl = SWDeviceUtils.getControlPoint();
-        if (Utils.isNull(controlPointImpl)) {
-            return;
-        }
-
-        controlPointImpl.execute(new SetAVTransportURI(avtService, playlist.get(playIndex).getTrackUrl(), metadata) {
-
-            @Override
-            public void success(ActionInvocation invocation) {
-                super.success(invocation);
                 if (Utils.isNotNull(callback)) {
                     callback.success(new ClingResponse(invocation));
                 }
@@ -901,8 +864,7 @@ public class SWPlayControl implements IPlayControl {
      * @param callback
      */
     @Override
-    public void getCurrentPlaylist(@Nullable ControlReceiveCallback callback) {
-        Log.e("test", "getCurrentPlaylist2： ");
+    public void getCurrentPlaylist(@Nullable GetCurrentPlaylistCallback callback) {
         final Service avtService = SWDeviceUtils.findServiceFromSelectedDevice(ServiceId.valueOf("urn:wiimu-com:serviceId:PlayQueue"));
         if (Utils.isNull(avtService)) {
             return;
@@ -968,7 +930,7 @@ public class SWPlayControl implements IPlayControl {
                             Log.e("test", "getCurrentPlaylistsuccess3： " + new Gson().toJson(playList));
                         }
                         Log.e("test", "getCurrentPlaylistsuccess4： " + new Gson().toJson(playList));
-                        callback.receive(new ClingPlaylistResponse(actionInvocation, playList));
+                        callback.onSuccess(playList);
                     }
                 }
             }
@@ -977,7 +939,7 @@ public class SWPlayControl implements IPlayControl {
             public void failure(ActionInvocation invocation, UpnpResponse operation, String defaultMsg) {
                 Log.e("test", "getCurrentPlaylistfailure： " + defaultMsg);
                 if (Utils.isNotNull(callback)) {
-                    callback.fail(new ClingResponse(invocation, operation, defaultMsg));
+                    callback.onFailed(defaultMsg);
                 }
             }
         };
@@ -1363,5 +1325,11 @@ public class SWPlayControl implements IPlayControl {
         metadata.append(DIDL_LITE_FOOTER);
 
         return metadata.toString();
+    }
+
+    public interface GetCurrentPlaylistCallback{
+        void onSuccess(PlayList playList);
+
+        void onFailed(String msg);
     }
 }

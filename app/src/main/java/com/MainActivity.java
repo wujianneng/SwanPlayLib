@@ -264,13 +264,11 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
                         message.obj = positionInfo;
                         mHandler.sendMessage(message);
                     }
-                    Log.e("test", "getPositionInfo()receive:" + positionInfo.getTrackMetaData() + " uri:" + positionInfo.getTrackURI());
                     LPMediaInfo lpMediaInfo = new LPMediaInfo();
                     lpMediaInfo.parseMetaData(positionInfo.getTrackMetaData());
                     try {
                         MusicDataBean.DataBean musicDataBean = new Gson().fromJson(URLDecoder.decode(lpMediaInfo.getAlbumArtURI(),
                                 "UTF-8"), MusicDataBean.DataBean.class);
-                        Log.e("parse", "Current URI metadata: " + new Gson().toJson(musicDataBean));
                         if (musicDataBean != null && swDevice.getUuid().equals(fromUuid)) {
                             musicDataBean.setAlbum(lpMediaInfo.getAlbum());
                             musicDataBean.setCreator(lpMediaInfo.getCreator());
@@ -476,6 +474,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
 
     private void setChannel() {
         SWDevice SWDevice = (SWDevice) SWDeviceManager.getInstance().getSelectedDevice();
+
         if (SWDevice == null || SWDevice.getPlayStatusBean() == null || SWDevice.getSwDeviceInfo().getSWDeviceStatus() == null) return;
         if (SWDevice.getPlayStatusBean().getCh().equals("0")) {
             SWDevice.getPlayStatusBean().setCh("1");
@@ -662,23 +661,16 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
     }
 
     private void getPlaylist() {
-        mSWPlayControl.getCurrentPlaylist(new ControlReceiveCallback() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        mSWPlayControl.getCurrentPlaylist(new SWPlayControl.GetCurrentPlaylistCallback() {
             @Override
-            public void receive(IResponse response) {
-                ClingPlaylistResponse clingPlaylistResponse = (ClingPlaylistResponse) response;
-                runOnUiThread(() -> {
-                    showPlaylistDialog(clingPlaylistResponse.getResponse());
+            public void onSuccess(PlayList playList) {
+                runOnUiThread(()->{
+                    showPlaylistDialog(playList);
                 });
             }
 
             @Override
-            public void success(IResponse response) {
-
-            }
-
-            @Override
-            public void fail(IResponse response) {
+            public void onFailed(String msg) {
 
             }
         });

@@ -210,6 +210,10 @@ public class SWDeviceManager implements ISWManager {
         };
     }
 
+    public List<SWDevice> getMasterDeviceList() {
+       return SWDeviceList.masterDevices;
+    }
+
     public void runOhterInfoExTask(){
         if (isPauseAllTask) return;
         SWDeviceList.masterDevices.removeAll(offLineDeviceList);

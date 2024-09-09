@@ -11,7 +11,9 @@ public class SWDeviceInfo {
     String CurrentVolume;
     String CurrentMute;
     String CurrentChannel;
+    /** 设备状态类 */
     SWDeviceStatus SWDeviceStatus = new SWDeviceStatus();
+    /** 设备子设备列表 */
     private List<SlaveBean.SlaveListDTO> slaveList = new ArrayList<>();
 
     public String getMultiType() {

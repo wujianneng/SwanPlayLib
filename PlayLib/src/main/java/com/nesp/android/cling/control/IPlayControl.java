@@ -90,7 +90,7 @@ public interface IPlayControl {
     /**
      * 获取当前播放列表
      */
-    void getCurrentPlaylist(@Nullable ControlReceiveCallback callback);
+    void getCurrentPlaylist(@Nullable SWPlayControl.GetCurrentPlaylistCallback callback);
 
     /**
      * 删除当前播放列表某一首歌
