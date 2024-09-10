@@ -1098,7 +1098,7 @@ public class SWPlayControl implements IPlayControl {
                                 while (var14.hasNext()) {
                                     var6.add((LPPlayItem) var14.next());
                                 }
-                            } else if (var17.size() < 100) {
+                            } else if (var17.size() < maxCountOnePage) {
                                 var13 = var13.subList(0, maxCountOnePage - var17.size());
                                 Iterator var18 = var17.iterator();
 
