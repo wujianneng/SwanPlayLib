@@ -267,7 +267,7 @@ public class SWPlayControl implements IPlayControl {
                 return;
             }
 
-            final List var5 = var4.getPlayDataList();
+            final List<String> var5 = var4.getPlayDataList();
             if (var5 == null || var5.size() == 0) {
                 if (listener != null) {
                     listener.onFailure(new Exception("play media data empty"));
@@ -295,7 +295,9 @@ public class SWPlayControl implements IPlayControl {
                     if (Utils.isNotNull(listener)) {
                         playQueueWithIndex(controlPointImpl, var4, avtService, listener);
                         if (var4.getAppendCount() >= 1 && var5.size() >= 1) {
-                            appendTracksInQueue(controlPointImpl, (String) var5.get(1), avtService, listener);
+                            for(int i = 1 ; i < var5.size() ; i++){
+                                appendTracksInQueue(controlPointImpl, (String) var5.get(i), avtService, listener);
+                            }
                         }
                     }
                 }
@@ -1039,7 +1041,7 @@ public class SWPlayControl implements IPlayControl {
     }
 
     @SuppressLint({"DefaultLocale"})
-    public static int maxCountOnePage = 100;
+    public static int maxCountOnePage = 300;
     public static String playMusicSingleSource(LPPlayMusicList lpPlayMusicList) {
         if (lpPlayMusicList == null) {
             return "";
@@ -1070,7 +1072,7 @@ public class SWPlayControl implements IPlayControl {
                         lpitemlist1 = new ArrayList();
                         ArrayList lpitemlist2;
                         lpitemlist2 = new ArrayList();
-                        ArrayList lpitemlist3;
+                        ArrayList<LPPlayItem> lpitemlist3;
                         lpitemlist3 = new ArrayList();
                         if (lpitemlist.size() <= maxCountOnePage) {
                             ArrayList lpitemlist4;
@@ -1130,11 +1132,30 @@ public class SWPlayControl implements IPlayControl {
                         lpPlayMusicList.setHeader(lpPlayHeader);
                         ArrayList var20  = new ArrayList();
                         var20.add(createXmlString(lpPlayMusicList));
+
                         if (lpitemlist3.size() > 0) {
-                            var10001 = lpPlayMusicList = new LPPlayMusicList();
-                            lpPlayMusicList.setList(lpitemlist3);
-                            lpPlayMusicList.setHeader(lpPlayHeader);
-                            var20.add(createXmlString(var10001));
+                            List<List<LPPlayItem>> listList = new ArrayList<>();
+                            List<LPPlayItem> tempList = new ArrayList<>();
+                            for(int k = 0 ; k < lpitemlist3.size() ; k++){
+                                LPPlayItem lpPlayItem = lpitemlist3.get(k);
+                                if(tempList.size() < 50){
+                                    tempList.add(lpPlayItem);
+                                    if(k == lpitemlist3.size() - 1){
+                                        listList.add(tempList);
+                                        tempList.clear();
+                                    }
+                                }else if(tempList.size() == 50){
+                                    tempList.add(lpPlayItem);
+                                    listList.add(tempList);
+                                    tempList.clear();
+                                }
+                            }
+                            for(List<LPPlayItem> list : listList){
+                                var10001 = lpPlayMusicList = new LPPlayMusicList();
+                                lpPlayMusicList.setList(list);
+                                lpPlayMusicList.setHeader(lpPlayHeader);
+                                var20.add(createXmlString(var10001));
+                            }
                         }
 
                         lpPlayMediaData.setPlayData(var20);
