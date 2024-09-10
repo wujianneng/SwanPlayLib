@@ -1039,130 +1039,133 @@ public class SWPlayControl implements IPlayControl {
     }
 
     @SuppressLint({"DefaultLocale"})
-    public static int maxCountOnePage = 150;
-    public static String playMusicSingleSource(LPPlayMusicList var1) {
-        if (var1 == null) {
+    public static int maxCountOnePage = 100;
+    public static String playMusicSingleSource(LPPlayMusicList lpPlayMusicList) {
+        if (lpPlayMusicList == null) {
             return "";
         } else {
-            String var12 = "";
-            LPPlayHeader var3;
-            if ((var3 = var1.getHeader()) == null) {
+            String soureStr = "";
+            LPPlayHeader lpPlayHeader;
+            if ((lpPlayHeader = lpPlayMusicList.getHeader()) == null) {
                 return "";
             } else {
-                List var13 = var1.getList();
-                int var4 = var1.getIndex();
-                if (TextUtils.isEmpty(var3.getHeadTitle())) {
-                    var12 = "headTitle can't empty";
-                } else if (!TextUtils.isEmpty(var3.getMediaType()) && !var3.getMediaType().equals("NONE") && !var3.getMediaType().equals("UNKNOWN")) {
-                    if (TextUtils.isEmpty(var3.getMediaSource())) {
-                        var12 = "mediaSource can't empty";
+                List lpitemlist = lpPlayMusicList.getList();
+                int index = lpPlayMusicList.getIndex();
+                if (TextUtils.isEmpty(lpPlayHeader.getHeadTitle())) {
+                    soureStr = "headTitle can't empty";
+                } else if (!TextUtils.isEmpty(lpPlayHeader.getMediaType()) && !lpPlayHeader.getMediaType().equals("NONE") && !lpPlayHeader.getMediaType().equals("UNKNOWN")) {
+                    if (TextUtils.isEmpty(lpPlayHeader.getMediaSource())) {
+                        soureStr = "mediaSource can't empty";
                     }
                 } else {
-                    var12 = "mediaType can't empty";
+                    soureStr = "mediaType can't empty";
                 }
 
-                if (TextUtils.isEmpty(var12)) {
-                    LPPlayMediaData var15;
-                    LPPlayMediaData var19 = var15 = new LPPlayMediaData();
-                    var19.setMediaSource(var3.getMediaSource());
-                    String var5;
-                    if (TextUtils.isEmpty(var5 = var3.getSearchUrl()) && var13 != null) {
-                        ArrayList var6;
-                        var6 = new ArrayList();
-                        ArrayList var7;
-                        var7 = new ArrayList();
-                        ArrayList var8;
-                        var8 = new ArrayList();
-                        if (var13.size() <= maxCountOnePage) {
-                            ArrayList var9;
-                            var9 = new ArrayList();
-                            ArrayList var10;
-                            var10 = new ArrayList();
+                if (TextUtils.isEmpty(soureStr)) {
+                    LPPlayMediaData lpPlayMediaData = new LPPlayMediaData();
+                    lpPlayMediaData.setMediaSource(lpPlayHeader.getMediaSource());
+                    String searchUrl;
+                    if (TextUtils.isEmpty(searchUrl = lpPlayHeader.getSearchUrl()) && lpitemlist != null) {
+                        ArrayList lpitemlist1;
+                        lpitemlist1 = new ArrayList();
+                        ArrayList lpitemlist2;
+                        lpitemlist2 = new ArrayList();
+                        ArrayList lpitemlist3;
+                        lpitemlist3 = new ArrayList();
+                        if (lpitemlist.size() <= maxCountOnePage) {
+                            ArrayList lpitemlist4;
+                            lpitemlist4 = new ArrayList();
+                            ArrayList lpitemlist5;
+                            lpitemlist5 = new ArrayList();
 
-                            for (int var11 = 0; var11 < var13.size(); ++var11) {
-                                if (var11 >= var4) {
-                                    var10.add((LPPlayItem) var13.get(var11));
+                            for (int i = 0; i < lpitemlist.size(); ++i) {
+                                if (i >= index) {
+                                    lpitemlist5.add((LPPlayItem) lpitemlist.get(i));
                                 } else {
-                                    var9.add((LPPlayItem) var13.get(var11));
+                                    lpitemlist4.add((LPPlayItem) lpitemlist.get(i));
                                 }
                             }
 
-                            var6.addAll(var10);
-                            var6.addAll(var9);
+                            lpitemlist1.addAll(lpitemlist5);
+                            lpitemlist1.addAll(lpitemlist4);
                         } else {
                             Iterator var14;
                             List var17;
-                            if ((var17 = var13.subList(var4, var13.size())).size() >= maxCountOnePage) {
+                            if ((var17 = lpitemlist.subList(index, lpitemlist.size())).size() >= maxCountOnePage) {
                                 var14 = var17.subList(0, maxCountOnePage).iterator();
 
                                 while (var14.hasNext()) {
-                                    var6.add((LPPlayItem) var14.next());
+                                    lpitemlist1.add((LPPlayItem) var14.next());
                                 }
                             } else if (var17.size() < maxCountOnePage) {
-                                var13 = var13.subList(0, maxCountOnePage - var17.size());
+                                lpitemlist = lpitemlist.subList(0, maxCountOnePage - var17.size());
                                 Iterator var18 = var17.iterator();
 
                                 while (var18.hasNext()) {
-                                    var6.add((LPPlayItem) var18.next());
+                                    lpitemlist1.add((LPPlayItem) var18.next());
                                 }
 
-                                var14 = var13.iterator();
+                                var14 = lpitemlist.iterator();
 
                                 while (var14.hasNext()) {
-                                    var6.add((LPPlayItem) var14.next());
+                                    lpitemlist1.add((LPPlayItem) var14.next());
                                 }
                             }
                         }
 
-                        if (var6.size() == 1) {
-                            var7.add((LPPlayItem) var6.get(0));
-                        } else if (var6.size() > 1) {
-                            var7.add((LPPlayItem) var6.get(0));
-                            var7.add((LPPlayItem) var6.get(1));
+                        if (lpitemlist1.size() == 1) {
+                            lpitemlist2.add((LPPlayItem) lpitemlist1.get(0));
+                        } else if (lpitemlist1.size() > 1) {
+                            lpitemlist2.add((LPPlayItem) lpitemlist1.get(0));
+                            lpitemlist2.add((LPPlayItem) lpitemlist1.get(1));
 
-                            for (int var16 = 2; var16 < var6.size(); ++var16) {
-                                var8.add((LPPlayItem) var6.get(var16));
+                            for (int j = 2; j < lpitemlist1.size(); ++j) {
+                                lpitemlist3.add((LPPlayItem) lpitemlist1.get(j));
                             }
                         }
 
-                        LPPlayMusicList var10001 = var1 = new LPPlayMusicList();
-                        var1.setList(var7);
-                        var1.setHeader(var3);
-                        ArrayList var20 = var6 = new ArrayList();
-                        var20.add(createXmlString(var1));
-                        if (var8.size() > 0) {
-                            var10001 = var1 = new LPPlayMusicList();
-                            var1.setList(var8);
-                            var1.setHeader(var3);
-                            var6.add(createXmlString(var10001));
+
+                        LPPlayMusicList var10001 = lpPlayMusicList = new LPPlayMusicList();
+                        lpPlayMusicList.setList(lpitemlist2);
+                        lpPlayMusicList.setHeader(lpPlayHeader);
+                        ArrayList var20  = new ArrayList();
+                        var20.add(createXmlString(lpPlayMusicList));
+                        if (lpitemlist3.size() > 0) {
+                            var10001 = lpPlayMusicList = new LPPlayMusicList();
+                            lpPlayMusicList.setList(lpitemlist3);
+                            lpPlayMusicList.setHeader(lpPlayHeader);
+                            var20.add(createXmlString(var10001));
                         }
 
-                        var15.setPlayData(var6);
-                        var15.setPlayIndex(var4);
-                        var15.setQueueName(var3.getHeadTitle());
-                        if (var6.size() > 0) {
-                            var15.setAppendCount(var6.size() - 1);
+                        lpPlayMediaData.setPlayData(var20);
+                        lpPlayMediaData.setPlayIndex(index);
+                        lpPlayMediaData.setQueueName(lpPlayHeader.getHeadTitle());
+                        if (lpitemlist1.size() > 0) {
+                            lpPlayMediaData.setAppendCount(var20.size() - 1);
                         } else {
-                            var15.setAppendCount(0);
+                            lpPlayMediaData.setAppendCount(0);
                         }
+
+                        Log.e("test","playMusicSingleSource:" + lpitemlist.size() + " lpitemlist1:" + lpitemlist1.size() + " lpitemlist3:" +
+                                lpitemlist3.size() + " lpPlayMediaData:" + lpPlayMediaData.getAppendCount());
                     }
 
-                    if (!TextUtils.isEmpty(var5)) {
-                        LPPlayMusicList var10006 = var1 = new LPPlayMusicList();
-                        var1.setList((List) null);
-                        var1.setHeader(var3);
+                    if (!TextUtils.isEmpty(searchUrl)) {
+                        LPPlayMusicList var10006 = lpPlayMusicList = new LPPlayMusicList();
+                        lpPlayMusicList.setList((List) null);
+                        lpPlayMusicList.setHeader(lpPlayHeader);
                         ArrayList var21 = new ArrayList();
-                        var21.add(createXmlString(var1));
-                        var15.setPlayData(var21);
-                        var15.setPlayIndex(var4);
-                        var15.setQueueName(var3.getHeadTitle());
-                        var15.setAppendCount(0);
+                        var21.add(createXmlString(lpPlayMusicList));
+                        lpPlayMediaData.setPlayData(var21);
+                        lpPlayMediaData.setPlayIndex(index);
+                        lpPlayMediaData.setQueueName(lpPlayHeader.getHeadTitle());
+                        lpPlayMediaData.setAppendCount(0);
                     }
 
-                    var12 = new Gson().toJson(var15);
+                    soureStr = new Gson().toJson(lpPlayMediaData);
                 }
 
-                return var12;
+                return soureStr;
             }
         }
     }
