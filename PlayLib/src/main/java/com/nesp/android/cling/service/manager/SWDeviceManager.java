@@ -178,6 +178,7 @@ public class SWDeviceManager implements ISWManager {
             }
         }
         SWDeviceList.masterDevices.removeAll(mutriDevices);
+        EventBus.getDefault().post(SWDeviceList.REFRESH_LIST_UI_KEY);
     }
 
     public void stopTask() {
@@ -217,6 +218,7 @@ public class SWDeviceManager implements ISWManager {
     public void runOhterInfoExTask(){
         if (isPauseAllTask) return;
         SWDeviceList.masterDevices.removeAll(offLineDeviceList);
+        EventBus.getDefault().post(SWDeviceList.REFRESH_LIST_UI_KEY);
         removeDuplicationDevices();
         offLineDeviceList.clear();
         if (SWDeviceList.masterDevices.size() != 0)
@@ -305,19 +307,25 @@ public class SWDeviceManager implements ISWManager {
                                                 musicDataBean.setMediaType(lpMediaInfo.getMediaType());
                                                 swDevice.setMediaInfo(musicDataBean);
                                                 EventBus.getDefault().post(SWDeviceList.REFRESH_LIST_UI_KEY);
-                                                if (workInInfoTask != null)
+                                                if (workInInfoTask != null) {
                                                     workInInfoTask.work();
+                                                    initSelectedDevice();
+                                                }
                                             } else {
                                                 swDevice.setMediaInfo(null);
                                                 EventBus.getDefault().post(SWDeviceList.REFRESH_LIST_UI_KEY);
-                                                if (workInInfoTask != null)
+                                                if (workInInfoTask != null) {
                                                     workInInfoTask.work();
+                                                    initSelectedDevice();
+                                                }
                                             }
                                         } catch (Exception e) {
                                             swDevice.setMediaInfo(null);
                                             EventBus.getDefault().post(SWDeviceList.REFRESH_LIST_UI_KEY);
-                                            if (workInInfoTask != null)
+                                            if (workInInfoTask != null) {
                                                 workInInfoTask.work();
+                                                initSelectedDevice();
+                                            }
                                         }
                                     }
 
@@ -330,8 +338,10 @@ public class SWDeviceManager implements ISWManager {
                                     public void fail(IResponse response) {
                                         swDevice.setMediaInfo(null);
                                         EventBus.getDefault().post(SWDeviceList.REFRESH_LIST_UI_KEY);
-                                        if (workInInfoTask != null)
+                                        if (workInInfoTask != null) {
                                             workInInfoTask.work();
+                                            initSelectedDevice();
+                                        }
                                     }
                                 });
 
@@ -341,8 +351,10 @@ public class SWDeviceManager implements ISWManager {
                             public void onFailure(String msg) {
                                 swDevice.setMediaInfo(null);
                                 EventBus.getDefault().post(SWDeviceList.REFRESH_LIST_UI_KEY);
-                                if (workInInfoTask != null)
+                                if (workInInfoTask != null) {
                                     workInInfoTask.work();
+                                    initSelectedDevice();
+                                }
                             }
                         });
 
@@ -355,6 +367,16 @@ public class SWDeviceManager implements ISWManager {
                 });
 
             }
+        }
+    }
+
+    public void initSelectedDevice(){
+        if (SWDeviceManager.getInstance().getSelectedDevice() == null && SWDeviceList.getInstance().masterDevices.size() != 0) {
+            SWDevice item = (SWDevice) SWDeviceList.getInstance().masterDevices.get(0);
+            if (Utils.isNull(item)) {
+                return;
+            }
+            SWDeviceManager.getInstance().setSelectedDevice(item);
         }
     }
 

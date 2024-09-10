@@ -11,6 +11,8 @@ import com.linkplay.core.app.LPDeviceManager;
 import com.nesp.android.cling.entity.SWDeviceList;
 import com.nesp.android.cling.service.manager.SWDeviceManager;
 
+import org.greenrobot.eventbus.EventBus;
+
 public class WifiChangedCast extends BroadcastReceiver {
 
     @Override
@@ -21,12 +23,14 @@ public class WifiChangedCast extends BroadcastReceiver {
             if (arg01 == NetworkInfo.State.CONNECTED) {
                 Log.e("LINKPLAY_SDK", "wifi changed and State=reInit()" + arg01);
                 SWDeviceList.masterDevices.clear();
+                EventBus.getDefault().post(SWDeviceList.REFRESH_LIST_UI_KEY);
                 SWDeviceList.getInstance().mSWDeviceList.clear();
                 SWDeviceManager.getInstance().refreshDevicesList();
             } else if (arg01 != NetworkInfo.State.DISCONNECTED && arg01 != NetworkInfo.State.UNKNOWN) {
                 arg01 = NetworkInfo.State.CONNECTING;
             }else {
                 SWDeviceList.masterDevices.clear();
+                EventBus.getDefault().post(SWDeviceList.REFRESH_LIST_UI_KEY);
                 SWDeviceList.getInstance().mSWDeviceList.clear();
                 SWDeviceManager.getInstance().refreshDevicesList();
             }

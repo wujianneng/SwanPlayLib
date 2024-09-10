@@ -56,6 +56,6 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
 //// SDK联网框架使用okhttp
     implementation 'com.squareup.okio:okio:1.15.0'
-//    implementation 'com.blankj:utilcodex:1.30.0'
+    implementation 'com.blankj:utilcodex:1.30.0'
     implementation 'com.github.smart-fun:XmlToJson:1.4.5'
 }
