@@ -231,6 +231,7 @@ public class SWPlayControl implements IPlayControl {
         controlPointImpl.execute(new AppendTracksInQueue(avtService, queueContext) {
             public void failure(ActionInvocation arg0, UpnpResponse arg1, String arg2) {
                 super.failure(arg0, arg1, arg2);
+                Log.e(TAG, "appendTracksInQueuefailure:" + arg2);
                 if (Utils.isNotNull(listener)) {
                     listener.onFailure(new Exception(arg2));
                 }
@@ -238,6 +239,7 @@ public class SWPlayControl implements IPlayControl {
             }
 
             public void success(ActionInvocation arg0) {
+                Log.e(TAG, "appendTracksInQueuesuccess:");
                 super.success(arg0);
                 if (Utils.isNotNull(listener)) {
                     listener.onSuccess(arg0.toString());
@@ -296,6 +298,7 @@ public class SWPlayControl implements IPlayControl {
                         playQueueWithIndex(controlPointImpl, var4, avtService, listener);
                         if (var4.getAppendCount() >= 1 && var5.size() >= 1) {
                             for(int i = 1 ; i < var5.size() ; i++){
+                                Log.e(TAG, "appendTracksInQueue:" + i + " value:" + var5.get(i));
                                 appendTracksInQueue(controlPointImpl, (String) var5.get(i), avtService, listener);
                             }
                         }
