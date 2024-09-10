@@ -1130,11 +1130,11 @@ public class SWPlayControl implements IPlayControl {
                         }
 
 
-                        LPPlayMusicList var10001 = lpPlayMusicList = new LPPlayMusicList();
-                        lpPlayMusicList.setList(lpitemlist2);
-                        lpPlayMusicList.setHeader(lpPlayHeader);
+                        LPPlayMusicList var10001  = new LPPlayMusicList();
+                        var10001.setList(lpitemlist2);
+                        var10001.setHeader(lpPlayHeader);
                         ArrayList var20  = new ArrayList();
-                        var20.add(createXmlString(lpPlayMusicList));
+                        var20.add(createXmlString(var10001));
 
                         if (lpitemlist3.size() > 0) {
                             List<List<LPPlayItem>> listList = new ArrayList<>();
@@ -1154,10 +1154,11 @@ public class SWPlayControl implements IPlayControl {
                                 }
                             }
                             for(List<LPPlayItem> list : listList){
-                                var10001 = lpPlayMusicList = new LPPlayMusicList();
-                                lpPlayMusicList.setList(list);
-                                lpPlayMusicList.setHeader(lpPlayHeader);
-                                var20.add(createXmlString(var10001));
+                                LPPlayMusicList var10002 = new LPPlayMusicList();
+                                var10002.setList(list);
+                                var10002.setHeader(lpPlayHeader);
+                                var20.add(createXmlString(var10002));
+                                Log.e("test","listList:" + listList.size() + " list:" + list.size());
                             }
                         }
 
