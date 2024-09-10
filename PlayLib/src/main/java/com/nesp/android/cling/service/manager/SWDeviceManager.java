@@ -105,8 +105,8 @@ public class SWDeviceManager implements ISWManager {
 
     public void pauseAllTask(boolean isPauseAllTask) {
         this.isPauseAllTask = isPauseAllTask;
-        if(!isPauseAllTask){
-          runOhterInfoExTask();
+        if (!isPauseAllTask) {
+            runOhterInfoExTask();
         }
     }
 
@@ -125,7 +125,7 @@ public class SWDeviceManager implements ISWManager {
                 ClingPositionResponse positionResponse = (ClingPositionResponse) response;
                 PositionInfo positionInfo = positionResponse.getResponse();
                 if (workInTimeTask != null)
-                    workInTimeTask.work(positionInfo,swDevice.getUuid());
+                    workInTimeTask.work(positionInfo, swDevice.getUuid());
             }
 
             @Override
@@ -137,13 +137,13 @@ public class SWDeviceManager implements ISWManager {
             public void fail(IResponse response) {
                 Log.e("test", "getPositionInfodofail");
                 if (workInTimeTask != null)
-                    workInTimeTask.work(null,swDevice.getUuid());
+                    workInTimeTask.work(null, swDevice.getUuid());
             }
         });
     }
 
     public interface WorkInTimeTask {
-        void work(PositionInfo positionInfo,String fromUuid);
+        void work(PositionInfo positionInfo, String fromUuid);
     }
 
     public interface WorkInInfoTask {
@@ -158,22 +158,22 @@ public class SWDeviceManager implements ISWManager {
         this.workInInfoTask = infoTask;
     }
 
-    public void removeDuplicationDevices(){
-        Map<String,Integer> mutrimap = new HashMap<>();
-        for(SWDevice swDevice : SWDeviceList.masterDevices){
-            if(mutrimap.containsKey(swDevice.getUuid())){
-                mutrimap.put(swDevice.getUuid(),1 + mutrimap.get(swDevice.getUuid()));
-            }else {
-                mutrimap.put(swDevice.getUuid(),1);
+    public void removeDuplicationDevices() {
+        Map<String, Integer> mutrimap = new HashMap<>();
+        for (SWDevice swDevice : SWDeviceList.masterDevices) {
+            if (mutrimap.containsKey(swDevice.getUuid())) {
+                mutrimap.put(swDevice.getUuid(), 1 + mutrimap.get(swDevice.getUuid()));
+            } else {
+                mutrimap.put(swDevice.getUuid(), 1);
             }
         }
         List<SWDevice> mutriDevices = new ArrayList<>();
-        for(SWDevice swDevice : SWDeviceList.masterDevices){
-            if(mutrimap.containsKey(swDevice.getUuid())){
+        for (SWDevice swDevice : SWDeviceList.masterDevices) {
+            if (mutrimap.containsKey(swDevice.getUuid())) {
                 int count = mutrimap.get(swDevice.getUuid());
-                if(count > 1){
+                if (count > 1) {
                     mutriDevices.add(swDevice);
-                    mutrimap.put(swDevice.getUuid(),count - 1);
+                    mutrimap.put(swDevice.getUuid(), count - 1);
                 }
             }
         }
@@ -212,10 +212,10 @@ public class SWDeviceManager implements ISWManager {
     }
 
     public List<SWDevice> getMasterDeviceList() {
-       return SWDeviceList.masterDevices;
+        return SWDeviceList.masterDevices;
     }
 
-    public void runOhterInfoExTask(){
+    public void runOhterInfoExTask() {
         if (isPauseAllTask) return;
         SWDeviceList.masterDevices.removeAll(offLineDeviceList);
         EventBus.getDefault().post(SWDeviceList.REFRESH_LIST_UI_KEY);
@@ -305,7 +305,8 @@ public class SWDeviceManager implements ISWManager {
                                                 musicDataBean.setAlbum(lpMediaInfo.getAlbum());
                                                 musicDataBean.setCreator(lpMediaInfo.getCreator());
                                                 musicDataBean.setMediaType(lpMediaInfo.getMediaType());
-                                                swDevice.setMediaInfo(musicDataBean);
+                                                if (swDevice.getMediaInfo() == null || !swDevice.getMediaInfo().getPlayUrl().equals(musicDataBean.getPlayUrl()))
+                                                    swDevice.setMediaInfo(musicDataBean);
                                                 EventBus.getDefault().post(SWDeviceList.REFRESH_LIST_UI_KEY);
                                                 if (workInInfoTask != null) {
                                                     workInInfoTask.work();
@@ -370,7 +371,7 @@ public class SWDeviceManager implements ISWManager {
         }
     }
 
-    public void initSelectedDevice(){
+    public void initSelectedDevice() {
         if (SWDeviceManager.getInstance().getSelectedDevice() == null && SWDeviceList.getInstance().masterDevices.size() != 0) {
             SWDevice item = (SWDevice) SWDeviceList.getInstance().masterDevices.get(0);
             if (Utils.isNull(item)) {

@@ -1039,6 +1039,7 @@ public class SWPlayControl implements IPlayControl {
     }
 
     @SuppressLint({"DefaultLocale"})
+    public static int maxCountOnePage = 150;
     public static String playMusicSingleSource(LPPlayMusicList var1) {
         if (var1 == null) {
             return "";
@@ -1072,7 +1073,7 @@ public class SWPlayControl implements IPlayControl {
                         var7 = new ArrayList();
                         ArrayList var8;
                         var8 = new ArrayList();
-                        if (var13.size() <= 100) {
+                        if (var13.size() <= maxCountOnePage) {
                             ArrayList var9;
                             var9 = new ArrayList();
                             ArrayList var10;
@@ -1091,14 +1092,14 @@ public class SWPlayControl implements IPlayControl {
                         } else {
                             Iterator var14;
                             List var17;
-                            if ((var17 = var13.subList(var4, var13.size())).size() >= 100) {
-                                var14 = var17.subList(0, 100).iterator();
+                            if ((var17 = var13.subList(var4, var13.size())).size() >= maxCountOnePage) {
+                                var14 = var17.subList(0, maxCountOnePage).iterator();
 
                                 while (var14.hasNext()) {
                                     var6.add((LPPlayItem) var14.next());
                                 }
                             } else if (var17.size() < 100) {
-                                var13 = var13.subList(0, 100 - var17.size());
+                                var13 = var13.subList(0, maxCountOnePage - var17.size());
                                 Iterator var18 = var17.iterator();
 
                                 while (var18.hasNext()) {

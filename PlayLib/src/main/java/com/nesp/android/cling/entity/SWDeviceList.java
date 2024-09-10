@@ -23,7 +23,7 @@ import java.util.Map;
 
 /**
  * 说明：单例设备列表, 保证全局只有一个设备列表
-
+ * <p>
  * 日期：17/6/30 11:25
  */
 
@@ -59,19 +59,20 @@ public class SWDeviceList {
     }
 
     private SWPlayControl mSWPlayControl = new SWPlayControl();
+
     public void addDevice(SWDevice SWDevice) {
         if (mSWDeviceList == null) {
             mSWDeviceList = new ArrayList<>();
         }
         if (!contain(SWDevice.getDevice(), mSWDeviceList))
             mSWDeviceList.add(SWDevice);
-        if (!contain(SWDevice.getDevice(),masterDevices)) {
+        if (!contain(SWDevice.getDevice(), masterDevices)) {
             SWDeviceUtils.getControlDeviceInfo(SWDevice.getDevice(), new ControlCallback() {
                 @Override
                 public void success(IResponse response) {
-                    ClingGetControlDeviceInfoResponse getControlDeviceInfoResponse = (ClingGetControlDeviceInfoResponse)response;
+                    ClingGetControlDeviceInfoResponse getControlDeviceInfoResponse = (ClingGetControlDeviceInfoResponse) response;
                     Map<String, ActionArgumentValue> map = getControlDeviceInfoResponse.info;
-                    Log.e("test","getSWDeviceStatus:" + map.toString());
+                    Log.e("test", "getSWDeviceStatus:" + map.toString());
 
                     Gson gson = new Gson();
 
@@ -85,7 +86,7 @@ public class SWDeviceList {
                     swDeviceInfo.setCurrentChannel(map.get("CurrentChannel").toString());
                     String slaveListStr = map.get("SlaveList").toString();
                     String statusStr = map.get("Status").toString();
-                    SlaveBean slaveBean = gson.fromJson(slaveListStr,SlaveBean.class);
+                    SlaveBean slaveBean = gson.fromJson(slaveListStr, SlaveBean.class);
                     SWDeviceStatus swDeviceStatus = gson.fromJson(statusStr, SWDeviceStatus.class);
                     swDeviceInfo.setSlaveList(slaveBean.getSlave_list());
                     swDeviceInfo.setSWDeviceStatus(swDeviceStatus);
@@ -107,14 +108,15 @@ public class SWDeviceList {
                                         musicDataBean.setAlbum(lpMediaInfo.getAlbum());
                                         musicDataBean.setCreator(lpMediaInfo.getCreator());
                                         musicDataBean.setMediaType(lpMediaInfo.getMediaType());
-                                        SWDevice.setMediaInfo(musicDataBean);
+                                        if (SWDevice.getMediaInfo() == null || !SWDevice.getMediaInfo().getPlayUrl().equals(musicDataBean.getPlayUrl()))
+                                            SWDevice.setMediaInfo(musicDataBean);
                                     } else {
                                         SWDevice.setMediaInfo(null);
                                     }
                                 } catch (Exception e) {
                                     SWDevice.setMediaInfo(null);
                                 }
-                            }else {
+                            } else {
                                 SWDevice.setMediaInfo(null);
                             }
                             masterDevices.add(SWDevice);
@@ -216,7 +218,7 @@ public class SWDeviceList {
         return null;
     }
 
-    public static boolean contain(Device device,List<SWDevice> list) {
+    public static boolean contain(Device device, List<SWDevice> list) {
         for (SWDevice SWDevice : list) {
             Device deviceTemp = SWDevice.getDevice();
             if (deviceTemp != null && deviceTemp.equals(device)) {

@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
 
     private ListView mDeviceList;
     private TextView timeTv, durationTv, tracknameTv, artistnameTv;
-    private Button playModeBtn,channelBtn;
+    private Button playModeBtn, channelBtn;
     private SeekBar mSeekProgress;
     private SeekBar mSeekVolume;
     private Switch mSwitchMute;
@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void handleEventBus(String event) {
-        if(event.equals(SWDeviceList.REFRESH_LIST_UI_KEY)){
+        if (event.equals(SWDeviceList.REFRESH_LIST_UI_KEY)) {
             mDevicesAdapter.notifyDataSetChanged();
         }
     }
@@ -250,7 +250,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
 
         SWDeviceManager.getInstance().setGetInfoTask(new SWDeviceManager.WorkInTimeTask() {
             @Override
-            public void work(PositionInfo positionInfo,String fromUuid) {
+            public void work(PositionInfo positionInfo, String fromUuid) {
                 if (positionInfo == null) {
                     Message message = new Message();
                     message.what = REFRESH_MEDIA_VIEW;
@@ -258,7 +258,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
                     mHandler.sendMessage(message);
                 } else {
                     SWDevice swDevice = (SWDevice) SWDeviceManager.getInstance().getSelectedDevice();
-                    if(swDevice.getUuid().equals(fromUuid)) {
+                    if (swDevice.getUuid().equals(fromUuid)) {
                         Message message = new Message();
                         message.what = REFRESH_TIME_VIEW;
                         message.obj = positionInfo;
@@ -273,7 +273,8 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
                             musicDataBean.setAlbum(lpMediaInfo.getAlbum());
                             musicDataBean.setCreator(lpMediaInfo.getCreator());
                             musicDataBean.setMediaType(lpMediaInfo.getMediaType());
-                            swDevice.setMediaInfo(musicDataBean);
+                            if (swDevice.getMediaInfo() == null || !swDevice.getMediaInfo().getPlayUrl().equals(musicDataBean.getPlayUrl()))
+                                swDevice.setMediaInfo(musicDataBean);
                             Message msg = new Message();
                             msg.what = REFRESH_MEDIA_VIEW;
                             msg.obj = musicDataBean;
@@ -475,7 +476,8 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
     private void setChannel() {
         SWDevice SWDevice = (SWDevice) SWDeviceManager.getInstance().getSelectedDevice();
 
-        if (SWDevice == null || SWDevice.getPlayStatusBean() == null || SWDevice.getSwDeviceInfo().getSWDeviceStatus() == null) return;
+        if (SWDevice == null || SWDevice.getPlayStatusBean() == null || SWDevice.getSwDeviceInfo().getSWDeviceStatus() == null)
+            return;
         if (SWDevice.getPlayStatusBean().getCh().equals("0")) {
             SWDevice.getPlayStatusBean().setCh("1");
             channelBtn.setText("左声道");
@@ -488,16 +490,16 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         }
         SWDeviceUtils.setMasterDeviceChannel(SWDevice.getSwDeviceInfo().getSWDeviceStatus().getApcli0(),
                 Integer.parseInt(SWDevice.getPlayStatusBean().getCh()), new SWDeviceUtils.BaseCallback() {
-            @Override
-            public void onResponse(String result) {
+                    @Override
+                    public void onResponse(String result) {
 
-            }
+                    }
 
-            @Override
-            public void onFailure(String msg) {
+                    @Override
+                    public void onFailure(String msg) {
 
-            }
-        });
+                    }
+                });
     }
 
     private void showSelectDeviceDialog() {
@@ -526,7 +528,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
                         }
                     }
 
-                    doMultiroomAction(lpDevices,selectDevice);
+                    doMultiroomAction(lpDevices, selectDevice);
                 }
 
                 @Override
@@ -541,13 +543,13 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
                                     device.getSwDeviceInfo().getSWDeviceStatus().getHardware(), false, false));
                         }
                     }
-                    doMultiroomAction(lpDevices,selectDevice);
+                    doMultiroomAction(lpDevices, selectDevice);
                 }
             });
         }
     }
 
-    public void doMultiroomAction(List<SelectSWDeviceBean> lpDevices,SWDevice selectDevice){
+    public void doMultiroomAction(List<SelectSWDeviceBean> lpDevices, SWDevice selectDevice) {
         if (lpDevices.size() == 0) {
             runOnUiThread(() -> Toast.makeText(MainActivity.this, "没有可用设备", Toast.LENGTH_SHORT).show());
             return;
@@ -620,10 +622,10 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
                             kicInList.add(device);
                         }
                     }
-                    SWDeviceUtils.slaveListKicOut(this,selectDevice, kicOutList, new SWDeviceUtils.BaseCallback() {
+                    SWDeviceUtils.slaveListKicOut(this, selectDevice, kicOutList, new SWDeviceUtils.BaseCallback() {
                         @Override
                         public void onResponse(String result) {
-                            runOnUiThread(()-> Toast.makeText(MainActivity.this, "解绑成功", Toast.LENGTH_SHORT).show());
+                            runOnUiThread(() -> Toast.makeText(MainActivity.this, "解绑成功", Toast.LENGTH_SHORT).show());
                         }
 
                         @Override
@@ -631,10 +633,10 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
 
                         }
                     });
-                    SWDeviceUtils.slaveListKicIn(this,selectDevice, kicInList, new SWDeviceUtils.BaseCallback() {
+                    SWDeviceUtils.slaveListKicIn(this, selectDevice, kicInList, new SWDeviceUtils.BaseCallback() {
                         @Override
                         public void onResponse(String result) {
-                            runOnUiThread(()-> Toast.makeText(MainActivity.this, "同步成功", Toast.LENGTH_SHORT).show());
+                            runOnUiThread(() -> Toast.makeText(MainActivity.this, "同步成功", Toast.LENGTH_SHORT).show());
                         }
 
                         @Override
@@ -664,7 +666,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         mSWPlayControl.getCurrentPlaylist(new SWPlayControl.GetCurrentPlaylistCallback() {
             @Override
             public void onSuccess(PlayList playList) {
-                runOnUiThread(()->{
+                runOnUiThread(() -> {
                     showPlaylistDialog(playList);
                 });
             }
