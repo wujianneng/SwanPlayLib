@@ -44,7 +44,7 @@ public class CustomSendingSearch extends SendingAsync {
                 // UDA 1.0 is silent about this but UDA 1.1 recommends "a few hundred milliseconds"
                 log.finer("Sleeping " + getBulkIntervalMilliseconds() + " milliseconds");
                 Thread.sleep(getBulkIntervalMilliseconds());
-            } catch (InterruptedException ex) {
+            } catch (Exception ex) {
                 // Interruption means we stop sending search messages, e.g. on shutdown of thread pool
                 break;
             }

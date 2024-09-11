@@ -18,10 +18,12 @@ import com.nesp.android.cling.entity.IControlPoint;
 import com.nesp.android.cling.entity.IDevice;
 import com.nesp.android.cling.entity.PlayStatusBean;
 import com.nesp.android.cling.entity.SWDevice;
+import com.nesp.android.cling.entity.SWDeviceList;
 import com.nesp.android.cling.entity.SelectSWDeviceBean;
 import com.nesp.android.cling.entity.SlaveBean;
 import com.nesp.android.cling.entity.SwanRomDownloadStatusResultBean;
 import com.nesp.android.cling.service.manager.SWDeviceManager;
+import com.nesp.android.cling.service.manager.SWWiFiSetupManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -242,11 +244,12 @@ public class SWDeviceUtils {
                                                         Log.e("test", "addCount:devicessid:" + device.getSsid());
                                                         for (SlaveBean.SlaveListDTO slaveListDTO : slaveListDTOList) {
                                                             if (device.getSsid().equals(slaveListDTO.getSsid())) {
+                                                                SWDeviceManager.getInstance().offLineDeviceList.add(deviceForSsid(device.getSsid()));
                                                                 needcount--;
                                                             }
                                                         }
                                                     }
-                                                    if (needcount == 0) {
+                                                    if (needcount == 0 && masterDeviceListNotContainsActionList(slaveList)) {
                                                         Log.e("test", "addCount:" + needcount);
                                                         callback.onResponse("success");
                                                     }
@@ -279,6 +282,27 @@ public class SWDeviceUtils {
         }
     }
 
+    public static SWDevice deviceForSsid(String lpDevicessid) {
+        for (SWDevice lpDevice : SWDeviceList.masterDevices) {
+            if (lpDevice.getSwDeviceInfo().getSWDeviceStatus().getSsid().equals(lpDevicessid)) {
+                return lpDevice;
+            }
+        }
+        return null;
+    }
+
+    private static boolean masterDeviceListNotContainsActionList(List<SelectSWDeviceBean> slaveList) {
+        boolean result = true;
+        for(SWDevice swDevice : SWDeviceManager.getInstance().getMasterDeviceList()){
+            for(SelectSWDeviceBean selectSWDeviceBean : slaveList){
+                if(selectSWDeviceBean.getSsid().equals(swDevice.getSwDeviceInfo().getSsid())){
+                    return false;
+                }
+            }
+        }
+        return result;
+    }
+
     public static void slaveListKicOut(Activity activity,SWDevice masterDevice, List<SelectSWDeviceBean> swDeviceList, BaseCallback callback) {
         //解绑多台设备
         for (SelectSWDeviceBean selectDevice : swDeviceList) {
@@ -287,10 +311,12 @@ public class SWDeviceUtils {
                 @Override
                 public void onResponse(String result) {
                     activity.runOnUiThread(() -> {
-                        CountDownTimer countDownTimer = new CountDownTimer(13000, 1000) {
+                        CountDownTimer countDownTimer = new CountDownTimer(60000, 1000) {
                             @Override
                             public void onTick(long millisUntilFinished) {
-
+                                if (masterDeviceListContainsAllActionList(swDeviceList)) {
+                                    callback.onResponse("success");
+                                }
                             }
 
                             @Override
@@ -309,6 +335,18 @@ public class SWDeviceUtils {
                 }
             });
         }
+    }
+
+    private static boolean masterDeviceListContainsAllActionList(List<SelectSWDeviceBean> swDeviceList) {
+        int size = swDeviceList.size();
+        for(SelectSWDeviceBean selectSWDeviceBean : swDeviceList) {
+            for (SWDevice swDevice : SWDeviceManager.getInstance().getMasterDeviceList()) {
+                if (swDevice.getSwDeviceInfo().getSsid().equals(selectSWDeviceBean.getSsid())){
+                    size--;
+                }
+            }
+        }
+        return size == 0;
     }
 
 

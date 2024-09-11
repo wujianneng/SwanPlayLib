@@ -24,6 +24,7 @@ com/MainActivity.java
  com.MainActivity$22
  com.MainActivity$23
  com.MainActivity$24
+ com.MainActivity$25
  com.MainActivity$3
  com.MainActivity$4
  com.MainActivity$5

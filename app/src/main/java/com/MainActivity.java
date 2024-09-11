@@ -248,9 +248,20 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
             }
         });
 
-        SWDeviceManager.getInstance().setGetInfoTask(new SWDeviceManager.WorkInTimeTask() {
+        SWDeviceManager.getInstance().setGetInfoTask(new SWDeviceManager.WorkPlayStatusTask() {
             @Override
-            public void work(PositionInfo positionInfo, String fromUuid) {
+            public void work(SWDevice swDevice) {
+                SWDevice selectedDevice = (SWDevice) SWDeviceManager.getInstance().getSelectedDevice();
+                if (swDevice.getUuid().equals(selectedDevice.getUuid())) {
+                    Message message = new Message();
+                    message.what = REFRESH_TIME_VIEW;
+                    message.obj = selectedDevice.getPlayStatusBean();
+                    mHandler.sendMessage(message);
+                }
+            }
+        },new SWDeviceManager.WorkMediaInfoTask() {
+            @Override
+            public void work(MediaInfo positionInfo, String fromUuid) {
                 if (positionInfo == null) {
                     Message message = new Message();
                     message.what = REFRESH_MEDIA_VIEW;
@@ -258,14 +269,8 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
                     mHandler.sendMessage(message);
                 } else {
                     SWDevice swDevice = (SWDevice) SWDeviceManager.getInstance().getSelectedDevice();
-                    if (swDevice.getUuid().equals(fromUuid)) {
-                        Message message = new Message();
-                        message.what = REFRESH_TIME_VIEW;
-                        message.obj = positionInfo;
-                        mHandler.sendMessage(message);
-                    }
                     LPMediaInfo lpMediaInfo = new LPMediaInfo();
-                    lpMediaInfo.parseMetaData(positionInfo.getTrackMetaData());
+                    lpMediaInfo.parseMetaData(positionInfo.getCurrentURIMetaData());
                     try {
                         MusicDataBean.DataBean musicDataBean = new Gson().fromJson(URLDecoder.decode(lpMediaInfo.getAlbumArtURI(),
                                 "UTF-8"), MusicDataBean.DataBean.class);
@@ -299,7 +304,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
                     }
                 }
             }
-        }, new SWDeviceManager.WorkInInfoTask() {
+        }, new SWDeviceManager.WorkDeviceInfoTask() {
             @Override
             public void work() {
                 if (SWDeviceManager.getInstance().getSelectedDevice() == null && SWDeviceList.getInstance().masterDevices.size() != 0) {
@@ -1078,11 +1083,18 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
                     mDevicesAdapter.notifyDataSetChanged();
                     break;
                 case REFRESH_TIME_VIEW:
-                    PositionInfo positionInfo = (PositionInfo) msg.obj;
-                    timeTv.setText(positionInfo.getRelTime());
-                    durationTv.setText(positionInfo.getTrackDuration());
-                    mSeekProgress.setMax(100);
-                    mSeekProgress.setProgress(positionInfo.getElapsedPercent());
+                    PlayStatusBean playStatusBean = (PlayStatusBean) msg.obj;
+                    if (playStatusBean == null) return;
+                    int curpos = Integer.parseInt(playStatusBean.getCurpos());
+                    int totlen = Integer.parseInt(playStatusBean.getTotlen());
+                    Log.e("test", "updateTime: " + " rtime:" + Utils.getStringTime(curpos) + " td:" + Utils.getStringTime(totlen));
+                    if (!playStatusBean.getStatus().equals("stop")) {
+                        timeTv.setText(Utils.getStringTime(curpos));
+                        durationTv.setText(Utils.getStringTime(totlen));
+                        mSeekProgress.setMax(100);
+                        if (totlen != 0)
+                        mSeekProgress.setProgress(curpos * 100 / totlen);
+                    }
                     break;
                 case REFRESH_MEDIA_VIEW:
                     if (msg.obj == null) {

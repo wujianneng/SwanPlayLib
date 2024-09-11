@@ -33,6 +33,19 @@ public class Utils {
         return formatter.format("%02d:%02d:%02d", hours, minutes, seconds).toString();
     }
 
+    public static String getStringTime2(int timeMs) {
+        StringBuilder formatBuilder = new StringBuilder();
+        Formatter formatter = new Formatter(formatBuilder, Locale.getDefault());
+
+        int totalSeconds = timeMs / 1000;
+        int seconds = totalSeconds % 60;
+        int minutes = (totalSeconds / 60) % 60;
+        int hours = totalSeconds / 3600;
+
+        formatBuilder.setLength(0);
+        return formatter.format("%02d:%02d:%02d", hours, minutes, seconds).toString().substring(3);
+    }
+
     /**
      * 把 00:00:00 格式转成时间戳
      * @param formatTime    00:00:00 时间格式

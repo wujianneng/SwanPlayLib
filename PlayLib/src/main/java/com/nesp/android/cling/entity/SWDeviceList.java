@@ -31,18 +31,10 @@ public class SWDeviceList {
 
     private static SWDeviceList INSTANCE = null;
 
-    /**
-     * 投屏设备列表 都是引用该 list
-     */
-    public List<SWDevice> mSWDeviceList;
-
     public static List<SWDevice> masterDevices = new ArrayList<>();//主设备集合
 
     public final static String REFRESH_LIST_UI_KEY = "refresh_list_ui_key";
 
-    private SWDeviceList() {
-        mSWDeviceList = new ArrayList<>();
-    }
 
     public static SWDeviceList getInstance() {
         if (Utils.isNull(INSTANCE)) {
@@ -51,21 +43,10 @@ public class SWDeviceList {
         return INSTANCE;
     }
 
-    public void removeDevice(SWDevice device) {
-        if (mSWDeviceList == null) {
-            mSWDeviceList = new ArrayList<>();
-        }
-        mSWDeviceList.remove(device);
-    }
 
     private SWPlayControl mSWPlayControl = new SWPlayControl();
 
     public void addDevice(SWDevice SWDevice) {
-        if (mSWDeviceList == null) {
-            mSWDeviceList = new ArrayList<>();
-        }
-        if (!contain(SWDevice.getDevice(), mSWDeviceList))
-            mSWDeviceList.add(SWDevice);
         if (!contain(SWDevice.getDevice(), masterDevices)) {
             SWDeviceUtils.getControlDeviceInfo(SWDevice.getDevice(), new ControlCallback() {
                 @Override
@@ -207,8 +188,8 @@ public class SWDeviceList {
 
     @Nullable
     public SWDevice getClingDevice(Device device) {
-        if (mSWDeviceList != null && mSWDeviceList.size() != 0) {
-            for (SWDevice SWDevice : mSWDeviceList) {
+        if (masterDevices != null && masterDevices.size() != 0) {
+            for (SWDevice SWDevice : masterDevices) {
                 Device deviceTemp = SWDevice.getDevice();
                 if (deviceTemp != null && deviceTemp.equals(device)) {
                     return SWDevice;
@@ -230,15 +211,12 @@ public class SWDeviceList {
 
     @Nullable
     public List<SWDevice> getClingDeviceList() {
-        return mSWDeviceList;
+        return masterDevices;
     }
 
-    public void setClingDeviceList(List<SWDevice> SWDeviceList) {
-        mSWDeviceList = SWDeviceList;
-    }
 
     public void destroy() {
-        mSWDeviceList = null;
+        masterDevices = null;
         INSTANCE = null;
     }
 }

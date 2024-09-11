@@ -30,20 +30,21 @@ public class AVTransportSubscriptionCallback  extends BaseSubscriptionCallback {
 
     @Override
     protected void eventReceived(GENASubscription subscription) { // 这里进行 事件接收处理
-        Log.i(TAG, "SubscriptionAVTransport:" + subscription.toString());
+        Log.e(TAG, "SubscriptionAVTransport:1" + subscription.toString());
         if (Utils.isNull(mContext))
             return;
 
         Map values = subscription.getCurrentValues();
+        Log.e(TAG, "SubscriptionAVTransport:2" + values.toString());
         if (values != null && values.containsKey("LastChange")) {
             String lastChangeValue = values.get("LastChange").toString();
-            Log.i(TAG, "LastChange:" + lastChangeValue);
-            doAVTransportChange(lastChangeValue);
+            Log.e(TAG, "SubscriptionAVTransport:3" + lastChangeValue);
+//            doAVTransportChange(lastChangeValue);
         }
     }
 
     private void doAVTransportChange(String lastChangeValue) {
-        Log.e(TAG, "playAudio doAVTransportChange: " + lastChangeValue);
+        Log.e(TAG, "SubscriptionAVTransport:4 " + lastChangeValue);
         try {
             LastChange lastChange = new LastChange(new AVTransportLastChangeParser(), lastChangeValue);
 

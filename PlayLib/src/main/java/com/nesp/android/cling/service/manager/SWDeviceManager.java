@@ -26,6 +26,7 @@ import com.nesp.android.cling.control.callback.ControlCallback;
 import com.nesp.android.cling.control.callback.ControlReceiveCallback;
 import com.nesp.android.cling.entity.ClingControlPoint;
 import com.nesp.android.cling.entity.ClingGetControlDeviceInfoResponse;
+import com.nesp.android.cling.entity.ClingMediaResponse;
 import com.nesp.android.cling.entity.ClingPositionResponse;
 import com.nesp.android.cling.entity.DeviceInfoBean;
 import com.nesp.android.cling.entity.IControlPoint;
@@ -56,12 +57,14 @@ import org.teleal.cling.model.types.ServiceType;
 import org.teleal.cling.model.types.UDADeviceType;
 import org.teleal.cling.model.types.UDAServiceType;
 import org.teleal.cling.registry.Registry;
+import org.teleal.cling.support.model.MediaInfo;
 import org.teleal.cling.support.model.PositionInfo;
 
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,7 +103,7 @@ public class SWDeviceManager implements ISWManager {
 
     //    private SystemService mSystemService;
     private Timer positionTimer, infoTimer;
-    private List<SWDevice> offLineDeviceList = new ArrayList<>();
+    public List<SWDevice> offLineDeviceList = new ArrayList<>();
     private boolean isPauseAllTask = false;
 
     public void pauseAllTask(boolean isPauseAllTask) {
@@ -116,16 +119,16 @@ public class SWDeviceManager implements ISWManager {
     private SWPlayControl mSWPlayControl = new SWPlayControl();
 
     public void getPositionInfo() {
-        Log.e("test", "getPositionInfodo");
+        Log.e("test", "getPositionInfodostart");
         SWDevice swDevice = getSelectedDevice();
-        mSWPlayControl.getPositionInfo(new ControlReceiveCallback() {
+        mSWPlayControl.getMediaInfo(new ControlReceiveCallback() {
             @Override
             public void receive(IResponse response) {
-                Log.e("test", "getPositionInfodoreceive");
-                ClingPositionResponse positionResponse = (ClingPositionResponse) response;
-                PositionInfo positionInfo = positionResponse.getResponse();
-                if (workInTimeTask != null)
-                    workInTimeTask.work(positionInfo, swDevice.getUuid());
+                ClingMediaResponse mediaResponse = (ClingMediaResponse) response;
+                MediaInfo mediaInfo = mediaResponse.getResponse();
+                Log.e("test", "getPositionInfodoreceive:" + mediaInfo.getNumberOfTracks());
+                if (mediaInfoTask != null && swDevice != null)
+                    mediaInfoTask.work(mediaInfo, swDevice.getUuid());
             }
 
             @Override
@@ -136,26 +139,32 @@ public class SWDeviceManager implements ISWManager {
             @Override
             public void fail(IResponse response) {
                 Log.e("test", "getPositionInfodofail");
-                if (workInTimeTask != null)
-                    workInTimeTask.work(null, swDevice.getUuid());
+                if (mediaInfoTask != null)
+                    mediaInfoTask.work(null, swDevice.getUuid());
             }
         });
     }
 
-    public interface WorkInTimeTask {
-        void work(PositionInfo positionInfo, String fromUuid);
+    public interface WorkPlayStatusTask {
+        void work(SWDevice selectedSWDevice);
     }
 
-    public interface WorkInInfoTask {
+    public interface WorkMediaInfoTask {
+        void work(MediaInfo positionInfo, String fromUuid);
+    }
+
+    public interface WorkDeviceInfoTask {
         void work();
     }
 
-    WorkInTimeTask workInTimeTask;
-    WorkInInfoTask workInInfoTask;
+    WorkPlayStatusTask playStatusTask;
+    WorkMediaInfoTask mediaInfoTask;
+    WorkDeviceInfoTask deviceInfoTask;
 
-    public void setGetInfoTask(WorkInTimeTask timeTask, WorkInInfoTask infoTask) {
-        this.workInTimeTask = timeTask;
-        this.workInInfoTask = infoTask;
+    public void setGetInfoTask(WorkPlayStatusTask playStatusTask, WorkMediaInfoTask mediaInfoTask, WorkDeviceInfoTask deviceInfoTask) {
+        this.playStatusTask = playStatusTask;
+        this.mediaInfoTask = mediaInfoTask;
+        this.deviceInfoTask = deviceInfoTask;
     }
 
     public void removeDuplicationDevices() {
@@ -181,6 +190,7 @@ public class SWDeviceManager implements ISWManager {
         EventBus.getDefault().post(SWDeviceList.REFRESH_LIST_UI_KEY);
     }
 
+    private volatile boolean isTaskRunning = false;
     public void stopTask() {
         Timer var1;
         if ((var1 = this.positionTimer) != null) {
@@ -200,6 +210,45 @@ public class SWDeviceManager implements ISWManager {
             @Override
             public void run() {
                 if (isPauseAllTask) return;
+                SWDevice swDevice = getSelectedDevice();
+                if (swDevice != null && swDevice.getIp() != null) {
+                    PlayStatusBean playStatusBean = swDevice.getPlayStatusBean();
+                    if(playStatusBean != null && playStatusBean.getStatus().equals("play")) {
+                        int lastpos = Integer.parseInt(playStatusBean.getCurpos());
+                        playStatusBean.setCurpos(String.valueOf(lastpos + 1000));
+                        swDevice.setPlayStatusBean(playStatusBean);
+                        if (playStatusTask != null) {
+                            playStatusTask.work(swDevice);
+                        }
+                    }
+                    if (isTaskRunning) {
+                        return;
+                    }
+                    isTaskRunning = true;
+                    SWDeviceUtils.getDevicePlayerStatus(swDevice.getIp(), new SWDeviceUtils.GetDevicePlayerStatusCallback() {
+                        @Override
+                        public void onResponse(PlayStatusBean playStatusBean) {
+                            SWDevice swDevice = getSelectedDevice();
+                            PlayStatusBean lastbean = swDevice.getPlayStatusBean();
+                            if(lastbean != null && playStatusBean != null) {
+                                int lastpos = Integer.parseInt(lastbean.getCurpos());
+                                int thispos = Integer.parseInt(playStatusBean.getCurpos());
+                                if (Math.abs(thispos - lastpos) < 5000) {
+                                    playStatusBean.setCurpos(lastbean.getCurpos());
+                                }
+                            }
+                            swDevice.setPlayStatusBean(playStatusBean);
+                            if (playStatusTask != null)
+                                playStatusTask.work(swDevice);
+                            isTaskRunning = false;
+                        }
+
+                        @Override
+                        public void onFailure(String msg) {
+                            isTaskRunning = false;
+                        }
+                    });
+                }
                 getPositionInfo();
             }
         };
@@ -222,25 +271,26 @@ public class SWDeviceManager implements ISWManager {
         removeDuplicationDevices();
         offLineDeviceList.clear();
         if (SWDeviceList.masterDevices.size() != 0)
-            for (SWDevice SWDevice : SWDeviceList.masterDevices) {
-                if (SWDevice == null) continue;
-                RemoteDevice device1 = (RemoteDevice) SWDevice.getDevice();
-                SWDeviceUtils.getDeviceInfo(device1.getIdentity().getDescriptorURL().getHost(), new SWDeviceUtils.GetDeviceInfoCallback() {
-                    @Override
-                    public void onResponse(DeviceInfoBean deviceInfoBean) {
-                        Log.e("test", "testOnlines:" + SWDevice.getDevice().getDetails().getFriendlyName());
-                    }
+            try {
+                for (SWDevice SWDevice : SWDeviceList.masterDevices) {
+                    if (SWDevice == null) continue;
+                    RemoteDevice device1 = (RemoteDevice) SWDevice.getDevice();
+                    SWDeviceUtils.getDeviceInfo(device1.getIdentity().getDescriptorURL().getHost(), new SWDeviceUtils.GetDeviceInfoCallback() {
+                        @Override
+                        public void onResponse(DeviceInfoBean deviceInfoBean) {
+                            Log.e("test", "testOnlines:" + SWDevice.getDevice().getDetails().getFriendlyName());
+                        }
 
-                    @Override
-                    public void onFailure(String msg) {
-                        Log.e("test", "testOnlinef:" + SWDevice.getDevice().getDetails().getFriendlyName() + " e:" + msg);
-                        offLineDeviceList.add(SWDevice);
-                    }
-                });
-            }
+                        @Override
+                        public void onFailure(String msg) {
+                            Log.e("test", "testOnlinef:" + SWDevice.getDevice().getDetails().getFriendlyName() + " e:" + msg);
+                            offLineDeviceList.add(SWDevice);
+                        }
+                    });
+                }
+            }catch (ConcurrentModificationException e){}
 
-        Log.e("test", "mSWDeviceList:" + SWDeviceList.getInstance().mSWDeviceList.size()
-                + " masterDevicessize:" + SWDeviceList.masterDevices.size() + " offLineDeviceList:" + offLineDeviceList.size());
+        Log.e("test", "mSWDeviceList:" + SWDeviceList.masterDevices.size() + " offLineDeviceList:" + offLineDeviceList.size());
 
 //                offLineDeviceList.clear();
 //                for(SWDevice swDevice : SWDeviceList.masterDevices){
@@ -288,8 +338,8 @@ public class SWDeviceManager implements ISWManager {
                         swDevice.setSwDeviceInfo(swDeviceInfo);
                         SWDeviceUtils.getDevicePlayerStatus(swDevice.getIp(), new SWDeviceUtils.GetDevicePlayerStatusCallback() {
                             @Override
-                            public void onResponse(PlayStatusBean deviceInfoBean) {
-                                swDevice.setPlayStatusBean(deviceInfoBean);
+                            public void onResponse(PlayStatusBean playStatusBean) {
+                                swDevice.setPlayStatusBean(playStatusBean);
                                 SWDeviceUtils.getDevicePositionInfo(swDevice.getDevice(), new ControlReceiveCallback() {
                                     @Override
                                     public void receive(IResponse response) {
@@ -307,24 +357,22 @@ public class SWDeviceManager implements ISWManager {
                                                 musicDataBean.setMediaType(lpMediaInfo.getMediaType());
                                                 if (swDevice.getMediaInfo() == null || !swDevice.getMediaInfo().getPlayUrl().equals(musicDataBean.getPlayUrl()))
                                                     swDevice.setMediaInfo(musicDataBean);
-                                                EventBus.getDefault().post(SWDeviceList.REFRESH_LIST_UI_KEY);
-                                                if (workInInfoTask != null) {
-                                                    workInInfoTask.work();
+                                                if (deviceInfoTask != null) {
+                                                    deviceInfoTask.work();
                                                     initSelectedDevice();
                                                 }
                                             } else {
                                                 swDevice.setMediaInfo(null);
-                                                EventBus.getDefault().post(SWDeviceList.REFRESH_LIST_UI_KEY);
-                                                if (workInInfoTask != null) {
-                                                    workInInfoTask.work();
+                                                if (deviceInfoTask != null) {
+                                                    deviceInfoTask.work();
                                                     initSelectedDevice();
                                                 }
                                             }
                                         } catch (Exception e) {
-                                            swDevice.setMediaInfo(null);
-                                            EventBus.getDefault().post(SWDeviceList.REFRESH_LIST_UI_KEY);
-                                            if (workInInfoTask != null) {
-                                                workInInfoTask.work();
+                                            if(swDevice != null)
+                                                swDevice.setMediaInfo(null);
+                                            if (deviceInfoTask != null) {
+                                                deviceInfoTask.work();
                                                 initSelectedDevice();
                                             }
                                         }
@@ -338,27 +386,19 @@ public class SWDeviceManager implements ISWManager {
                                     @Override
                                     public void fail(IResponse response) {
                                         swDevice.setMediaInfo(null);
-                                        EventBus.getDefault().post(SWDeviceList.REFRESH_LIST_UI_KEY);
-                                        if (workInInfoTask != null) {
-                                            workInInfoTask.work();
+                                        if (deviceInfoTask != null) {
+                                            deviceInfoTask.work();
                                             initSelectedDevice();
                                         }
                                     }
                                 });
-
                             }
 
                             @Override
                             public void onFailure(String msg) {
-                                swDevice.setMediaInfo(null);
-                                EventBus.getDefault().post(SWDeviceList.REFRESH_LIST_UI_KEY);
-                                if (workInInfoTask != null) {
-                                    workInInfoTask.work();
-                                    initSelectedDevice();
-                                }
+
                             }
                         });
-
                     }
 
                     @Override
@@ -366,7 +406,6 @@ public class SWDeviceManager implements ISWManager {
 
                     }
                 });
-
             }
         }
     }

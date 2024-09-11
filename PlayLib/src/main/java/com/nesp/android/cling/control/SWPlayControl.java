@@ -95,12 +95,16 @@ public class SWPlayControl implements IPlayControl {
                 createQueue(SWPlayControl.getMediaData(0, lpPlayItemList), new LPDevicePlayerListener() {
                     @Override
                     public void onSuccess(String var1) {
-
+                        if (Utils.isNotNull(callback)) {
+                            callback.success(response);
+                        }
                     }
 
                     @Override
                     public void onFailure(Exception var1) {
-
+                        if (Utils.isNotNull(callback)) {
+                            callback.fail(response);
+                        }
                     }
                 });
             }
@@ -128,12 +132,16 @@ public class SWPlayControl implements IPlayControl {
                 createQueue(SWPlayControl.getMediaData(0, playItemList), new LPDevicePlayerListener() {
                     @Override
                     public void onSuccess(String var1) {
-
+                        if (Utils.isNotNull(callback)) {
+                            callback.success(response);
+                        }
                     }
 
                     @Override
                     public void onFailure(Exception var1) {
-
+                        if (Utils.isNotNull(callback)) {
+                            callback.fail(response);
+                        }
                     }
                 });
             }
@@ -249,6 +257,7 @@ public class SWPlayControl implements IPlayControl {
         });
     }
 
+    int appendTracksInQueueIndex = 1;
     private void createQueue(String playData, LPDevicePlayerListener listener) {
 
         try {
@@ -297,10 +306,25 @@ public class SWPlayControl implements IPlayControl {
                     if (Utils.isNotNull(listener)) {
                         playQueueWithIndex(controlPointImpl, var4, avtService, listener);
                         if (var4.getAppendCount() >= 1 && var5.size() >= 1) {
-                            for(int i = 1 ; i < var5.size() ; i++){
-                                Log.e(TAG, "appendTracksInQueue:" + i + " value:" + var5.get(i));
-                                appendTracksInQueue(controlPointImpl, (String) var5.get(i), avtService, listener);
-                            }
+                            appendTracksInQueueIndex = 1;
+                            LPDevicePlayerListener lpDevicePlayerListener = new LPDevicePlayerListener() {
+                                @Override
+                                public void onSuccess(String var1) {
+                                    appendTracksInQueueIndex++;
+                                    if(appendTracksInQueueIndex < var5.size()){
+                                        appendTracksInQueue(controlPointImpl, (String) var5.get(appendTracksInQueueIndex), avtService, this);
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Exception var1) {
+                                    appendTracksInQueueIndex++;
+                                    if(appendTracksInQueueIndex < var5.size()){
+                                        appendTracksInQueue(controlPointImpl, (String) var5.get(appendTracksInQueueIndex), avtService, this);
+                                    }
+                                }
+                            };
+                            appendTracksInQueue(controlPointImpl, (String) var5.get(appendTracksInQueueIndex), avtService, lpDevicePlayerListener);
                         }
                     }
                 }
@@ -502,7 +526,7 @@ public class SWPlayControl implements IPlayControl {
             return;
         }
 
-        String time = Utils.getStringTime(currentProgressPercent);
+        String time = Utils.getStringTime2(currentProgressPercent);
         Log.e(TAG, "seek->pos: " + currentProgressPercent + ", time: " + time);
         controlPointImpl.execute(new Seek(avtService, time) {
 
@@ -1138,19 +1162,21 @@ public class SWPlayControl implements IPlayControl {
 
                         if (lpitemlist3.size() > 0) {
                             List<List<LPPlayItem>> listList = new ArrayList<>();
-                            List<LPPlayItem> tempList = new ArrayList<>();
                             for(int k = 0 ; k < lpitemlist3.size() ; k++){
                                 LPPlayItem lpPlayItem = lpitemlist3.get(k);
-                                if(tempList.size() < 50){
-                                    tempList.add(lpPlayItem);
-                                    if(k == lpitemlist3.size() - 1){
-                                        listList.add(tempList);
-                                        tempList.clear();
-                                    }
-                                }else if(tempList.size() == 50){
+                                if(listList.size() == 0){
+                                    List<LPPlayItem> tempList = new ArrayList<>();
                                     tempList.add(lpPlayItem);
                                     listList.add(tempList);
-                                    tempList.clear();
+                                }else {
+                                    List<LPPlayItem> tempList = listList.get(listList.size() - 1);
+                                    if(tempList.size() == 50){
+                                        List<LPPlayItem> newList = new ArrayList<>();
+                                        newList.add(lpPlayItem);
+                                        listList.add(newList);
+                                    }else {
+                                        tempList.add(lpPlayItem);
+                                    }
                                 }
                             }
                             for(List<LPPlayItem> list : listList){

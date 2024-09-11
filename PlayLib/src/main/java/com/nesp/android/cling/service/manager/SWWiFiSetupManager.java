@@ -20,15 +20,23 @@ import com.linkplay.wifisetup.LPApItem;
 import com.linkplay.wifisetup.LPApListListener;
 import com.nesp.android.cling.entity.SWDevice;
 import com.nesp.android.cling.entity.SWDeviceList;
+import com.nesp.android.cling.entity.SlaveBean;
+import com.nesp.android.cling.util.OkHttp3Util;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.EOFException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 public class SWWiFiSetupManager {
     private SWDevice curDevice;
@@ -73,28 +81,26 @@ public class SWWiFiSetupManager {
             }
 
         } else {
-            RequestItem var2 = (new Builder()).ip(this.curDevice.getSwDeviceInfo().getSWDeviceStatus().getApcli0()).build();
-            String var3 = HttpRequestUtils.getRequestPrefix(var2) + "wlanGetApListEx";
-            HttpRequestUtils var4 = HttpRequestUtils.getRequestUtils(var2);
-            var4.get(var3, new IOkHttpRequestCallback() {
-                public void onSuccess(OkHttpResponseItem responseItem) {
-                    if (responseItem == null) {
-                        this.onFailure(new Exception("err"));
+            OkHttp3Util.doGet("http://" + curDevice.getIp() + "/httpapi.asp?command=wlanGetApListEx", new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.e("SWWiFiSetupManager", "getApList:" + e.getLocalizedMessage());
+                    if (listener != null) {
+                        listener.LPApList((List)null);
+                    }
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    if (response == null) {
+                        this.onFailure(call,new EOFException());
                     } else {
-                        String var2 = new String(responseItem.bytes);
+                        String var2 = new String(response.body().bytes());
                         Log.e("SWWiFiSetupManager", "getApList onSuccess:" + var2);
                         List var3 = parseApItems(var2);
                         if (listener != null) {
                             listener.LPApList(var3);
                         }
-
-                    }
-                }
-
-                public void onFailure(Exception e) {
-                    Log.e("SWWiFiSetupManager", "getApList:" + e.getLocalizedMessage());
-                    if (listener != null) {
-                        listener.LPApList((List)null);
                     }
 
                 }
@@ -141,7 +147,6 @@ public class SWWiFiSetupManager {
     public void connectToWiFi(LPApItem apitem, String apitemPwd, final SWWiFiSetupListener listener) {
         if (this.curDevice != null) {
             targetApItem = apitem;
-            RequestItem var4 = (new Builder()).ip(this.curDevice.getSwDeviceInfo().getSWDeviceStatus().getApcli0()).build();
             String var5 = apitem.SSID;
             String var6 = "";
             String var7 = "";
@@ -161,30 +166,29 @@ public class SWWiFiSetupManager {
 
             String var11 = "wlanConnectApEx:";
             var11 = var11 + "ssid=" + var5 + ":ch=" + var9 + ":auth=" + var8 + ":encry=" + var7 + ":pwd=" + var6 + ":chext=" + var10;
-            String var12 = HttpRequestUtils.getRequestPrefix(var4) + var11;
-            HttpRequestUtils var13 = HttpRequestUtils.getRequestUtils(var4);
-            var13.get(var12, new IOkHttpRequestCallback() {
-                public void onSuccess(OkHttpResponseItem responseItem) {
-                    if (responseItem == null) {
-                        this.onFailure(new Exception("on response"));
-                    } else {
-                        LinkplayLog.i("SWWiFiSetupManager", "connectToWiFi onSuccess");
-                        if (searchTimer != null) {
-                            searchTimer.cancel();
-                           searchTimer = null;
-                        }
-
-                       searchTimer = new SearchTimer(curDevice, listener);
-                       searchTimer.search();
-                    }
-                }
-
-                public void onFailure(Exception e) {
+            OkHttp3Util.doGet("http://" + curDevice.getIp() + "/httpapi.asp?command=" + var11, new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
                     LinkplayLog.i("SWWiFiSetupManager", "connectToWiFi onFailure:" + e.getLocalizedMessage());
                     if (listener != null) {
                         listener.SWWiFiSetupFailed("1002");
                     }
+                }
 
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    if (response == null) {
+                        this.onFailure(call,new EOFException());
+                    } else {
+                        LinkplayLog.i("SWWiFiSetupManager", "connectToWiFi onSuccess");
+                        if (searchTimer != null) {
+                            searchTimer.cancel();
+                            searchTimer = null;
+                        }
+
+                        searchTimer = new SearchTimer(curDevice, listener);
+                        searchTimer.search();
+                    }
                 }
             });
         }
@@ -258,7 +262,7 @@ public class SWWiFiSetupManager {
                     }
                     if (var4 != null && var4.getSwDeviceInfo().getSWDeviceStatus() != null) {
                         Log.e("test","netstat:" + var4.getSwDeviceInfo().getSWDeviceStatus().getNetstat());
-                        if(var4.getSwDeviceInfo().getSWDeviceStatus().getNetstat().equals("2")) {
+                        if(var4.getSwDeviceInfo().getSWDeviceStatus().getNetstat().equals("1")) {
                             if (SearchTimer.this.listener != null) {
                                 SearchTimer.this.listener.SWWiFiSetupSuccess(var4);
                             }
