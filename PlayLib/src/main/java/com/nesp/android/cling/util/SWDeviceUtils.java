@@ -240,16 +240,26 @@ public class SWDeviceUtils {
                                             public void onResponse(List<SlaveBean.SlaveListDTO> slaveListDTOList) {
                                                 if (slaveListDTOList.size() != 0) {
                                                     int needcount = slaveList.size();
+                                                    Log.e("test", "addCount:start:" + needcount + "offsize:" + SWDeviceManager.getInstance().offLineDeviceList.size());
                                                     for (SelectSWDeviceBean device : slaveList) {
-                                                        Log.e("test", "addCount:devicessid:" + device.getSsid());
                                                         for (SlaveBean.SlaveListDTO slaveListDTO : slaveListDTOList) {
                                                             if (device.getSsid().equals(slaveListDTO.getSsid())) {
-                                                                SWDeviceManager.getInstance().offLineDeviceList.add(deviceForSsid(device.getSsid()));
+                                                                SWDevice offlineDevice = deviceForSsid(device.getSsid());
+                                                                if(offlineDevice != null) {
+                                                                    SWDeviceManager.getInstance().offLineDeviceList.add(offlineDevice);
+                                                                    Log.e("test", "addCount:offLineDeviceList.add:" +
+                                                                            "offsize:" + SWDeviceManager.getInstance().offLineDeviceList.size());
+                                                                }
                                                                 needcount--;
                                                             }
                                                         }
+                                                        Log.e("test", "addCount:devicessid:" + device.getSsid() + " count:" + needcount
+                                                                + "offsize:" + SWDeviceManager.getInstance().offLineDeviceList.size());
                                                     }
-                                                    if (needcount == 0 && masterDeviceListNotContainsActionList(slaveList)) {
+                                                    boolean NotContainsActionList = masterDeviceListNotContainsActionList(slaveList);
+                                                    Log.e("test", "addCount:NotContainsActionList:" + NotContainsActionList + " " +
+                                                            "size:" + SWDeviceManager.getInstance().getMasterDeviceList().size());
+                                                    if (needcount == 0 && NotContainsActionList) {
                                                         Log.e("test", "addCount:" + needcount);
                                                         callback.onResponse("success");
                                                         cancel();
@@ -284,8 +294,10 @@ public class SWDeviceUtils {
     }
 
     public static SWDevice deviceForSsid(String lpDevicessid) {
+        Log.e("test", "deviceForSsid:" + lpDevicessid);
         for (SWDevice lpDevice : SWDeviceList.masterDevices) {
-            if (lpDevice.getSwDeviceInfo().getSWDeviceStatus().getSsid().equals(lpDevicessid)) {
+            Log.e("test", "deviceForSsid:" + lpDevicessid + " itemssid:" + lpDevice.getSwDeviceInfo().getSWDeviceStatus().getSsid());
+            if (lpDevice.getSwDeviceInfo().getSWDeviceStatus().getSsid().trim().equals(lpDevicessid.trim())) {
                 return lpDevice;
             }
         }

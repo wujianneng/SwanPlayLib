@@ -231,44 +231,44 @@ public class SWDeviceManager implements ISWManager {
                         }
                     }
                     Log.e("test", "taskGetPositionInfoEx3:" + isPauseAllTask);
-                        Log.e("test", "taskGetPositionInfoEx4:" + isPauseAllTask);
-                        SWDeviceUtils.getDevicePlayerStatus(swDevice.getIp(), new SWDeviceUtils.GetDevicePlayerStatusCallback() {
-                            @Override
-                            public void onResponse(PlayStatusBean playStatusBean) {
-                                SWDevice swDevice = getSelectedDevice();
-                                PlayStatusBean lastbean = swDevice.getPlayStatusBean();
-                                if (lastbean != null && playStatusBean != null) {
-                                    if (!swDevice.getSwDeviceInfo().getSWDeviceStatus().getHardware().contains("SWAN")) {
-                                        int lastpos = lastbean.getCurpos() == null ? 0 : Integer.parseInt(lastbean.getCurpos());
-                                        int thispos = playStatusBean.getCurpos() == null ? 0 : Integer.parseInt(playStatusBean.getCurpos());
-                                        if (Math.abs(thispos - lastpos) < 5000) {
-                                            playStatusBean.setCurpos(lastbean.getCurpos());
-                                        }
-                                    } else {
-                                        int lastposex = lastbean.getCurpos() == null ? 0 : Integer.parseInt(lastbean.getCurpos());
-                                        int lasttolposex = playStatusBean.getTotlen() == null ? 0 : Integer.parseInt(playStatusBean.getTotlen());
-                                        playStatusBean.setCurpos(lastposex * 1000 + "");
-                                        playStatusBean.setTotlen(lasttolposex * 1000 + "");
-                                        Log.e("test", "lasttolposex3:" + lasttolposex
-                                                + " tol3:" + lasttolposex * 1000);
-                                        int lastpos = lastbean.getCurpos() == null ? 0 : Integer.parseInt(lastbean.getCurpos());
-                                        int thispos = playStatusBean.getCurpos() == null ? 0 : Integer.parseInt(playStatusBean.getCurpos());
-                                        if (Math.abs(thispos - lastpos) < 5000) {
-                                            playStatusBean.setCurpos(lastbean.getCurpos());
-                                        }
+                    Log.e("test", "taskGetPositionInfoEx4:" + isPauseAllTask);
+                    SWDeviceUtils.getDevicePlayerStatus(swDevice.getIp(), new SWDeviceUtils.GetDevicePlayerStatusCallback() {
+                        @Override
+                        public void onResponse(PlayStatusBean playStatusBean) {
+                            SWDevice swDevice = getSelectedDevice();
+                            PlayStatusBean lastbean = swDevice.getPlayStatusBean();
+                            if (lastbean != null && playStatusBean != null) {
+                                if (!swDevice.getSwDeviceInfo().getSWDeviceStatus().getHardware().contains("SWAN")) {
+                                    int lastpos = lastbean.getCurpos() == null ? 0 : Integer.parseInt(lastbean.getCurpos());
+                                    int thispos = playStatusBean.getCurpos() == null ? 0 : Integer.parseInt(playStatusBean.getCurpos());
+                                    if (Math.abs(thispos - lastpos) < 5000) {
+                                        playStatusBean.setCurpos(lastbean.getCurpos());
+                                    }
+                                } else {
+                                    int lastposex = lastbean.getCurpos() == null ? 0 : Integer.parseInt(lastbean.getCurpos());
+                                    int lasttolposex = playStatusBean.getTotlen() == null ? 0 : Integer.parseInt(playStatusBean.getTotlen());
+                                    playStatusBean.setCurpos(lastposex * 1000 + "");
+                                    playStatusBean.setTotlen(lasttolposex * 1000 + "");
+                                    Log.e("test", "lasttolposex3:" + lasttolposex
+                                            + " tol3:" + lasttolposex * 1000);
+                                    int lastpos = lastbean.getCurpos() == null ? 0 : Integer.parseInt(lastbean.getCurpos());
+                                    int thispos = playStatusBean.getCurpos() == null ? 0 : Integer.parseInt(playStatusBean.getCurpos());
+                                    if (Math.abs(thispos - lastpos) < 5000) {
+                                        playStatusBean.setCurpos(lastbean.getCurpos());
                                     }
                                 }
-                                swDevice.setPlayStatusBean(playStatusBean);
-                                Log.e("test", "curpos2:" + swDevice.getPlayStatusBean().getCurpos()
-                                        + " tol2:" + swDevice.getPlayStatusBean().getTotlen());
-                                if (playStatusTask != null)
-                                    playStatusTask.work(swDevice);
                             }
+                            swDevice.setPlayStatusBean(playStatusBean);
+                            Log.e("test", "curpos2:" + swDevice.getPlayStatusBean().getCurpos()
+                                    + " tol2:" + swDevice.getPlayStatusBean().getTotlen());
+                            if (playStatusTask != null)
+                                playStatusTask.work(swDevice);
+                        }
 
-                            @Override
-                            public void onFailure(String msg) {
-                            }
-                        });
+                        @Override
+                        public void onFailure(String msg) {
+                        }
+                    });
                 }
                 Log.e("test", "taskGetPositionInfoEx5:" + isPauseAllTask);
                 getPositionInfo();
@@ -300,12 +300,16 @@ public class SWDeviceManager implements ISWManager {
                         @Override
                         public void onResponse(DeviceInfoBean deviceInfoBean) {
                             Log.e("test", "testOnlines:" + SWDevice.getDevice().getDetails().getFriendlyName());
+                            SWDevice.setOnLineTestFailTimes(0);
                         }
 
                         @Override
                         public void onFailure(String msg) {
-                            Log.e("test", "testOnlinef:" + SWDevice.getDevice().getDetails().getFriendlyName() + " e:" + msg);
-                            offLineDeviceList.add(SWDevice);
+                            Log.e("test", "testOnlinef:" + SWDevice.getSwDeviceInfo().getSWDeviceStatus().getDeviceName() + " e:" + msg);
+                            int OnLineTestFailTimes = SWDevice.getOnLineTestFailTimes() + 1;
+                            SWDevice.setOnLineTestFailTimes(OnLineTestFailTimes);
+                            if (OnLineTestFailTimes >= 2)
+                                offLineDeviceList.add(SWDevice);
                         }
                     });
                 }

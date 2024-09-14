@@ -17,6 +17,8 @@ public class SWDevice implements IDevice<Device> {
     /** 是否已选中 */
     private boolean isSelected;
 
+    private int onLineTestFailTimes = 0;
+
     /** 播放状态类 */
     PlayStatusBean playStatusBean;
     /** 媒体信息类 */
@@ -37,6 +39,14 @@ public class SWDevice implements IDevice<Device> {
 
     public void setPlayStatusBean(PlayStatusBean playStatusBean) {
         this.playStatusBean = playStatusBean;
+    }
+
+    public int getOnLineTestFailTimes() {
+        return onLineTestFailTimes;
+    }
+
+    public void setOnLineTestFailTimes(int onLineTestFailTimes) {
+        this.onLineTestFailTimes = onLineTestFailTimes;
     }
 
     public String getIp() {
