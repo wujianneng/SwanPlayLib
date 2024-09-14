@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.nesp.android.cling.control.SWPlayControl;
 import com.nesp.android.cling.control.callback.ControlCallback;
 import com.nesp.android.cling.control.callback.ControlReceiveCallback;
+import com.nesp.android.cling.service.manager.SWDeviceManager;
 import com.nesp.android.cling.util.SWDeviceUtils;
 import com.nesp.android.cling.util.Utils;
 
@@ -100,8 +101,10 @@ public class SWDeviceList {
                             } else {
                                 SWDevice.setMediaInfo(null);
                             }
-                            masterDevices.add(SWDevice);
-                            EventBus.getDefault().post(REFRESH_LIST_UI_KEY);
+                            if(!contain(SWDevice.getDevice(), masterDevices)) {
+                                masterDevices.add(SWDevice);
+                                SWDeviceManager.getInstance().removeDuplicationDevices();
+                            }
                         }
 
                         @Override
@@ -191,7 +194,7 @@ public class SWDeviceList {
         if (masterDevices != null && masterDevices.size() != 0) {
             for (SWDevice SWDevice : masterDevices) {
                 Device deviceTemp = SWDevice.getDevice();
-                if (deviceTemp != null && deviceTemp.equals(device)) {
+                if (deviceTemp != null && SWDevice.getUuid().equals(device.getIdentity().getUdn().getIdentifierString())) {
                     return SWDevice;
                 }
             }
@@ -202,7 +205,7 @@ public class SWDeviceList {
     public static boolean contain(Device device, List<SWDevice> list) {
         for (SWDevice SWDevice : list) {
             Device deviceTemp = SWDevice.getDevice();
-            if (deviceTemp != null && deviceTemp.equals(device)) {
+            if (deviceTemp != null && SWDevice.getUuid().equals(device.getIdentity().getUdn().getIdentifierString())) {
                 return true;
             }
         }

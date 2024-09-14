@@ -3,6 +3,7 @@ package com.nesp.android.cling.service.manager;
 
 import android.content.Context;
 import android.util.Log;
+
 import com.nesp.android.cling.Config;
 import com.nesp.android.cling.control.SubscriptionControl;
 import com.nesp.android.cling.entity.SWDevice;
@@ -10,7 +11,6 @@ import com.nesp.android.cling.entity.IDevice;
 import com.nesp.android.cling.util.Utils;
 
 import java.util.Collection;
-
 
 
 public class DeviceManager implements IDeviceManager {
@@ -42,13 +42,14 @@ public class DeviceManager implements IDeviceManager {
 
         // 重置选中状态
         Collection<SWDevice> SWDeviceList = com.nesp.android.cling.entity.SWDeviceList.getInstance().getClingDeviceList();
-        if (Utils.isNotNull(SWDeviceList)){
-            for (SWDevice device : SWDeviceList){
+        if (Utils.isNotNull(SWDeviceList)) {
+            for (SWDevice device : SWDeviceList) {
                 device.setSelected(false);
             }
         }
         // 设置选中状态
-        mSelectedDevice.setSelected(true);
+        if (mSelectedDevice != null)
+            mSelectedDevice.setSelected(true);
         // 清空状态
         Config.getInstance().setHasRelTimePosCallback(false);
     }
@@ -131,7 +132,7 @@ public class DeviceManager implements IDeviceManager {
 
     @Override
     public void destroy() {
-        if (Utils.isNotNull(mSubscriptionControl)){
+        if (Utils.isNotNull(mSubscriptionControl)) {
             mSubscriptionControl.destroy();
         }
     }

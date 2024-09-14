@@ -252,6 +252,7 @@ public class SWDeviceUtils {
                                                     if (needcount == 0 && masterDeviceListNotContainsActionList(slaveList)) {
                                                         Log.e("test", "addCount:" + needcount);
                                                         callback.onResponse("success");
+                                                        cancel();
                                                     }
                                                 }
                                             }
@@ -291,7 +292,7 @@ public class SWDeviceUtils {
         return null;
     }
 
-    private static boolean masterDeviceListNotContainsActionList(List<SelectSWDeviceBean> slaveList) {
+    public static boolean masterDeviceListNotContainsActionList(List<SelectSWDeviceBean> slaveList) {
         boolean result = true;
         for(SWDevice swDevice : SWDeviceManager.getInstance().getMasterDeviceList()){
             for(SelectSWDeviceBean selectSWDeviceBean : slaveList){
@@ -316,6 +317,7 @@ public class SWDeviceUtils {
                             public void onTick(long millisUntilFinished) {
                                 if (masterDeviceListContainsAllActionList(swDeviceList)) {
                                     callback.onResponse("success");
+                                    cancel();
                                 }
                             }
 
@@ -483,8 +485,8 @@ public class SWDeviceUtils {
             public void onResponse(Call call, Response response) throws IOException {
                 try {
                     String result = response.body().string();
-                    DeviceInfoBean deviceInfoBean = new Gson().fromJson(result, DeviceInfoBean.class);
                     Log.e("test", "NsdManagerongetDeviceInfo:" + result);
+                    DeviceInfoBean deviceInfoBean = new Gson().fromJson(result, DeviceInfoBean.class);
                     callback.onResponse(deviceInfoBean);
                 } catch (Exception e) {
                     callback.onFailure(e.getMessage());

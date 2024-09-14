@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -75,6 +76,8 @@ import io.reactivex.internal.operators.single.SingleTimer;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * 说明：所有对服务的操作都通过该类代理执行
@@ -167,9 +170,10 @@ public class SWDeviceManager implements ISWManager {
         this.deviceInfoTask = deviceInfoTask;
     }
 
-    public void removeDuplicationDevices() {
+    public static void removeDuplicationDevices() {
         Map<String, Integer> mutrimap = new HashMap<>();
         for (SWDevice swDevice : SWDeviceList.masterDevices) {
+            if (swDevice == null) continue;
             if (mutrimap.containsKey(swDevice.getUuid())) {
                 mutrimap.put(swDevice.getUuid(), 1 + mutrimap.get(swDevice.getUuid()));
             } else {
@@ -178,7 +182,7 @@ public class SWDeviceManager implements ISWManager {
         }
         List<SWDevice> mutriDevices = new ArrayList<>();
         for (SWDevice swDevice : SWDeviceList.masterDevices) {
-            if (mutrimap.containsKey(swDevice.getUuid())) {
+            if (swDevice != null && mutrimap.containsKey(swDevice.getUuid())) {
                 int count = mutrimap.get(swDevice.getUuid());
                 if (count > 1) {
                     mutriDevices.add(swDevice);
@@ -190,7 +194,7 @@ public class SWDeviceManager implements ISWManager {
         EventBus.getDefault().post(SWDeviceList.REFRESH_LIST_UI_KEY);
     }
 
-    private volatile boolean isTaskRunning = false;
+
     public void stopTask() {
         Timer var1;
         if ((var1 = this.positionTimer) != null) {
@@ -209,46 +213,64 @@ public class SWDeviceManager implements ISWManager {
         taskGetPositionInfoEx = new TimerTask() {
             @Override
             public void run() {
+                Log.e("test", "taskGetPositionInfoEx:" + isPauseAllTask);
                 if (isPauseAllTask) return;
                 SWDevice swDevice = getSelectedDevice();
+                Log.e("test", "taskGetPositionInfoEx1:" + isPauseAllTask);
                 if (swDevice != null && swDevice.getIp() != null) {
+                    Log.e("test", "taskGetPositionInfoEx2:" + isPauseAllTask);
                     PlayStatusBean playStatusBean = swDevice.getPlayStatusBean();
-                    if(playStatusBean != null && playStatusBean.getStatus().equals("play")) {
-                        int lastpos = Integer.parseInt(playStatusBean.getCurpos());
-                        playStatusBean.setCurpos(String.valueOf(lastpos + 1000));
+                    if (playStatusBean != null && playStatusBean.getStatus().equals("play")) {
+                        int lastpos = playStatusBean.getCurpos() == null ? 0 : Integer.parseInt(playStatusBean.getCurpos());
+                        int tolpos = playStatusBean.getTotlen() == null ? 0 : Integer.parseInt(playStatusBean.getTotlen());
+                        if (lastpos < tolpos)
+                            playStatusBean.setCurpos(String.valueOf(lastpos + 1000));
                         swDevice.setPlayStatusBean(playStatusBean);
                         if (playStatusTask != null) {
                             playStatusTask.work(swDevice);
                         }
                     }
-                    if (isTaskRunning) {
-                        return;
-                    }
-                    isTaskRunning = true;
-                    SWDeviceUtils.getDevicePlayerStatus(swDevice.getIp(), new SWDeviceUtils.GetDevicePlayerStatusCallback() {
-                        @Override
-                        public void onResponse(PlayStatusBean playStatusBean) {
-                            SWDevice swDevice = getSelectedDevice();
-                            PlayStatusBean lastbean = swDevice.getPlayStatusBean();
-                            if(lastbean != null && playStatusBean != null) {
-                                int lastpos = Integer.parseInt(lastbean.getCurpos());
-                                int thispos = Integer.parseInt(playStatusBean.getCurpos());
-                                if (Math.abs(thispos - lastpos) < 5000) {
-                                    playStatusBean.setCurpos(lastbean.getCurpos());
+                    Log.e("test", "taskGetPositionInfoEx3:" + isPauseAllTask);
+                        Log.e("test", "taskGetPositionInfoEx4:" + isPauseAllTask);
+                        SWDeviceUtils.getDevicePlayerStatus(swDevice.getIp(), new SWDeviceUtils.GetDevicePlayerStatusCallback() {
+                            @Override
+                            public void onResponse(PlayStatusBean playStatusBean) {
+                                SWDevice swDevice = getSelectedDevice();
+                                PlayStatusBean lastbean = swDevice.getPlayStatusBean();
+                                if (lastbean != null && playStatusBean != null) {
+                                    if (!swDevice.getSwDeviceInfo().getSWDeviceStatus().getHardware().contains("SWAN")) {
+                                        int lastpos = lastbean.getCurpos() == null ? 0 : Integer.parseInt(lastbean.getCurpos());
+                                        int thispos = playStatusBean.getCurpos() == null ? 0 : Integer.parseInt(playStatusBean.getCurpos());
+                                        if (Math.abs(thispos - lastpos) < 5000) {
+                                            playStatusBean.setCurpos(lastbean.getCurpos());
+                                        }
+                                    } else {
+                                        int lastposex = lastbean.getCurpos() == null ? 0 : Integer.parseInt(lastbean.getCurpos());
+                                        int lasttolposex = playStatusBean.getTotlen() == null ? 0 : Integer.parseInt(playStatusBean.getTotlen());
+                                        playStatusBean.setCurpos(lastposex * 1000 + "");
+                                        playStatusBean.setTotlen(lasttolposex * 1000 + "");
+                                        Log.e("test", "lasttolposex3:" + lasttolposex
+                                                + " tol3:" + lasttolposex * 1000);
+                                        int lastpos = lastbean.getCurpos() == null ? 0 : Integer.parseInt(lastbean.getCurpos());
+                                        int thispos = playStatusBean.getCurpos() == null ? 0 : Integer.parseInt(playStatusBean.getCurpos());
+                                        if (Math.abs(thispos - lastpos) < 5000) {
+                                            playStatusBean.setCurpos(lastbean.getCurpos());
+                                        }
+                                    }
                                 }
+                                swDevice.setPlayStatusBean(playStatusBean);
+                                Log.e("test", "curpos2:" + swDevice.getPlayStatusBean().getCurpos()
+                                        + " tol2:" + swDevice.getPlayStatusBean().getTotlen());
+                                if (playStatusTask != null)
+                                    playStatusTask.work(swDevice);
                             }
-                            swDevice.setPlayStatusBean(playStatusBean);
-                            if (playStatusTask != null)
-                                playStatusTask.work(swDevice);
-                            isTaskRunning = false;
-                        }
 
-                        @Override
-                        public void onFailure(String msg) {
-                            isTaskRunning = false;
-                        }
-                    });
+                            @Override
+                            public void onFailure(String msg) {
+                            }
+                        });
                 }
+                Log.e("test", "taskGetPositionInfoEx5:" + isPauseAllTask);
                 getPositionInfo();
             }
         };
@@ -267,7 +289,6 @@ public class SWDeviceManager implements ISWManager {
     public void runOhterInfoExTask() {
         if (isPauseAllTask) return;
         SWDeviceList.masterDevices.removeAll(offLineDeviceList);
-        EventBus.getDefault().post(SWDeviceList.REFRESH_LIST_UI_KEY);
         removeDuplicationDevices();
         offLineDeviceList.clear();
         if (SWDeviceList.masterDevices.size() != 0)
@@ -288,9 +309,10 @@ public class SWDeviceManager implements ISWManager {
                         }
                     });
                 }
-            }catch (ConcurrentModificationException e){}
+            } catch (ConcurrentModificationException e) {
+            }
 
-        Log.e("test", "mSWDeviceList:" + SWDeviceList.masterDevices.size() + " offLineDeviceList:" + offLineDeviceList.size());
+        Log.e("test", "mSWDeviceList:" + SWDeviceList.masterDevices.size() + " offLineDeviceList:" + offLineDeviceList.size() + " getSelectedDevice:" + (getSelectedDevice() == null));
 
 //                offLineDeviceList.clear();
 //                for(SWDevice swDevice : SWDeviceList.masterDevices){
@@ -309,6 +331,9 @@ public class SWDeviceManager implements ISWManager {
 //                SWDeviceList.getInstance().mSWDeviceList.clear();
 
         refreshDevicesList();
+        if (deviceInfoTask != null) {
+            deviceInfoTask.work();
+        }
         if (SWDeviceList.getInstance().masterDevices != null && SWDeviceList.getInstance().masterDevices.size() != 0) {
             for (SWDevice swDevice : SWDeviceList.getInstance().masterDevices) {
                 if (swDevice == null) continue;
@@ -339,6 +364,12 @@ public class SWDeviceManager implements ISWManager {
                         SWDeviceUtils.getDevicePlayerStatus(swDevice.getIp(), new SWDeviceUtils.GetDevicePlayerStatusCallback() {
                             @Override
                             public void onResponse(PlayStatusBean playStatusBean) {
+                                if (swDevice.getSwDeviceInfo().getSWDeviceStatus().getHardware().contains("SWAN")) {
+                                    int lastposex = playStatusBean.getCurpos() == null ? 0 : Integer.parseInt(playStatusBean.getCurpos());
+                                    int lasttolposex = playStatusBean.getTotlen() == null ? 0 : Integer.parseInt(playStatusBean.getTotlen());
+                                    playStatusBean.setCurpos(lastposex * 1000 + "");
+                                    playStatusBean.setTotlen(lasttolposex * 1000 + "");
+                                }
                                 swDevice.setPlayStatusBean(playStatusBean);
                                 SWDeviceUtils.getDevicePositionInfo(swDevice.getDevice(), new ControlReceiveCallback() {
                                     @Override
@@ -355,25 +386,26 @@ public class SWDeviceManager implements ISWManager {
                                                 musicDataBean.setAlbum(lpMediaInfo.getAlbum());
                                                 musicDataBean.setCreator(lpMediaInfo.getCreator());
                                                 musicDataBean.setMediaType(lpMediaInfo.getMediaType());
-                                                if (swDevice.getMediaInfo() == null || !swDevice.getMediaInfo().getPlayUrl().equals(musicDataBean.getPlayUrl()))
+                                                if (swDevice != null && (swDevice.getMediaInfo() == null || !swDevice.getMediaInfo().getPlayUrl().equals(musicDataBean.getPlayUrl())))
                                                     swDevice.setMediaInfo(musicDataBean);
-                                                if (deviceInfoTask != null) {
+                                                if (deviceInfoTask != null && (swDevice == null || getSelectedDevice() == null
+                                                        || swDevice.getUuid().equals(getSelectedDevice().getUuid()))) {
                                                     deviceInfoTask.work();
-                                                    initSelectedDevice();
                                                 }
                                             } else {
-                                                swDevice.setMediaInfo(null);
-                                                if (deviceInfoTask != null) {
+                                                if (swDevice != null)
+                                                    swDevice.setMediaInfo(null);
+                                                if (deviceInfoTask != null && (swDevice == null || getSelectedDevice() == null
+                                                        || swDevice.getUuid().equals(getSelectedDevice().getUuid()))) {
                                                     deviceInfoTask.work();
-                                                    initSelectedDevice();
                                                 }
                                             }
                                         } catch (Exception e) {
-                                            if(swDevice != null)
+                                            if (swDevice != null)
                                                 swDevice.setMediaInfo(null);
-                                            if (deviceInfoTask != null) {
+                                            if (deviceInfoTask != null && (swDevice == null || getSelectedDevice() == null
+                                                    || swDevice.getUuid().equals(getSelectedDevice().getUuid()))) {
                                                 deviceInfoTask.work();
-                                                initSelectedDevice();
                                             }
                                         }
                                     }
@@ -385,10 +417,11 @@ public class SWDeviceManager implements ISWManager {
 
                                     @Override
                                     public void fail(IResponse response) {
-                                        swDevice.setMediaInfo(null);
-                                        if (deviceInfoTask != null) {
+                                        if (swDevice != null)
+                                            swDevice.setMediaInfo(null);
+                                        if (deviceInfoTask != null && (swDevice == null || getSelectedDevice() == null
+                                                || swDevice.getUuid().equals(getSelectedDevice().getUuid()))) {
                                             deviceInfoTask.work();
-                                            initSelectedDevice();
                                         }
                                     }
                                 });
@@ -420,7 +453,7 @@ public class SWDeviceManager implements ISWManager {
         }
     }
 
-    public boolean isContainsUuidDevice(String uuid, List<SWDevice> datalist) {
+    public static boolean isContainsUuidDevice(String uuid, List<SWDevice> datalist) {
         for (SWDevice swDevice : datalist) {
             if (uuid.equals(swDevice.getUuid())) {
                 return true;
