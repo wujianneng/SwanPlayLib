@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:2:1-30:12
-INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:2:1-30:12
-INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:2:1-30:12
-INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:2:1-30:12
+ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:2:1-31:12
+INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:2:1-31:12
+INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:2:1-31:12
+INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:2:1-31:12
 MERGED from [:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-37:12
 MERGED from [com.google.android.material:material:1.4.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/35c7fe1e6815342f8dd8d3907b8fdbd1/material-1.4.0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /Users/wutom/.gradle/caches/transforms-2/files-2.1/a2a6278ff26956f0ca554dcdae78f874/constraintlayout-2.0.1/AndroidManifest.xml:2:1-11:12
@@ -50,25 +50,25 @@ MERGED from [com.linkplay.musickit:LPMusicKit:1.2.6] /Users/wutom/.gradle/caches
 MERGED from [com.linkplay.mdnskit:LPMDNSKit:1.0.2] /Users/wutom/.gradle/caches/transforms-2/files-2.1/b7f8d21f7328df579f096c8be2208d06/jetified-LPMDNSKit-1.0.2/AndroidManifest.xml:2:1-12:12
 MERGED from [org.greenrobot:eventbus:3.3.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/9437d516aad5dfa8f33bfbb8573d9908/jetified-eventbus-3.3.0/AndroidManifest.xml:2:1-9:12
 MERGED from [androidx.annotation:annotation-experimental:1.0.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/b7f83ce2523ef517fca884d1605bb930/jetified-annotation-experimental-1.0.0/AndroidManifest.xml:17:1-24:12
-INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:2:1-30:12
-INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:2:1-30:12
-INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:2:1-30:12
+INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:2:1-31:12
+INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:2:1-31:12
+INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:2:1-31:12
 	package
 		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:3:5-40
 		INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml
 		INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml
 	android:versionName
 		INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml
-		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:2:1-30:12
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:2:1-31:12
 		INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml
 	android:versionCode
 		INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml
-		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:2:1-30:12
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:2:1-31:12
 		INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml
 	xmlns:android
 		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:2:11-69
 application
-ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:5:5-28:19
+ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:5:5-29:19
 MERGED from [:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:17:5-35:19
 MERGED from [:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:17:5-35:19
 MERGED from [com.google.android.material:material:1.4.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/35c7fe1e6815342f8dd8d3907b8fdbd1/material-1.4.0/AndroidManifest.xml:22:5-20
@@ -86,13 +86,15 @@ MERGED from [com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms
 MERGED from [com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:13:5-30:19
 MERGED from [com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:13:5-30:19
 	android:requestLegacyExternalStorage
-		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:9:9-52
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:10:9-52
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.5.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/be9131e5c57cd9a659fa3dce89e9e6bd/core-1.5.0/AndroidManifest.xml:24:18-86
 	android:supportsRtl
-		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:11:9-35
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:12:9-35
+	android:label
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:9:9-45
 	android:roundIcon
-		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:10:9-48
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:11:9-48
 	android:largeHeap
 		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:8:9-33
 	android:icon
@@ -100,31 +102,31 @@ MERGED from [com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/t
 	android:allowBackup
 		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:6:9-35
 	android:usesCleartextTraffic
-		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:12:9-44
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:13:9-44
 activity#com.MainActivity
-ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:14:9-23:20
+ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:15:9-24:20
 	android:exported
-		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:15:13-36
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:16:13-36
 	android:theme
-		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:16:13-57
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:17:13-57
 	android:name
-		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:14:19-50
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:15:19-50
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:18:13-22:29
+ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:19:13-23:29
 action#android.intent.action.MAIN
-ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:19:17-69
+ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:20:17-69
 	android:name
-		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:19:25-66
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:20:25-66
 category#android.intent.category.LAUNCHER
-ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:21:17-77
+ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:22:17-77
 	android:name
-		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:21:27-74
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:22:27-74
 service#org.teleal.cling.android.AndroidUpnpServiceImpl
-ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:25:9-27:39
+ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:26:9-28:39
 	android:exported
-		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:27:13-36
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:28:13-36
 	android:name
-		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:26:13-75
+		ADDED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:27:13-75
 uses-sdk
 INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml

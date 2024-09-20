@@ -17,6 +17,7 @@ public class SWDevice implements IDevice<Device> {
     /** 是否已选中 */
     private boolean isSelected;
 
+    /** 在线测试失败次数，超过2次就当下线处理 **/
     private int onLineTestFailTimes = 0;
 
     /** 播放状态类 */

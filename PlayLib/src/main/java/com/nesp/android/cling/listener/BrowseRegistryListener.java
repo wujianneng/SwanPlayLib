@@ -3,8 +3,9 @@ package com.nesp.android.cling.listener;
 import android.util.Log;
 
 import com.nesp.android.cling.entity.SWDevice;
-import com.nesp.android.cling.entity.SWDeviceList;
+
 import com.nesp.android.cling.service.manager.SWDeviceManager;
+import com.nesp.android.cling.util.LogUtils;
 import com.nesp.android.cling.util.Utils;
 
 import org.teleal.cling.model.meta.Device;
@@ -32,7 +33,7 @@ public class BrowseRegistryListener extends DefaultRegistryListener {
 
     @Override
     public void remoteDeviceDiscoveryFailed(Registry registry, final RemoteDevice device, final Exception ex) {
-        Log.e(TAG, "remoteDeviceDiscoveryFailed device: " + device.getDisplayString());
+        LogUtils.e(TAG, "remoteDeviceDiscoveryFailed device: " + device.getDisplayString());
         deviceRemoved(device);
     }
     /* End of optimization, you can remove the whole block if your Android handset is fast (>= 600 Mhz) */
@@ -40,7 +41,7 @@ public class BrowseRegistryListener extends DefaultRegistryListener {
     @Override
     public void remoteDeviceAdded(Registry registry, RemoteDevice device) {
         super.remoteDeviceAdded(registry, device);
-        Log.e(TAG, "deviceAdded:" + device.getDetails().getFriendlyName() + " ip：" + device.getIdentity().getDescriptorURL().getHost());
+        LogUtils.e(TAG, "deviceAdded:" + device.getDetails().getFriendlyName() + " ip：" + device.getIdentity().getDescriptorURL().getHost());
         deviceAdded(device);
     }
 
@@ -53,7 +54,7 @@ public class BrowseRegistryListener extends DefaultRegistryListener {
     @Override
     public void localDeviceAdded(Registry registry, LocalDevice device) {
         super.localDeviceAdded(registry, device);
-        Log.e(TAG, "deviceAdded:2" + device.getDetails().getFriendlyName());
+        LogUtils.e(TAG, "deviceAdded:2" + device.getDetails().getFriendlyName());
 //                deviceAdded(device); // 本地设备 已加入
     }
 
@@ -65,29 +66,29 @@ public class BrowseRegistryListener extends DefaultRegistryListener {
 
 
     private void deviceAdded(RemoteDevice device) {
-        Log.e(TAG, "deviceAdded:" + device.getDetails().getFriendlyName() + " 嵌入设备数量：" + device.findEmbeddedDevices().length);
+        LogUtils.e(TAG, "deviceAdded:" + device.getDetails().getFriendlyName() + " 嵌入设备数量：" + device.findEmbeddedDevices().length);
         if (!device.getType().equals(SWDeviceManager.DMR_DEVICE_TYPE)) {
-            Log.e(TAG, "deviceAdded called, but not match");
+            LogUtils.e(TAG, "deviceAdded called, but not match");
             return;
         }
 
 
         SWDevice SWDevice = new SWDevice(device);
-        SWDeviceList.getInstance().addDevice(SWDevice);
+        SWDeviceManager.getInstance().addDevice(SWDevice);
         if (Utils.isNotNull(mOnDeviceListChangedListener)) {
             mOnDeviceListChangedListener.onDeviceAdded(SWDevice);
         }
     }
 
     public void deviceRemoved(Device device) {
-
-        SWDevice SWDevice = SWDeviceList.getInstance().getClingDevice(device);
+        LogUtils.e(TAG, "deviceRemoved: " + device.getDetails().getFriendlyName());
+        SWDevice SWDevice = SWDeviceManager.getInstance().getClingDevice(device);
         if (SWDevice != null) {
 //                SWDeviceList.getInstance().removeDevice(SWDevice);
             if (Utils.isNotNull(mOnDeviceListChangedListener)) {
                 mOnDeviceListChangedListener.onDeviceRemoved(SWDevice);
             }
-            Log.e(TAG, "deviceRemoved: " + device.getDetails().getFriendlyName() + (SWDevice == null));
+            LogUtils.e(TAG, "deviceRemoved: " + device.getDetails().getFriendlyName() + (SWDevice == null));
         }
 
     }

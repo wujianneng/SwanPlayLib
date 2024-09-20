@@ -2,6 +2,9 @@ package com.nesp.android.cling.service.callback;
 
 import android.content.Context;
 import android.util.Log;
+
+import com.nesp.android.cling.util.LogUtils;
+
 import org.teleal.cling.controlpoint.SubscriptionCallback;
 import org.teleal.cling.model.gena.CancelReason;
 import org.teleal.cling.model.gena.GENASubscription;
@@ -27,7 +30,7 @@ public abstract class BaseSubscriptionCallback extends SubscriptionCallback {
 
     @Override
     protected void failed(GENASubscription subscription, UpnpResponse responseStatus, Exception exception, String defaultMsg) {
-        Log.e(TAG, "AVTransportSubscriptionCallback failed.");
+        LogUtils.e(TAG, "AVTransportSubscriptionCallback failed.");
     }
 
     @Override
@@ -41,6 +44,6 @@ public abstract class BaseSubscriptionCallback extends SubscriptionCallback {
     @Override
     protected void ended(GENASubscription subscription, CancelReason reason, UpnpResponse responseStatus) {
         mContext = null;
-        Log.e(TAG, "ended");
+        LogUtils.e(TAG, "ended");
     }
 }

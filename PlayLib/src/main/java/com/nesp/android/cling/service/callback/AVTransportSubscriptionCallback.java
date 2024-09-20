@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.util.Log;
 import com.nesp.android.cling.Config;
 import com.nesp.android.cling.Intents;
+import com.nesp.android.cling.util.LogUtils;
 import com.nesp.android.cling.util.Utils;
 import org.teleal.cling.model.gena.GENASubscription;
 import org.teleal.cling.support.avtransport.lastchange.AVTransportLastChangeParser;
@@ -30,21 +31,21 @@ public class AVTransportSubscriptionCallback  extends BaseSubscriptionCallback {
 
     @Override
     protected void eventReceived(GENASubscription subscription) { // 这里进行 事件接收处理
-        Log.e(TAG, "SubscriptionAVTransport:1" + subscription.toString());
+        LogUtils.e(TAG, "SubscriptionAVTransport:1" + subscription.toString());
         if (Utils.isNull(mContext))
             return;
 
         Map values = subscription.getCurrentValues();
-        Log.e(TAG, "SubscriptionAVTransport:2" + values.toString());
+        LogUtils.e(TAG, "SubscriptionAVTransport:2" + values.toString());
         if (values != null && values.containsKey("LastChange")) {
             String lastChangeValue = values.get("LastChange").toString();
-            Log.e(TAG, "SubscriptionAVTransport:3" + lastChangeValue);
+            LogUtils.e(TAG, "SubscriptionAVTransport:3" + lastChangeValue);
 //            doAVTransportChange(lastChangeValue);
         }
     }
 
     private void doAVTransportChange(String lastChangeValue) {
-        Log.e(TAG, "SubscriptionAVTransport:4 " + lastChangeValue);
+        LogUtils.e(TAG, "SubscriptionAVTransport:4 " + lastChangeValue);
         try {
             LastChange lastChange = new LastChange(new AVTransportLastChangeParser(), lastChangeValue);
 
@@ -53,22 +54,22 @@ public class AVTransportSubscriptionCallback  extends BaseSubscriptionCallback {
             if (transportState != null) {
                 TransportState ts = transportState.getValue();
                 if (ts == TransportState.PLAYING) {
-                    Log.e(TAG, "PLAYING");
+                    LogUtils.e(TAG, "PLAYING");
                     Intent intent = new Intent(Intents.ACTION_PLAYING);
                     mContext.sendBroadcast(intent);
                     return;
                 } else if (ts == TransportState.PAUSED_PLAYBACK) {
-                    Log.e(TAG, "PAUSED_PLAYBACK");
+                    LogUtils.e(TAG, "PAUSED_PLAYBACK");
                     Intent intent = new Intent(Intents.ACTION_PAUSED_PLAYBACK);
                     mContext.sendBroadcast(intent);
                     return;
                 } else if (ts == TransportState.STOPPED) {
-                    Log.e(TAG, "STOPPED");
+                    LogUtils.e(TAG, "STOPPED");
                     Intent intent = new Intent(Intents.ACTION_STOPPED);
                     mContext.sendBroadcast(intent);
                     return;
                 } else if (ts == TransportState.TRANSITIONING) { // 转菊花状态
-                    Log.e(TAG, "BUFFER");
+                    LogUtils.e(TAG, "BUFFER");
                     Intent intent = new Intent(Intents.ACTION_TRANSITIONING);
                     mContext.sendBroadcast(intent);
                     return;
@@ -81,7 +82,7 @@ public class AVTransportSubscriptionCallback  extends BaseSubscriptionCallback {
 //            if (Utils.isNotNull(eventedValue)) {
 //                position = lastChange.getEventedValue(0, AVTransportVariable.RelativeTimePosition.class).getValue();
 //                int intTime = Utils.getIntTime(position);
-//                Log.e(TAG, "position: " + position + ", intTime: " + intTime);
+//                LogUtils.e(TAG, "position: " + position + ", intTime: " + intTime);
 //
 //                // 该设备支持进度回传
 //                Config.getInstance().setHasRelTimePosCallback(true);

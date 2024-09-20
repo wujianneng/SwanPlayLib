@@ -6,10 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -31,20 +28,18 @@ import com.nesp.android.cling.entity.ClingMediaResponse;
 import com.nesp.android.cling.entity.ClingPositionResponse;
 import com.nesp.android.cling.entity.DeviceInfoBean;
 import com.nesp.android.cling.entity.IControlPoint;
-import com.nesp.android.cling.entity.IDevice;
 import com.nesp.android.cling.entity.IResponse;
 import com.nesp.android.cling.entity.LPMediaInfo;
 import com.nesp.android.cling.entity.MusicDataBean;
 import com.nesp.android.cling.entity.PlayStatusBean;
 import com.nesp.android.cling.entity.SWDevice;
 import com.nesp.android.cling.entity.SWDeviceInfo;
-import com.nesp.android.cling.entity.SWDeviceList;
 import com.nesp.android.cling.entity.SWDeviceStatus;
 import com.nesp.android.cling.entity.SlaveBean;
 import com.nesp.android.cling.listener.BrowseRegistryListener;
 import com.nesp.android.cling.listener.DeviceListChangedListener;
 import com.nesp.android.cling.service.ClingUpnpService;
-import com.nesp.android.cling.util.OkHttp3Util;
+import com.nesp.android.cling.util.LogUtils;
 import com.nesp.android.cling.util.SWDeviceUtils;
 import com.nesp.android.cling.util.Utils;
 
@@ -52,16 +47,17 @@ import org.greenrobot.eventbus.EventBus;
 import org.teleal.cling.model.action.ActionArgumentValue;
 import org.teleal.cling.model.message.header.InvalidHeaderException;
 import org.teleal.cling.model.message.header.UpnpHeader;
+import org.teleal.cling.model.meta.Device;
 import org.teleal.cling.model.meta.RemoteDevice;
 import org.teleal.cling.model.types.DeviceType;
 import org.teleal.cling.model.types.ServiceType;
 import org.teleal.cling.model.types.UDADeviceType;
 import org.teleal.cling.model.types.UDAServiceType;
+import org.teleal.cling.model.types.UDN;
 import org.teleal.cling.registry.Registry;
 import org.teleal.cling.support.model.MediaInfo;
 import org.teleal.cling.support.model.PositionInfo;
 
-import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -71,13 +67,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import io.reactivex.internal.operators.single.SingleTimer;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
-
-import static android.content.Context.MODE_PRIVATE;
 
 /**
  * 说明：所有对服务的操作都通过该类代理执行
@@ -98,7 +87,10 @@ public class SWDeviceManager implements ISWManager {
     public static final ServiceType CONTENT_DIRECTORY_SERVICE = new UDAServiceType("ContentDirectory");
 
     public static final DeviceType DMR_DEVICE_TYPE = new UDADeviceType("MediaRenderer");
-
+    /**
+     * eventbus控制ui更新主设备列表ui的key
+     */
+    public final static String REFRESH_LIST_UI_KEY = "refresh_list_ui_key";
     private static SWDeviceManager INSTANCE = null;
 
     private ClingUpnpService mUpnpService;
@@ -106,6 +98,7 @@ public class SWDeviceManager implements ISWManager {
 
     //    private SystemService mSystemService;
     private Timer positionTimer, infoTimer;
+    private List<SWDevice> masterDevices = new ArrayList<>();//主设备集合
     public List<SWDevice> offLineDeviceList = new ArrayList<>();
     private boolean isPauseAllTask = false;
 
@@ -121,27 +114,30 @@ public class SWDeviceManager implements ISWManager {
 
     private SWPlayControl mSWPlayControl = new SWPlayControl();
 
-    public void getPositionInfo() {
-        Log.e("test", "getPositionInfodostart");
+    /**
+     * 获取选中设备的媒体信息
+     */
+    public void getMediaInfo() {
+        LogUtils.e("test", "getPositionInfodostart");
         SWDevice swDevice = getSelectedDevice();
         mSWPlayControl.getMediaInfo(new ControlReceiveCallback() {
             @Override
             public void receive(IResponse response) {
                 ClingMediaResponse mediaResponse = (ClingMediaResponse) response;
                 MediaInfo mediaInfo = mediaResponse.getResponse();
-                Log.e("test", "getPositionInfodoreceive:" + mediaInfo.getNumberOfTracks());
+                LogUtils.e("test", "getPositionInfodoreceive:" + mediaInfo.getNumberOfTracks());
                 if (mediaInfoTask != null && swDevice != null)
                     mediaInfoTask.work(mediaInfo, swDevice.getUuid());
             }
 
             @Override
             public void success(IResponse response) {
-                Log.e("test", "getPositionInfodosuccess");
+                LogUtils.e("test", "getPositionInfodosuccess");
             }
 
             @Override
             public void fail(IResponse response) {
-                Log.e("test", "getPositionInfodofail");
+                LogUtils.e("test", "getPositionInfodofail");
                 if (mediaInfoTask != null)
                     mediaInfoTask.work(null, swDevice.getUuid());
             }
@@ -170,9 +166,12 @@ public class SWDeviceManager implements ISWManager {
         this.deviceInfoTask = deviceInfoTask;
     }
 
+    /**
+     * 删除重复添加的主设备
+     */
     public static void removeDuplicationDevices() {
         Map<String, Integer> mutrimap = new HashMap<>();
-        for (SWDevice swDevice : SWDeviceList.masterDevices) {
+        for (SWDevice swDevice : SWDeviceManager.getInstance().getMasterDeviceList()) {
             if (swDevice == null) continue;
             if (mutrimap.containsKey(swDevice.getUuid())) {
                 mutrimap.put(swDevice.getUuid(), 1 + mutrimap.get(swDevice.getUuid()));
@@ -181,7 +180,7 @@ public class SWDeviceManager implements ISWManager {
             }
         }
         List<SWDevice> mutriDevices = new ArrayList<>();
-        for (SWDevice swDevice : SWDeviceList.masterDevices) {
+        for (SWDevice swDevice : SWDeviceManager.getInstance().getMasterDeviceList()) {
             if (swDevice != null && mutrimap.containsKey(swDevice.getUuid())) {
                 int count = mutrimap.get(swDevice.getUuid());
                 if (count > 1) {
@@ -190,8 +189,7 @@ public class SWDeviceManager implements ISWManager {
                 }
             }
         }
-        SWDeviceList.masterDevices.removeAll(mutriDevices);
-        EventBus.getDefault().post(SWDeviceList.REFRESH_LIST_UI_KEY);
+        SWDeviceManager.getInstance().removeSomeMasterDeviceList(mutriDevices);
     }
 
 
@@ -213,12 +211,9 @@ public class SWDeviceManager implements ISWManager {
         taskGetPositionInfoEx = new TimerTask() {
             @Override
             public void run() {
-                Log.e("test", "taskGetPositionInfoEx:" + isPauseAllTask);
                 if (isPauseAllTask) return;
                 SWDevice swDevice = getSelectedDevice();
-                Log.e("test", "taskGetPositionInfoEx1:" + isPauseAllTask);
                 if (swDevice != null && swDevice.getIp() != null) {
-                    Log.e("test", "taskGetPositionInfoEx2:" + isPauseAllTask);
                     PlayStatusBean playStatusBean = swDevice.getPlayStatusBean();
                     if (playStatusBean != null && playStatusBean.getStatus().equals("play")) {
                         int lastpos = playStatusBean.getCurpos() == null ? 0 : Integer.parseInt(playStatusBean.getCurpos());
@@ -230,8 +225,6 @@ public class SWDeviceManager implements ISWManager {
                             playStatusTask.work(swDevice);
                         }
                     }
-                    Log.e("test", "taskGetPositionInfoEx3:" + isPauseAllTask);
-                    Log.e("test", "taskGetPositionInfoEx4:" + isPauseAllTask);
                     SWDeviceUtils.getDevicePlayerStatus(swDevice.getIp(), new SWDeviceUtils.GetDevicePlayerStatusCallback() {
                         @Override
                         public void onResponse(PlayStatusBean playStatusBean) {
@@ -249,8 +242,6 @@ public class SWDeviceManager implements ISWManager {
                                     int lasttolposex = playStatusBean.getTotlen() == null ? 0 : Integer.parseInt(playStatusBean.getTotlen());
                                     playStatusBean.setCurpos(lastposex * 1000 + "");
                                     playStatusBean.setTotlen(lasttolposex * 1000 + "");
-                                    Log.e("test", "lasttolposex3:" + lasttolposex
-                                            + " tol3:" + lasttolposex * 1000);
                                     int lastpos = lastbean.getCurpos() == null ? 0 : Integer.parseInt(lastbean.getCurpos());
                                     int thispos = playStatusBean.getCurpos() == null ? 0 : Integer.parseInt(playStatusBean.getCurpos());
                                     if (Math.abs(thispos - lastpos) < 5000) {
@@ -259,8 +250,6 @@ public class SWDeviceManager implements ISWManager {
                                 }
                             }
                             swDevice.setPlayStatusBean(playStatusBean);
-                            Log.e("test", "curpos2:" + swDevice.getPlayStatusBean().getCurpos()
-                                    + " tol2:" + swDevice.getPlayStatusBean().getTotlen());
                             if (playStatusTask != null)
                                 playStatusTask.work(swDevice);
                         }
@@ -270,8 +259,7 @@ public class SWDeviceManager implements ISWManager {
                         }
                     });
                 }
-                Log.e("test", "taskGetPositionInfoEx5:" + isPauseAllTask);
-                getPositionInfo();
+                getMediaInfo();
             }
         };
         taskOhterInfoEx = new TimerTask() {
@@ -283,72 +271,67 @@ public class SWDeviceManager implements ISWManager {
     }
 
     public List<SWDevice> getMasterDeviceList() {
-        return SWDeviceList.masterDevices;
+        return masterDevices;
     }
+
+    public void removeSomeMasterDeviceList(List<SWDevice> list) {
+        masterDevices.removeAll(list);
+        for(SWDevice swDevice : list){
+            mUpnpService.getRegistry().removeDevice(new UDN(swDevice.getUuid()));
+        }
+        EventBus.getDefault().post(SWDeviceManager.REFRESH_LIST_UI_KEY);
+    }
+
+    Gson gson = new Gson();
 
     public void runOhterInfoExTask() {
         if (isPauseAllTask) return;
-        SWDeviceList.masterDevices.removeAll(offLineDeviceList);
+        removeSomeMasterDeviceList(offLineDeviceList);
         removeDuplicationDevices();
         offLineDeviceList.clear();
-        if (SWDeviceList.masterDevices.size() != 0)
+        if (SWDeviceManager.getInstance().getMasterDeviceList().size() != 0)
             try {
-                for (SWDevice SWDevice : SWDeviceList.masterDevices) {
+                for (SWDevice SWDevice : SWDeviceManager.getInstance().getMasterDeviceList()) {
                     if (SWDevice == null) continue;
                     RemoteDevice device1 = (RemoteDevice) SWDevice.getDevice();
                     SWDeviceUtils.getDeviceInfo(device1.getIdentity().getDescriptorURL().getHost(), new SWDeviceUtils.GetDeviceInfoCallback() {
                         @Override
                         public void onResponse(DeviceInfoBean deviceInfoBean) {
-                            Log.e("test", "testOnlines:" + SWDevice.getDevice().getDetails().getFriendlyName());
+                            LogUtils.e("test", "testOnlines:" + SWDevice.getSwDeviceInfo().getSWDeviceStatus().getDeviceName());
                             SWDevice.setOnLineTestFailTimes(0);
                         }
 
                         @Override
                         public void onFailure(String msg) {
-                            Log.e("test", "testOnlinef:" + SWDevice.getSwDeviceInfo().getSWDeviceStatus().getDeviceName() + " e:" + msg);
+                            LogUtils.e("test", "testOnlinef:" + SWDevice.getSwDeviceInfo().getSWDeviceStatus().getDeviceName() + " e:" + msg);
                             int OnLineTestFailTimes = SWDevice.getOnLineTestFailTimes() + 1;
                             SWDevice.setOnLineTestFailTimes(OnLineTestFailTimes);
                             if (OnLineTestFailTimes >= 2)
                                 offLineDeviceList.add(SWDevice);
+
+                            offLineDeviceList.add(SWDevice);
                         }
                     });
                 }
             } catch (ConcurrentModificationException e) {
             }
 
-        Log.e("test", "mSWDeviceList:" + SWDeviceList.masterDevices.size() + " offLineDeviceList:" + offLineDeviceList.size() + " getSelectedDevice:" + (getSelectedDevice() == null));
-
-//                offLineDeviceList.clear();
-//                for(SWDevice swDevice : SWDeviceList.masterDevices){
-//                    if(!isContainsUuidDevice(swDevice.getUuid(),SWDeviceList.getInstance().mSWDeviceList)){
-//                        offLineDeviceList.add(swDevice);
-//                    }
-//                }
-//                for(SWDevice swDevice : SWDeviceList.getInstance().mSWDeviceList){
-//                    if(!isContainsUuidDevice(swDevice.getUuid(),SWDeviceList.masterDevices)){
-//                        SWDeviceList.masterDevices.add(swDevice);
-//                    }
-//                }
-//                SWDeviceList.masterDevices.removeAll(offLineDeviceList);
-//                Log.e("test", "mSWDeviceList:" + SWDeviceList.getInstance().mSWDeviceList.size()
-//                        + " masterDevicessize:" + SWDeviceList.masterDevices.size() + " offLineDeviceList:" + offLineDeviceList.size());
-//                SWDeviceList.getInstance().mSWDeviceList.clear();
+        LogUtils.e("test", "mSWDeviceList:" + SWDeviceManager.getInstance().getMasterDeviceList().size() +
+                " offLineDeviceList:" + offLineDeviceList.size() + " getSelectedDevice:" + (getSelectedDevice() == null));
 
         refreshDevicesList();
         if (deviceInfoTask != null) {
             deviceInfoTask.work();
         }
-        if (SWDeviceList.getInstance().masterDevices != null && SWDeviceList.getInstance().masterDevices.size() != 0) {
-            for (SWDevice swDevice : SWDeviceList.getInstance().masterDevices) {
+        if (SWDeviceManager.getInstance().getMasterDeviceList() != null && SWDeviceManager.getInstance().getMasterDeviceList().size() != 0) {
+            for (SWDevice swDevice : SWDeviceManager.getInstance().getMasterDeviceList()) {
                 if (swDevice == null) continue;
                 SWDeviceUtils.getControlDeviceInfo(swDevice.getDevice(), new ControlCallback() {
                     @Override
                     public void success(IResponse response) {
                         ClingGetControlDeviceInfoResponse getControlDeviceInfoResponse = (ClingGetControlDeviceInfoResponse) response;
                         Map<String, ActionArgumentValue> map = getControlDeviceInfoResponse.info;
-                        Log.e("test", "getSWDeviceStatus:" + map.toString());
-
-                        Gson gson = new Gson();
+                        LogUtils.e("test", "getSWDeviceStatus:" + map.toString());
 
                         SWDeviceInfo swDeviceInfo = new SWDeviceInfo();
                         swDeviceInfo.setMultiType(map.get("MultiType").toString());
@@ -363,6 +346,16 @@ public class SWDeviceManager implements ISWManager {
                         SlaveBean slaveBean = gson.fromJson(slaveListStr, SlaveBean.class);
                         SWDeviceStatus swDeviceStatus = gson.fromJson(statusStr, SWDeviceStatus.class);
                         swDeviceInfo.setSlaveList(slaveBean.getSlave_list());
+                        for (SWDevice swDevice : SWDeviceManager.getInstance().getMasterDeviceList()) {
+                            for (SlaveBean.SlaveListDTO slaveListDTO : slaveBean.getSlave_list()) {
+                                if (swDevice.getSwDeviceInfo().getSWDeviceStatus().getSsid().equals(slaveListDTO.getSsid())) {
+                                    SWDeviceManager.getInstance().offLineDeviceList.add(swDevice);
+                                }
+                            }
+                        }
+                        if (SWDeviceManager.getInstance().offLineDeviceList.size() != 0) {
+                            removeSomeMasterDeviceList(SWDeviceManager.getInstance().offLineDeviceList);
+                        }
                         swDeviceInfo.setSWDeviceStatus(swDeviceStatus);
                         swDevice.setSwDeviceInfo(swDeviceInfo);
                         SWDeviceUtils.getDevicePlayerStatus(swDevice.getIp(), new SWDeviceUtils.GetDevicePlayerStatusCallback() {
@@ -375,17 +368,17 @@ public class SWDeviceManager implements ISWManager {
                                     playStatusBean.setTotlen(lasttolposex * 1000 + "");
                                 }
                                 swDevice.setPlayStatusBean(playStatusBean);
-                                SWDeviceUtils.getDevicePositionInfo(swDevice.getDevice(), new ControlReceiveCallback() {
+                                SWDeviceUtils.getDeviceMediaInfo(swDevice.getDevice(), new ControlReceiveCallback() {
                                     @Override
                                     public void receive(IResponse response) {
-                                        ClingPositionResponse positionResponse = (ClingPositionResponse) response;
-                                        PositionInfo positionInfo = positionResponse.getResponse();
+                                        ClingMediaResponse mediaResponse = (ClingMediaResponse) response;
+                                        MediaInfo mediaInfo = mediaResponse.getResponse();
                                         LPMediaInfo lpMediaInfo = new LPMediaInfo();
-                                        lpMediaInfo.parseMetaData(positionInfo.getTrackMetaData());
+                                        lpMediaInfo.parseMetaData(mediaInfo.getCurrentURIMetaData());
                                         try {
-                                            MusicDataBean.DataBean musicDataBean = new Gson().fromJson(URLDecoder.decode(lpMediaInfo.getAlbumArtURI(),
+                                            MusicDataBean.DataBean musicDataBean = gson.fromJson(URLDecoder.decode(lpMediaInfo.getAlbumArtURI(),
                                                     "UTF-8"), MusicDataBean.DataBean.class);
-                                            Log.e("parse", "Current URI metadata: " + new Gson().toJson(musicDataBean));
+                                            LogUtils.e("parse", "Current URI metadata: " + gson.toJson(musicDataBean));
                                             if (musicDataBean != null) {
                                                 musicDataBean.setAlbum(lpMediaInfo.getAlbum());
                                                 musicDataBean.setCreator(lpMediaInfo.getCreator());
@@ -395,6 +388,7 @@ public class SWDeviceManager implements ISWManager {
                                                 if (deviceInfoTask != null && (swDevice == null || getSelectedDevice() == null
                                                         || swDevice.getUuid().equals(getSelectedDevice().getUuid()))) {
                                                     deviceInfoTask.work();
+                                                    EventBus.getDefault().post(REFRESH_LIST_UI_KEY);
                                                 }
                                             } else {
                                                 if (swDevice != null)
@@ -402,6 +396,7 @@ public class SWDeviceManager implements ISWManager {
                                                 if (deviceInfoTask != null && (swDevice == null || getSelectedDevice() == null
                                                         || swDevice.getUuid().equals(getSelectedDevice().getUuid()))) {
                                                     deviceInfoTask.work();
+                                                    EventBus.getDefault().post(REFRESH_LIST_UI_KEY);
                                                 }
                                             }
                                         } catch (Exception e) {
@@ -410,6 +405,7 @@ public class SWDeviceManager implements ISWManager {
                                             if (deviceInfoTask != null && (swDevice == null || getSelectedDevice() == null
                                                     || swDevice.getUuid().equals(getSelectedDevice().getUuid()))) {
                                                 deviceInfoTask.work();
+                                                EventBus.getDefault().post(REFRESH_LIST_UI_KEY);
                                             }
                                         }
                                     }
@@ -448,8 +444,8 @@ public class SWDeviceManager implements ISWManager {
     }
 
     public void initSelectedDevice() {
-        if (SWDeviceManager.getInstance().getSelectedDevice() == null && SWDeviceList.getInstance().masterDevices.size() != 0) {
-            SWDevice item = (SWDevice) SWDeviceList.getInstance().masterDevices.get(0);
+        if (SWDeviceManager.getInstance().getSelectedDevice() == null && SWDeviceManager.getInstance().getMasterDeviceList().size() != 0) {
+            SWDevice item = (SWDevice) SWDeviceManager.getInstance().getMasterDeviceList().get(0);
             if (Utils.isNull(item)) {
                 return;
             }
@@ -538,7 +534,7 @@ public class SWDeviceManager implements ISWManager {
 //            CustomSendingSearch.searchDevices(mUpnpService.getControlPoint(), new CustomSendingSearch(mUpnpService.getUpnpService(),
 //                    getStringUpnpHearder("ssdp:yamaha"), getStringUpnpHearder("\"ssdp:discover\""), getStringUpnpHearder("3"),
 //                    getStringUpnpHearder("239.255.255.250:1900"), customAddress3, customPort3));
-
+            LogUtils.e("dosearchDevices");
 
 ////
             CustomSendingSearch.searchDevices(mUpnpService.getControlPoint(), new CustomSendingSearch(mUpnpService.getUpnpService(),
@@ -595,7 +591,7 @@ public class SWDeviceManager implements ISWManager {
         if (Utils.isNull(mUpnpService)) {
             return null;
         }
-        return SWDeviceList.getInstance().getClingDeviceList();
+        return masterDevices;
     }
 
     @Override
@@ -722,7 +718,7 @@ public class SWDeviceManager implements ISWManager {
     private ServiceConnection mUpnpServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName className, IBinder service) {
-            Log.e("test", "mUpnpServiceConnection onServiceConnected");
+            LogUtils.e("test", "mUpnpServiceConnection onServiceConnected");
 
             ClingUpnpService.LocalBinder binder = (ClingUpnpService.LocalBinder) service;
             ClingUpnpService beyondUpnpService = binder.getService();
@@ -740,7 +736,7 @@ public class SWDeviceManager implements ISWManager {
 
         @Override
         public void onServiceDisconnected(ComponentName className) {
-            Log.e("test", "mUpnpServiceConnection onServiceDisconnected");
+            LogUtils.e("test", "mUpnpServiceConnection onServiceDisconnected");
             SWDeviceManager.getInstance().setUpnpService(null);
         }
     };
@@ -767,27 +763,27 @@ public class SWDeviceManager implements ISWManager {
         LPLogUtil.init(new LPPrintLogCallback() {
             @Override
             public void i(String s, String s1) {
-                Log.e("test", "LPLogUtilI:" + s1);
+                LogUtils.e("test", "LPLogUtilI:" + s1);
             }
 
             @Override
             public void d(String s, String s1) {
-                Log.e("test", "LPLogUtilD:" + s1);
+                LogUtils.e("test", "LPLogUtilD:" + s1);
             }
 
             @Override
             public void e(String s, String s1) {
-                Log.e("test", "LPLogUtilE:" + s1);
+                LogUtils.e("test", "LPLogUtilE:" + s1);
             }
 
             @Override
             public void v(String s, String s1) {
-                Log.e("test", "LPLogUtilV:" + s1);
+                LogUtils.e("test", "LPLogUtilV:" + s1);
             }
 
             @Override
             public void w(String s, String s1) {
-                Log.e("test", "LPLogUtilW:" + s1);
+                LogUtils.e("test", "LPLogUtilW:" + s1);
             }
         });
 
@@ -803,14 +799,14 @@ public class SWDeviceManager implements ISWManager {
     }
 
     public void refreshDevicesList() {
-        Log.e("test", "refreshDevicesList");
+        LogUtils.e("test", "refreshDevicesList");
         if (mUpnpService != null) {
-            Log.e("test", "refreshDevicesList2");
+            LogUtils.e("test", "refreshDevicesList2");
             mUpnpService.getRegistry().removeAllRemoteDevices();  // 清除当前列表
-            mUpnpService.getRegistry().removeAllRemoteDevices();
+            mUpnpService.getRegistry().removeAllLocalDevices();
             searchDevices();  // 重新搜索设备
             if (onRefreshSearchDevicesListener != null) {
-                Log.e("test", "refreshDevicesList3");
+                LogUtils.e("test", "refreshDevicesList3");
                 onRefreshSearchDevicesListener.onRefresh();
             }
         }
@@ -826,6 +822,171 @@ public class SWDeviceManager implements ISWManager {
         void onRefresh();
     }
 
+    public void addDevice(SWDevice SWDevice) {
+        if (!contain(SWDevice.getDevice(), masterDevices)) {
+            SWDeviceUtils.getControlDeviceInfo(SWDevice.getDevice(), new ControlCallback() {
+                @Override
+                public void success(IResponse response) {
+                    ClingGetControlDeviceInfoResponse getControlDeviceInfoResponse = (ClingGetControlDeviceInfoResponse) response;
+                    Map<String, ActionArgumentValue> map = getControlDeviceInfoResponse.info;
+                    LogUtils.e("test", "getSWDeviceStatus:" + map.toString());
+
+                    SWDeviceInfo swDeviceInfo = new SWDeviceInfo();
+                    swDeviceInfo.setMultiType(map.get("MultiType").toString());
+                    swDeviceInfo.setRouter(map.get("Router").toString());
+                    swDeviceInfo.setSsid(map.get("Ssid").toString());
+                    swDeviceInfo.setSlaveMask(map.get("SlaveMask").toString());
+                    swDeviceInfo.setCurrentVolume(map.get("CurrentVolume").toString());
+                    swDeviceInfo.setCurrentMute(map.get("CurrentMute").toString());
+                    swDeviceInfo.setCurrentChannel(map.get("CurrentChannel").toString());
+                    String slaveListStr = map.get("SlaveList").toString();
+                    String statusStr = map.get("Status").toString();
+                    SlaveBean slaveBean = gson.fromJson(slaveListStr, SlaveBean.class);
+                    SWDeviceStatus swDeviceStatus = gson.fromJson(statusStr, SWDeviceStatus.class);
+                    swDeviceInfo.setSlaveList(slaveBean.getSlave_list());
+                    swDeviceInfo.setSWDeviceStatus(swDeviceStatus);
+                    SWDevice.setSwDeviceInfo(swDeviceInfo);
+
+                    mSWPlayControl.getPositionInfoByDevice(SWDevice.getDevice(), new ControlReceiveCallback() {
+                        @Override
+                        public void receive(IResponse response) {
+                            ClingPositionResponse positionResponse = (ClingPositionResponse) response;
+                            PositionInfo positionInfo = positionResponse.getResponse();
+                            if (positionInfo != null) {
+                                LPMediaInfo lpMediaInfo = new LPMediaInfo();
+                                lpMediaInfo.parseMetaData(positionInfo.getTrackMetaData());
+                                try {
+                                    MusicDataBean.DataBean musicDataBean = gson.fromJson(URLDecoder.decode(lpMediaInfo.getAlbumArtURI(),
+                                            "UTF-8"), MusicDataBean.DataBean.class);
+                                    LogUtils.e("parse", SWDevice.getDevice().getDetails().getFriendlyName() + "Current URI metadata2: " + gson.toJson(musicDataBean));
+                                    if (musicDataBean != null) {
+                                        musicDataBean.setAlbum(lpMediaInfo.getAlbum());
+                                        musicDataBean.setCreator(lpMediaInfo.getCreator());
+                                        musicDataBean.setMediaType(lpMediaInfo.getMediaType());
+                                        if (SWDevice.getMediaInfo() == null || !SWDevice.getMediaInfo().getPlayUrl().equals(musicDataBean.getPlayUrl()))
+                                            SWDevice.setMediaInfo(musicDataBean);
+                                    } else {
+                                        SWDevice.setMediaInfo(null);
+                                    }
+                                } catch (Exception e) {
+                                    SWDevice.setMediaInfo(null);
+                                }
+                            } else {
+                                SWDevice.setMediaInfo(null);
+                            }
+                            if (!contain(SWDevice.getDevice(), masterDevices)) {
+                                masterDevices.add(SWDevice);
+                                mUpnpService.getRegistry().addDevice((RemoteDevice) SWDevice.getDevice());
+                                SWDeviceManager.getInstance().removeDuplicationDevices();
+                            }
+                        }
+
+                        @Override
+                        public void success(IResponse response) {
+
+                        }
+
+                        @Override
+                        public void fail(IResponse response) {
+
+                        }
+                    });
+                }
+
+                @Override
+                public void fail(IResponse response) {
+
+                }
+            });
+        }
+
+//        if (!contain(SWDevice.getDevice(),mSWDeviceList)) {
+//            mSWPlayControl.getPositionInfoByDevice(SWDevice.getDevice(), new ControlReceiveCallback() {
+//                @Override
+//                public void receive(IResponse response) {
+//                    ClingPositionResponse positionResponse = (ClingPositionResponse) response;
+//                    PositionInfo positionInfo = positionResponse.getResponse();
+//                    if (positionInfo != null) {
+//                        LPMediaInfo lpMediaInfo = new LPMediaInfo();
+//                        lpMediaInfo.parseMetaData(positionInfo.getTrackMetaData());
+//                        try {
+//                            MusicDataBean.DataBean musicDataBean = gson.fromJson(URLDecoder.decode(lpMediaInfo.getAlbumArtURI(),
+//                                    "UTF-8"), MusicDataBean.DataBean.class);
+//                            LogUtils.e("parse", SWDevice.getDevice().getDetails().getFriendlyName() + "Current URI metadata2: " + gson.toJson(musicDataBean));
+//                            if (musicDataBean != null) {
+//                                musicDataBean.setAlbum(lpMediaInfo.getAlbum());
+//                                musicDataBean.setCreator(lpMediaInfo.getCreator());
+//                                musicDataBean.setMediaType(lpMediaInfo.getMediaType());
+//                                SWDevice.setMediaInfo(musicDataBean);
+//                            } else {
+//                                SWDevice.setMediaInfo(null);
+//                            }
+//                        } catch (Exception e) {
+//                            SWDevice.setMediaInfo(null);
+//                        }
+//                    }else {
+//                        SWDevice.setMediaInfo(null);
+//                    }
+//                    mSWDeviceList.add(SWDevice);
+//                }
+//
+//                @Override
+//                public void success(IResponse response) {
+//
+//                }
+//
+//                @Override
+//                public void fail(IResponse response) {
+//
+//                }
+//            });
+//            SWDeviceUtils.getSWDeviceStatus(SWDevice.getDevice(), new ControlCallback() {
+//                @Override
+//                public void success(IResponse response) {
+//                    ClingGetControlDeviceInfoResponse getControlDeviceInfoResponse = (ClingGetControlDeviceInfoResponse)response;
+//                    Map<String, ActionArgumentValue> map = getControlDeviceInfoResponse.info;
+//                    LogUtils.e("test","getSWDeviceStatus:" + map.toString());
+//                    String slaveListStr = map.get("SlaveList").toString();
+//                    String statusStr = map.get("Status").toString();
+//                    Gson gson = gson;
+//                    SlaveBean slaveBean = gson.fromJson(slaveListStr,SlaveBean.class);
+//                    SWDeviceStatus SWDeviceStatus = gson.fromJson(statusStr,SWDeviceStatus.class);
+//                    SWDevice.setSlaveList(slaveBean.getSlave_list());
+//                    SWDevice.setSWDeviceStatus(SWDeviceStatus);
+//                }
+//
+//                @Override
+//                public void fail(IResponse response) {
+//
+//                }
+//            });
+//        }
+    }
+
+    @Nullable
+    public SWDevice getClingDevice(Device device) {
+        if (masterDevices != null && masterDevices.size() != 0) {
+            for (SWDevice SWDevice : masterDevices) {
+                Device deviceTemp = SWDevice.getDevice();
+                if (deviceTemp != null && SWDevice.getUuid().equals(device.getIdentity().getUdn().getIdentifierString())) {
+                    return SWDevice;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static boolean contain(Device device, List<SWDevice> list) {
+        for (SWDevice SWDevice : list) {
+            Device deviceTemp = SWDevice.getDevice();
+            if (deviceTemp != null && SWDevice.getUuid().equals(device.getIdentity().getUdn().getIdentifierString())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     @Override
     public void destroy() {
         // Unbind UPnP service
@@ -838,6 +999,7 @@ public class SWDeviceManager implements ISWManager {
         stopTask();
         mUpnpService.onDestroy();
         mDeviceManager.destroy();
-        SWDeviceList.getInstance().destroy();
+        masterDevices.clear();
+        EventBus.getDefault().post(SWDeviceManager.REFRESH_LIST_UI_KEY);
     }
 }

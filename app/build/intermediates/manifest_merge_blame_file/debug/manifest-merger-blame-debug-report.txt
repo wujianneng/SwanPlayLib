@@ -34,7 +34,7 @@
 19    </queries>
 20
 21    <application
-21-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:5:5-28:19
+21-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:5:5-29:19
 22        android:allowBackup="true"
 22-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:6:9-35
 23        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
@@ -43,169 +43,171 @@
 25        android:extractNativeLibs="false"
 26        android:icon="@mipmap/ic_launcher"
 26-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:7:9-43
-27        android:largeHeap="true"
-27-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:8:9-33
-28        android:requestLegacyExternalStorage="true"
-28-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:9:9-52
-29        android:roundIcon="@mipmap/ic_launcher"
-29-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:10:9-48
-30        android:supportsRtl="true"
-30-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:11:9-35
-31        android:testOnly="true"
-32        android:usesCleartextTraffic="true" >
-32-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:12:9-44
-33        <activity
-33-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:14:9-23:20
-34            android:name="com.MainActivity"
-34-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:14:19-50
-35            android:exported="true"
-35-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:15:13-36
-36            android:theme="@style/Theme.AppCompat.Light" >
-36-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:16:13-57
-37            <intent-filter>
-37-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:18:13-22:29
-38                <action android:name="android.intent.action.MAIN" />
-38-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:19:17-69
-38-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:19:25-66
-39
-40                <category android:name="android.intent.category.LAUNCHER" />
-40-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:21:17-77
-40-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:21:27-74
-41            </intent-filter>
-42        </activity>
-43
-44        <service
-44-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:25:9-27:39
-45            android:name="org.teleal.cling.android.AndroidUpnpServiceImpl"
-45-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:26:13-75
-46            android:exported="true" />
-46-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:27:13-36
-47
-48        <uses-library
-48-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:18:9-20:40
-49            android:name="org.apache.http.legacy"
-49-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:19:13-50
-50            android:required="false" />
-50-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:20:13-37
-51
-52        <service
-52-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:22:9-24:40
-53            android:name="com.nesp.android.cling.service.ClingUpnpService"
-53-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:23:13-75
-54            android:exported="false" />
-54-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:24:13-37
-55
-56        <provider
-56-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:26:9-34:20
-57            android:name="com.nesp.android.cling.util.UtilsFileProvider"
-57-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:27:13-73
-58            android:authorities="com.cn.huiweilink.utilcode.provider"
-58-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:28:13-69
-59            android:exported="false"
-59-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:29:13-37
-60            android:grantUriPermissions="true" >
-60-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:30:13-47
-61            <meta-data
-61-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:31:13-33:68
-62                android:name="android.support.FILE_PROVIDER_PATHS"
-62-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:32:17-67
-63                android:resource="@xml/util_code_provider_paths" />
-63-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:33:17-65
-64        </provider>
-65        <provider
-65-->[androidx.lifecycle:lifecycle-process:2.2.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bba453ac189dca779052644db6578dc4/jetified-lifecycle-process-2.2.0/AndroidManifest.xml:25:9-29:43
-66            android:name="androidx.lifecycle.ProcessLifecycleOwnerInitializer"
-66-->[androidx.lifecycle:lifecycle-process:2.2.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bba453ac189dca779052644db6578dc4/jetified-lifecycle-process-2.2.0/AndroidManifest.xml:26:13-79
-67            android:authorities="com.cn.huiweilink.lifecycle-process"
-67-->[androidx.lifecycle:lifecycle-process:2.2.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bba453ac189dca779052644db6578dc4/jetified-lifecycle-process-2.2.0/AndroidManifest.xml:27:13-69
-68            android:exported="false"
-68-->[androidx.lifecycle:lifecycle-process:2.2.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bba453ac189dca779052644db6578dc4/jetified-lifecycle-process-2.2.0/AndroidManifest.xml:28:13-37
-69            android:multiprocess="true" />
-69-->[androidx.lifecycle:lifecycle-process:2.2.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bba453ac189dca779052644db6578dc4/jetified-lifecycle-process-2.2.0/AndroidManifest.xml:29:13-40
-70
-71        <activity
-71-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:10:9-14:75
-72            android:name="com.blankj.utilcode.util.UtilsTransActivity4MainProcess"
-72-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:11:13-83
-73            android:configChanges="orientation|keyboardHidden|screenSize"
-73-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:12:13-74
-74            android:theme="@style/ActivityTranslucent"
-74-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:13:13-55
-75            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" />
-75-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:14:13-72
-76        <activity
-76-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:15:9-20:75
-77            android:name="com.blankj.utilcode.util.UtilsTransActivity"
-77-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:16:13-71
-78            android:configChanges="orientation|keyboardHidden|screenSize"
-78-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:17:13-74
-79            android:multiprocess="true"
-79-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:18:13-40
-80            android:theme="@style/ActivityTranslucent"
-80-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:19:13-55
-81            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" />
-81-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:20:13-72
-82
-83        <provider
-83-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:22:9-30:20
-84            android:name="com.blankj.utilcode.util.UtilsFileProvider"
-84-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:23:13-70
-85            android:authorities="com.cn.huiweilink.utilcode.provider"
-85-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:24:13-69
-86            android:exported="false"
-86-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:25:13-37
-87            android:grantUriPermissions="true" >
-87-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:26:13-47
-88            <meta-data
-88-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:31:13-33:68
-89                android:name="android.support.FILE_PROVIDER_PATHS"
-89-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:32:17-67
-90                android:resource="@xml/util_code_provider_paths" />
-90-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:33:17-65
-91        </provider>
-92
-93        <service
-93-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:32:9-38:19
-94            android:name="com.blankj.utilcode.util.MessengerUtils$ServerService"
-94-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:33:13-81
-95            android:exported="false" >
-95-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:34:13-37
-96            <intent-filter>
-96-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:35:13-37:29
-97                <action android:name="com.cn.huiweilink.messenger" />
-97-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:36:17-69
-97-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:36:25-66
-98            </intent-filter>
-99        </service>
-100
-101        <activity
-101-->[com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:16:9-29:20
-102            android:name="com.linkplay.lpmdpkit.utils.LPCustomTabsCallbackActivity"
-102-->[com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:17:13-84
-103            android:exported="true" >
-103-->[com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:18:13-36
-104            <intent-filter android:autoVerify="true" >
-104-->[com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:19:13-28:29
-104-->[com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:19:28-53
-105                <action android:name="android.intent.action.VIEW" />
-105-->[com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:20:17-69
-105-->[com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:20:25-66
-106
-107                <category android:name="android.intent.category.BROWSABLE" />
-107-->[com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:22:17-78
-107-->[com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:22:27-75
-108                <category android:name="android.intent.category.DEFAULT" />
-108-->[com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:23:17-76
-108-->[com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:23:27-73
-109
-110                <data
-110-->[com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:25:17-27:80
-111                    android:host="@string/lp_custom_tabs_deep_link_host"
-111-->[com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:26:21-73
-112                    android:scheme="@string/lp_custom_tabs_deep_link_scheme" />
-112-->[com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:27:21-77
-113            </intent-filter>
-114        </activity>
-115    </application>
-116
-117</manifest>
+27        android:label="SwanPlayLib SDK Demo"
+27-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:9:9-45
+28        android:largeHeap="true"
+28-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:8:9-33
+29        android:requestLegacyExternalStorage="true"
+29-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:10:9-52
+30        android:roundIcon="@mipmap/ic_launcher"
+30-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:11:9-48
+31        android:supportsRtl="true"
+31-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:12:9-35
+32        android:testOnly="true"
+33        android:usesCleartextTraffic="true" >
+33-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:13:9-44
+34        <activity
+34-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:15:9-24:20
+35            android:name="com.MainActivity"
+35-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:15:19-50
+36            android:exported="true"
+36-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:16:13-36
+37            android:theme="@style/Theme.AppCompat.Light" >
+37-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:17:13-57
+38            <intent-filter>
+38-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:19:13-23:29
+39                <action android:name="android.intent.action.MAIN" />
+39-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:20:17-69
+39-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:20:25-66
+40
+41                <category android:name="android.intent.category.LAUNCHER" />
+41-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:22:17-77
+41-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:22:27-74
+42            </intent-filter>
+43        </activity>
+44
+45        <service
+45-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:26:9-28:39
+46            android:name="org.teleal.cling.android.AndroidUpnpServiceImpl"
+46-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:27:13-75
+47            android:exported="true" />
+47-->/Users/wutom/Desktop/workspace/SwanPlayLib/app/src/main/AndroidManifest.xml:28:13-36
+48
+49        <uses-library
+49-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:18:9-20:40
+50            android:name="org.apache.http.legacy"
+50-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:19:13-50
+51            android:required="false" />
+51-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:20:13-37
+52
+53        <service
+53-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:22:9-24:40
+54            android:name="com.nesp.android.cling.service.ClingUpnpService"
+54-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:23:13-75
+55            android:exported="false" />
+55-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:24:13-37
+56
+57        <provider
+57-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:26:9-34:20
+58            android:name="com.nesp.android.cling.util.UtilsFileProvider"
+58-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:27:13-73
+59            android:authorities="com.cn.huiweilink.utilcode.provider"
+59-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:28:13-69
+60            android:exported="false"
+60-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:29:13-37
+61            android:grantUriPermissions="true" >
+61-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:30:13-47
+62            <meta-data
+62-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:31:13-33:68
+63                android:name="android.support.FILE_PROVIDER_PATHS"
+63-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:32:17-67
+64                android:resource="@xml/util_code_provider_paths" />
+64-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:33:17-65
+65        </provider>
+66        <provider
+66-->[androidx.lifecycle:lifecycle-process:2.2.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bba453ac189dca779052644db6578dc4/jetified-lifecycle-process-2.2.0/AndroidManifest.xml:25:9-29:43
+67            android:name="androidx.lifecycle.ProcessLifecycleOwnerInitializer"
+67-->[androidx.lifecycle:lifecycle-process:2.2.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bba453ac189dca779052644db6578dc4/jetified-lifecycle-process-2.2.0/AndroidManifest.xml:26:13-79
+68            android:authorities="com.cn.huiweilink.lifecycle-process"
+68-->[androidx.lifecycle:lifecycle-process:2.2.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bba453ac189dca779052644db6578dc4/jetified-lifecycle-process-2.2.0/AndroidManifest.xml:27:13-69
+69            android:exported="false"
+69-->[androidx.lifecycle:lifecycle-process:2.2.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bba453ac189dca779052644db6578dc4/jetified-lifecycle-process-2.2.0/AndroidManifest.xml:28:13-37
+70            android:multiprocess="true" />
+70-->[androidx.lifecycle:lifecycle-process:2.2.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bba453ac189dca779052644db6578dc4/jetified-lifecycle-process-2.2.0/AndroidManifest.xml:29:13-40
+71
+72        <activity
+72-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:10:9-14:75
+73            android:name="com.blankj.utilcode.util.UtilsTransActivity4MainProcess"
+73-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:11:13-83
+74            android:configChanges="orientation|keyboardHidden|screenSize"
+74-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:12:13-74
+75            android:theme="@style/ActivityTranslucent"
+75-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:13:13-55
+76            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" />
+76-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:14:13-72
+77        <activity
+77-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:15:9-20:75
+78            android:name="com.blankj.utilcode.util.UtilsTransActivity"
+78-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:16:13-71
+79            android:configChanges="orientation|keyboardHidden|screenSize"
+79-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:17:13-74
+80            android:multiprocess="true"
+80-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:18:13-40
+81            android:theme="@style/ActivityTranslucent"
+81-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:19:13-55
+82            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" />
+82-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:20:13-72
+83
+84        <provider
+84-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:22:9-30:20
+85            android:name="com.blankj.utilcode.util.UtilsFileProvider"
+85-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:23:13-70
+86            android:authorities="com.cn.huiweilink.utilcode.provider"
+86-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:24:13-69
+87            android:exported="false"
+87-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:25:13-37
+88            android:grantUriPermissions="true" >
+88-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:26:13-47
+89            <meta-data
+89-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:31:13-33:68
+90                android:name="android.support.FILE_PROVIDER_PATHS"
+90-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:32:17-67
+91                android:resource="@xml/util_code_provider_paths" />
+91-->[:PlayLib] /Users/wutom/Desktop/workspace/SwanPlayLib/PlayLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:33:17-65
+92        </provider>
+93
+94        <service
+94-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:32:9-38:19
+95            android:name="com.blankj.utilcode.util.MessengerUtils$ServerService"
+95-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:33:13-81
+96            android:exported="false" >
+96-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:34:13-37
+97            <intent-filter>
+97-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:35:13-37:29
+98                <action android:name="com.cn.huiweilink.messenger" />
+98-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:36:17-69
+98-->[com.blankj:utilcodex:1.30.0] /Users/wutom/.gradle/caches/transforms-2/files-2.1/bcaba72850123f50d12fa0ccbff33828/jetified-utilcodex-1.30.0/AndroidManifest.xml:36:25-66
+99            </intent-filter>
+100        </service>
+101
+102        <activity
+102-->[com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:16:9-29:20
+103            android:name="com.linkplay.lpmdpkit.utils.LPCustomTabsCallbackActivity"
+103-->[com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:17:13-84
+104            android:exported="true" >
+104-->[com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:18:13-36
+105            <intent-filter android:autoVerify="true" >
+105-->[com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:19:13-28:29
+105-->[com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:19:28-53
+106                <action android:name="android.intent.action.VIEW" />
+106-->[com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:20:17-69
+106-->[com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:20:25-66
+107
+108                <category android:name="android.intent.category.BROWSABLE" />
+108-->[com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:22:17-78
+108-->[com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:22:27-75
+109                <category android:name="android.intent.category.DEFAULT" />
+109-->[com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:23:17-76
+109-->[com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:23:27-73
+110
+111                <data
+111-->[com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:25:17-27:80
+112                    android:host="@string/lp_custom_tabs_deep_link_host"
+112-->[com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:26:21-73
+113                    android:scheme="@string/lp_custom_tabs_deep_link_scheme" />
+113-->[com.linkplay.lpmdpkit:LPMDPKit:1.0.8] /Users/wutom/.gradle/caches/transforms-2/files-2.1/3eba713e84b23d254ee4c4e856524a29/jetified-LPMDPKit-1.0.8/AndroidManifest.xml:27:21-77
+114            </intent-filter>
+115        </activity>
+116    </application>
+117
+118</manifest>

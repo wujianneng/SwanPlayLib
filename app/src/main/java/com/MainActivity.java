@@ -38,14 +38,9 @@ import com.nesp.android.cling.Intents;
 import com.nesp.android.cling.control.SWPlayControl;
 import com.nesp.android.cling.control.callback.ControlCallback;
 import com.nesp.android.cling.control.callback.ControlReceiveCallback;
-import com.nesp.android.cling.entity.SWDevice;
-import com.nesp.android.cling.entity.SWDeviceList;
-import com.nesp.android.cling.entity.ClingGetControlDeviceInfoResponse;
 import com.nesp.android.cling.entity.ClingMediaResponse;
 import com.nesp.android.cling.entity.ClingPlayModeResponse;
-import com.nesp.android.cling.entity.ClingPlaylistResponse;
 import com.nesp.android.cling.entity.ClingTransportResponse;
-import com.nesp.android.cling.entity.SWDeviceStatus;
 import com.nesp.android.cling.entity.DLANPlayState;
 import com.nesp.android.cling.entity.IDevice;
 import com.nesp.android.cling.entity.IResponse;
@@ -53,6 +48,7 @@ import com.nesp.android.cling.entity.LPMediaInfo;
 import com.nesp.android.cling.entity.MusicDataBean;
 import com.nesp.android.cling.entity.PlayList;
 import com.nesp.android.cling.entity.PlayStatusBean;
+import com.nesp.android.cling.entity.SWDevice;
 import com.nesp.android.cling.entity.SelectSWDeviceBean;
 import com.nesp.android.cling.entity.SlaveBean;
 import com.nesp.android.cling.listener.DeviceListChangedListener;
@@ -65,16 +61,13 @@ import com.wujianneng.huiweilink.R;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.teleal.cling.model.action.ActionArgumentValue;
 import org.teleal.cling.model.meta.RemoteDevice;
 import org.teleal.cling.support.model.MediaInfo;
-import org.teleal.cling.support.model.PositionInfo;
 import org.teleal.cling.support.model.TransportInfo;
 
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener {
 
@@ -137,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         initView();
         initListeners();
         registerReceivers();
+        setTitle("SwanPlayLib SDK Demo");
         EventBus.getDefault().register(this);
 
         SWDeviceManager.getInstance().init(this);
@@ -144,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void handleEventBus(String event) {
-        if (event.equals(SWDeviceList.REFRESH_LIST_UI_KEY)) {
+        if (event.equals(SWDeviceManager.REFRESH_LIST_UI_KEY)) {
             mDevicesAdapter.notifyDataSetChanged();
         }
     }
@@ -185,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
 
         playModeBtn = findViewById(R.id.bt_playmode);
         channelBtn = findViewById(R.id.bt_channel);
-        mDevicesAdapter = new DevicesAdapter(mContext, SWDeviceList.getInstance().masterDevices);
+        mDevicesAdapter = new DevicesAdapter(mContext, SWDeviceManager.getInstance().getMasterDeviceList());
         mDeviceList.setAdapter(mDevicesAdapter);
 
         mSeekProgress.setMax(100);
@@ -204,12 +198,12 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
 
             SWDeviceManager.getInstance().setSelectedDevice(item);
             mDevicesAdapter.notifyDataSetChanged();
-            SWDeviceManager.getInstance().registerAVTransport(mContext);
-            SWDeviceManager.getInstance().registerRenderingControl(mContext);
-            SWDeviceManager.getInstance().registerMediaRenderer(mContext);
-            SWDeviceManager.getInstance().registerMediaServer(mContext);
-            SWDeviceManager.getInstance().registerConnectionManager(mContext);
-            SWDeviceManager.getInstance().registerContentDirectory(mContext);
+//            SWDeviceManager.getInstance().registerAVTransport(mContext);
+//            SWDeviceManager.getInstance().registerRenderingControl(mContext);
+//            SWDeviceManager.getInstance().registerMediaRenderer(mContext);
+//            SWDeviceManager.getInstance().registerMediaServer(mContext);
+//            SWDeviceManager.getInstance().registerConnectionManager(mContext);
+//            SWDeviceManager.getInstance().registerContentDirectory(mContext);
         });
 
         // 静音开关
@@ -239,7 +233,6 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
             public void onDeviceAdded(final IDevice device) {
                 Log.e("test", "onDeviceAdded():" + ((SWDevice) device).getDevice().getDetails().getSsidName());
                 mHandler.sendEmptyMessage(REFRESH_LIST_VIEW);
-
             }
 
             @Override
@@ -259,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
                     mHandler.sendMessage(message);
                 }
             }
-        },new SWDeviceManager.WorkMediaInfoTask() {
+        }, new SWDeviceManager.WorkMediaInfoTask() {
             @Override
             public void work(MediaInfo positionInfo, String fromUuid) {
                 if (positionInfo == null) {
@@ -307,18 +300,18 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         }, new SWDeviceManager.WorkDeviceInfoTask() {
             @Override
             public void work() {
-                if (SWDeviceManager.getInstance().getSelectedDevice() == null && SWDeviceList.getInstance().masterDevices.size() != 0) {
+                if (SWDeviceManager.getInstance().getSelectedDevice() == null && SWDeviceManager.getInstance().getMasterDeviceList().size() != 0) {
                     SWDevice item = (SWDevice) mDevicesAdapter.getItem(0);
                     if (Utils.isNull(item)) {
                         return;
                     }
                     SWDeviceManager.getInstance().setSelectedDevice(item);
-                    SWDeviceManager.getInstance().registerAVTransport(mContext);
-                    SWDeviceManager.getInstance().registerRenderingControl(mContext);
-                    SWDeviceManager.getInstance().registerMediaRenderer(mContext);
-                    SWDeviceManager.getInstance().registerMediaServer(mContext);
-                    SWDeviceManager.getInstance().registerConnectionManager(mContext);
-                    SWDeviceManager.getInstance().registerContentDirectory(mContext);
+
+//                    SWDeviceManager.getInstance().registerRenderingControl(mContext);
+//                    SWDeviceManager.getInstance().registerMediaRenderer(mContext);
+//                    SWDeviceManager.getInstance().registerMediaServer(mContext);
+//                    SWDeviceManager.getInstance().registerConnectionManager(mContext);
+//                    SWDeviceManager.getInstance().registerContentDirectory(mContext);
                 }
                 getVolumeInfo();
                 getDevicePlayerStatus();
@@ -525,7 +518,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
                                 true, true));
                         slavelpDeviceuuidS.add(listDTO.getUuid());
                     }
-                    for (SWDevice device : SWDeviceList.masterDevices) {
+                    for (SWDevice device : SWDeviceManager.getInstance().getMasterDeviceList()) {
                         if (device.getSwDeviceInfo().getSWDeviceStatus() != null && !device.getSwDeviceInfo().getSWDeviceStatus().getUpnp_uuid().equals(selectDevice.getSwDeviceInfo().getSWDeviceStatus().getUpnp_uuid()) &&
                                 !slavelpDeviceuuidS.contains(device.getSwDeviceInfo().getSWDeviceStatus().getUpnp_uuid())) {
                             lpDevices.add(new SelectSWDeviceBean(device.getSwDeviceInfo().getSWDeviceStatus().getSsid(), device.getSwDeviceInfo().getSWDeviceStatus().getDeviceName(), device.getSwDeviceInfo().getSWDeviceStatus().getApcli0(),
@@ -541,7 +534,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
                     Log.e("test", "showSelectDeviceDialog3:" + msg);
                     List<SelectSWDeviceBean> lpDevices = new ArrayList<>();
                     List<String> slavelpDeviceuuidS = new ArrayList<>();
-                    for (SWDevice device : SWDeviceList.masterDevices) {
+                    for (SWDevice device : SWDeviceManager.getInstance().getMasterDeviceList()) {
                         if (device.getSwDeviceInfo().getSWDeviceStatus() != null && !device.getSwDeviceInfo().getSWDeviceStatus().getUpnp_uuid().equals(selectDevice.getSwDeviceInfo().getSWDeviceStatus().getUpnp_uuid()) &&
                                 !slavelpDeviceuuidS.contains(device.getSwDeviceInfo().getSWDeviceStatus().getUpnp_uuid())) {
                             lpDevices.add(new SelectSWDeviceBean(device.getSwDeviceInfo().getSWDeviceStatus().getSsid(), device.getSwDeviceInfo().getSWDeviceStatus().getDeviceName(), device.getSwDeviceInfo().getSWDeviceStatus().getApcli0(),
@@ -1093,7 +1086,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
                         durationTv.setText(Utils.getStringTime(totlen));
                         mSeekProgress.setMax(100);
                         if (totlen != 0)
-                        mSeekProgress.setProgress(curpos * 100 / totlen);
+                            mSeekProgress.setProgress(curpos * 100 / totlen);
                     }
                     break;
                 case REFRESH_MEDIA_VIEW:

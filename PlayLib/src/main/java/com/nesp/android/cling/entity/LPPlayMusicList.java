@@ -7,6 +7,9 @@ package com.nesp.android.cling.entity;
 
 
 import android.util.Log;
+
+import com.nesp.android.cling.util.LogUtils;
+
 import java.util.List;
 
 public class LPPlayMusicList {
@@ -32,7 +35,7 @@ public class LPPlayMusicList {
             this.list = var1;
         } catch (Exception var2) {
             var2.printStackTrace();
-            Log.e("LPPlayMusicList", "setList error = " + var2.getMessage());
+            LogUtils.e("LPPlayMusicList", "setList error = " + var2.getMessage());
         }
 
     }

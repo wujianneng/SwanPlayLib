@@ -19,8 +19,9 @@ import com.linkplay.request.RequestItem.Builder;
 import com.linkplay.wifisetup.LPApItem;
 import com.linkplay.wifisetup.LPApListListener;
 import com.nesp.android.cling.entity.SWDevice;
-import com.nesp.android.cling.entity.SWDeviceList;
+
 import com.nesp.android.cling.entity.SlaveBean;
+import com.nesp.android.cling.util.LogUtils;
 import com.nesp.android.cling.util.OkHttp3Util;
 
 import org.json.JSONArray;
@@ -53,7 +54,7 @@ public class SWWiFiSetupManager {
         WifiManager var3 = (WifiManager)context.getSystemService("wifi");
         WifiInfo var4 = var3.getConnectionInfo();
         String var5 = var4.getSSID();
-        Log.e("SWWiFiSetupManager", "var50:" + var5);
+        LogUtils.e("SWWiFiSetupManager", "var50:" + var5);
         if (var5.startsWith("\"")) {
             var5 = var5.substring(1).trim();
         }
@@ -61,11 +62,11 @@ public class SWWiFiSetupManager {
         if (var5.endsWith("\"")) {
             var5 = var5.substring(0, var5.length() - 1).trim();
         }
-        Log.e("SWWiFiSetupManager", "var51:" + var5);
-        List<SWDevice> var6 = SWDeviceList.masterDevices;
+        LogUtils.e("SWWiFiSetupManager", "var51:" + var5);
+        List<SWDevice> var6 = SWDeviceManager.getInstance().getMasterDeviceList();
         if (var6 != null && var6.size() == 1 && var6.get(0) != null && var6.get(0).getSwDeviceInfo().getSWDeviceStatus() != null && var6.get(0).getSwDeviceInfo().getSWDeviceStatus().getSsid().equals(var5)) {
             this.curDevice = (SWDevice)var6.get(0);
-            Log.e("SWWiFiSetupManager", "var52:" + var6.get(0).getSwDeviceInfo().getSWDeviceStatus().getSsid());
+            LogUtils.e("SWWiFiSetupManager", "var52:" + var6.get(0).getSwDeviceInfo().getSWDeviceStatus().getSsid());
             return true;
         } else {
             this.curDevice = null;
@@ -75,7 +76,7 @@ public class SWWiFiSetupManager {
 
     public void getApList(final LPApListListener listener) {
         if (curDevice == null) {
-            Log.e("SWWiFiSetupManager", "Please confirm whether to connect isLinkplayHotspot first.");
+            LogUtils.e("SWWiFiSetupManager", "Please confirm whether to connect isLinkplayHotspot first.");
             if (listener != null) {
                 listener.LPApList((List)null);
             }
@@ -84,7 +85,7 @@ public class SWWiFiSetupManager {
             OkHttp3Util.doGet("http://" + curDevice.getIp() + "/httpapi.asp?command=wlanGetApListEx", new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    Log.e("SWWiFiSetupManager", "getApList:" + e.getLocalizedMessage());
+                    LogUtils.e("SWWiFiSetupManager", "getApList:" + e.getLocalizedMessage());
                     if (listener != null) {
                         listener.LPApList((List)null);
                     }
@@ -96,7 +97,7 @@ public class SWWiFiSetupManager {
                         this.onFailure(call,new EOFException());
                     } else {
                         String var2 = new String(response.body().bytes());
-                        Log.e("SWWiFiSetupManager", "getApList onSuccess:" + var2);
+                        LogUtils.e("SWWiFiSetupManager", "getApList onSuccess:" + var2);
                         List var3 = parseApItems(var2);
                         if (listener != null) {
                             listener.LPApList(var3);
@@ -256,12 +257,12 @@ public class SWWiFiSetupManager {
 
                     SWDevice var4 = deviceForID(SearchTimer.this.device.getSwDeviceInfo().getSWDeviceStatus().getUuid());
                     if(var4 != null){
-                        Log.e("test","netstat:" + var4.getSwDeviceInfo().getSWDeviceStatus().getNetstat());
+                        LogUtils.e("test","netstat:" + var4.getSwDeviceInfo().getSWDeviceStatus().getNetstat());
                     }else {
-                        Log.e("test","netstat:" + "var4 == null");
+                        LogUtils.e("test","netstat:" + "var4 == null");
                     }
                     if (var4 != null && var4.getSwDeviceInfo().getSWDeviceStatus() != null) {
-                        Log.e("test","netstat:" + var4.getSwDeviceInfo().getSWDeviceStatus().getNetstat());
+                        LogUtils.e("test","netstat:" + var4.getSwDeviceInfo().getSWDeviceStatus().getNetstat());
                         if(var4.getSwDeviceInfo().getSWDeviceStatus().getNetstat().equals("1")) {
                             if (SearchTimer.this.listener != null) {
                                 SearchTimer.this.listener.SWWiFiSetupSuccess(var4);
@@ -280,7 +281,7 @@ public class SWWiFiSetupManager {
     }
 
     public static SWDevice deviceForID(String lpDeviceuuid) {
-        for (SWDevice lpDevice : SWDeviceList.masterDevices) {
+        for (SWDevice lpDevice : SWDeviceManager.getInstance().getMasterDeviceList()) {
             if (lpDevice.getSwDeviceInfo().getSWDeviceStatus().getUuid().equals(lpDeviceuuid)) {
                 return lpDevice;
             }

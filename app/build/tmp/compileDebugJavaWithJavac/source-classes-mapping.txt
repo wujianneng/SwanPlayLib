@@ -1,7 +1,9 @@
-com/PlaylistAdapter.java
- com.PlaylistAdapter
+com/SelectDeviceAdapter.java
+ com.SelectDeviceAdapter
 com/wujianneng/huiweilink/BuildConfig.java
  com.wujianneng.huiweilink.BuildConfig
+com/PlaylistAdapter.java
+ com.PlaylistAdapter
 com/DevicesAdapter.java
  com.DevicesAdapter
 com/MainActivity.java
@@ -34,5 +36,3 @@ com/MainActivity.java
  com.MainActivity$9
  com.MainActivity$InnerHandler
  com.MainActivity$TransportStateBroadcastReceiver
-com/SelectDeviceAdapter.java
- com.SelectDeviceAdapter

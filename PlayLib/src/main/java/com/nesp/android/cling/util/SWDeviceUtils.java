@@ -11,6 +11,7 @@ import com.nesp.android.cling.callback.GetControlDeviceInfo;
 import com.nesp.android.cling.control.callback.ControlCallback;
 import com.nesp.android.cling.control.callback.ControlReceiveCallback;
 import com.nesp.android.cling.entity.ClingGetControlDeviceInfoResponse;
+import com.nesp.android.cling.entity.ClingMediaResponse;
 import com.nesp.android.cling.entity.ClingPositionResponse;
 import com.nesp.android.cling.entity.ClingResponse;
 import com.nesp.android.cling.entity.DeviceInfoBean;
@@ -18,7 +19,7 @@ import com.nesp.android.cling.entity.IControlPoint;
 import com.nesp.android.cling.entity.IDevice;
 import com.nesp.android.cling.entity.PlayStatusBean;
 import com.nesp.android.cling.entity.SWDevice;
-import com.nesp.android.cling.entity.SWDeviceList;
+
 import com.nesp.android.cling.entity.SelectSWDeviceBean;
 import com.nesp.android.cling.entity.SlaveBean;
 import com.nesp.android.cling.entity.SwanRomDownloadStatusResultBean;
@@ -35,10 +36,13 @@ import org.teleal.cling.model.meta.Device;
 import org.teleal.cling.model.meta.Service;
 import org.teleal.cling.model.types.ServiceId;
 import org.teleal.cling.model.types.ServiceType;
+import org.teleal.cling.support.avtransport.callback.GetMediaInfo;
 import org.teleal.cling.support.avtransport.callback.GetPositionInfo;
+import org.teleal.cling.support.model.MediaInfo;
 import org.teleal.cling.support.model.PositionInfo;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -163,12 +167,55 @@ public class SWDeviceUtils {
         controlPointImpl.execute(getPositionInfo);
     }
 
+    public static void getDeviceMediaInfo(Device device, final ControlReceiveCallback callback) {
+
+        final Service avtService = SWDeviceUtils.findAVTServiceByDevice(device);
+        if (Utils.isNull(avtService)) {
+            return;
+        }
+
+        Log.d("test", "SWPlayControl.getPositionInfo:Found media render service in device, sending get position");
+
+        GetMediaInfo getMediaInfo = new GetMediaInfo(avtService) {
+            @Override
+            public void failure(ActionInvocation invocation, UpnpResponse operation, String defaultMsg) {
+                Log.d("test", "SWPlayControl.failure:defaultMsg " + defaultMsg);
+                if (Utils.isNotNull(callback)) {
+                    callback.fail(new ClingPositionResponse(invocation, operation, defaultMsg));
+                }
+            }
+
+            @Override
+            public void success(ActionInvocation invocation) {
+                super.success(invocation);
+                if (Utils.isNotNull(callback)) {
+                    callback.success(new ClingPositionResponse(invocation));
+                }
+            }
+
+            @Override
+            public void received(ActionInvocation invocation, MediaInfo info) {
+                Log.d("test", "SWPlayControl.received:info " + info);
+                if (Utils.isNotNull(callback)) {
+                    callback.receive(new ClingMediaResponse(invocation, info));
+                }
+            }
+        };
+
+        ControlPoint controlPointImpl = SWDeviceUtils.getControlPoint();
+        if (Utils.isNull(controlPointImpl)) {
+            return;
+        }
+
+        controlPointImpl.execute(getMediaInfo);
+    }
+
     public static void getSlaveList(String deviceIp, GetSlaveListCallback callback) {
         //获取子设备列表
         OkHttp3Util.doGet("http://" + deviceIp + "/httpapi.asp?command=multiroom:getSlaveList", new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.e("test", "slavef:" + e.getMessage());
+                LogUtils.e("test", "slavef:" + e.getMessage());
                 callback.onFailure("onFailure");
             }
 
@@ -177,7 +224,7 @@ public class SWDeviceUtils {
                 SlaveBean slaveBean = null;
                 try {
                     slaveBean = new Gson().fromJson(response.body().string(), SlaveBean.class);
-                    Log.e("test", "slaveBean.getSlave_list().size():" + slaveBean.getSlave_list().size());
+                    LogUtils.e("test", "slaveBean.getSlave_list().size():" + slaveBean.getSlave_list().size());
                     if (slaveBean == null || slaveBean.getSlave_list().size() == 0) {
                         callback.onFailure("slaveBean.getSlave_list().size() == 0");
                     } else {
@@ -222,7 +269,55 @@ public class SWDeviceUtils {
     }
 
     public static void slaveListKicIn(Activity activity, SWDevice masterDevice, List<SelectSWDeviceBean> slaveList, BaseCallback callback) {
+        if(slaveList.size() == 0) return;
+        List<SelectSWDeviceBean> templist = new ArrayList<>();
+        templist.addAll(slaveList);
+        activity.runOnUiThread(() -> {
+            CountDownTimer countDownTimer = new CountDownTimer(100000, 2000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    SWDeviceUtils.getSlaveList(masterDevice.getIp(), new SWDeviceUtils.GetSlaveListCallback() {
+                        @Override
+                        public void onResponse(List<SlaveBean.SlaveListDTO> slaveListDTOList) {
+                            if (slaveListDTOList.size() != 0) {
+                                int needcount = templist.size();
+                                LogUtils.e("test", "addCount:templist" + templist.size() + " slaveListDTOList:" + slaveListDTOList.size());
+                                for (SelectSWDeviceBean device : templist) {
+                                    for (SlaveBean.SlaveListDTO slaveListDTO : slaveListDTOList) {
+                                        if (device.getSsid().equals(slaveListDTO.getSsid())) {
+                                            SWDevice offlineDevice = deviceForSsid(device.getSsid());
+                                            if (offlineDevice != null) {
+                                                SWDeviceManager.getInstance().offLineDeviceList.add(offlineDevice);
+                                            }
+                                            needcount--;
+                                        }
+                                    }
+                                }
+                                boolean NotContainsActionList = masterDeviceListNotContainsActionList(templist);
+                                if (needcount == 0 && NotContainsActionList) {
+                                    LogUtils.e("test", "addCount:" + needcount);
+                                    callback.onResponse("success");
+                                    cancel();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(String msg) {
+
+                        }
+                    });
+                }
+
+                @Override
+                public void onFinish() {
+                    callback.onResponse("success");
+                }
+            };
+            countDownTimer.start();
+        });
         //同步多台设备
+
         for (SelectSWDeviceBean swDevice : slaveList) {
             SWDeviceUtils.slaveKicIn(masterDevice.getSwDeviceInfo().getSWDeviceStatus().getApcli0(), swDevice.getLpDeviceIp(), masterDevice.
                             getSwDeviceInfo().getSWDeviceStatus().getSsid(), masterDevice.getSwDeviceInfo().getSWDeviceStatus().getWifiChannel(), masterDevice.
@@ -230,73 +325,26 @@ public class SWDeviceUtils {
                     new SWDeviceUtils.BaseCallback() {
                         @Override
                         public void onResponse(String result) {
-                            Log.e("test", "同步onSuccess");
-                            activity.runOnUiThread(() -> {
-                                CountDownTimer countDownTimer = new CountDownTimer(120000, 2000) {
-                                    @Override
-                                    public void onTick(long millisUntilFinished) {
-                                        SWDeviceUtils.getSlaveList(masterDevice.getIp(), new SWDeviceUtils.GetSlaveListCallback() {
-                                            @Override
-                                            public void onResponse(List<SlaveBean.SlaveListDTO> slaveListDTOList) {
-                                                if (slaveListDTOList.size() != 0) {
-                                                    int needcount = slaveList.size();
-                                                    Log.e("test", "addCount:start:" + needcount + "offsize:" + SWDeviceManager.getInstance().offLineDeviceList.size());
-                                                    for (SelectSWDeviceBean device : slaveList) {
-                                                        for (SlaveBean.SlaveListDTO slaveListDTO : slaveListDTOList) {
-                                                            if (device.getSsid().equals(slaveListDTO.getSsid())) {
-                                                                SWDevice offlineDevice = deviceForSsid(device.getSsid());
-                                                                if(offlineDevice != null) {
-                                                                    SWDeviceManager.getInstance().offLineDeviceList.add(offlineDevice);
-                                                                    Log.e("test", "addCount:offLineDeviceList.add:" +
-                                                                            "offsize:" + SWDeviceManager.getInstance().offLineDeviceList.size());
-                                                                }
-                                                                needcount--;
-                                                            }
-                                                        }
-                                                        Log.e("test", "addCount:devicessid:" + device.getSsid() + " count:" + needcount
-                                                                + "offsize:" + SWDeviceManager.getInstance().offLineDeviceList.size());
-                                                    }
-                                                    boolean NotContainsActionList = masterDeviceListNotContainsActionList(slaveList);
-                                                    Log.e("test", "addCount:NotContainsActionList:" + NotContainsActionList + " " +
-                                                            "size:" + SWDeviceManager.getInstance().getMasterDeviceList().size());
-                                                    if (needcount == 0 && NotContainsActionList) {
-                                                        Log.e("test", "addCount:" + needcount);
-                                                        callback.onResponse("success");
-                                                        cancel();
-                                                    }
-                                                }
-                                            }
+                            LogUtils.e("test", "同步onSuccess");
 
-                                            @Override
-                                            public void onFailure(String msg) {
-
-                                            }
-                                        });
-                                    }
-
-                                    @Override
-                                    public void onFinish() {
-                                        callback.onResponse("success");
-                                    }
-                                };
-                                countDownTimer.start();
-                            });
 
                         }
 
                         @Override
                         public void onFailure(String msg) {
-                            callback.onFailure(msg);
+                            templist.remove(swDevice);
+                            LogUtils.e("test", "同步onFailure:" + msg + " device:" + swDevice.getLpDeviceName()) ;
                         }
                     });
 
         }
+
     }
 
     public static SWDevice deviceForSsid(String lpDevicessid) {
-        Log.e("test", "deviceForSsid:" + lpDevicessid);
-        for (SWDevice lpDevice : SWDeviceList.masterDevices) {
-            Log.e("test", "deviceForSsid:" + lpDevicessid + " itemssid:" + lpDevice.getSwDeviceInfo().getSWDeviceStatus().getSsid());
+        LogUtils.e("test", "deviceForSsid:" + lpDevicessid);
+        for (SWDevice lpDevice : SWDeviceManager.getInstance().getMasterDeviceList()) {
+            LogUtils.e("test", "deviceForSsid:" + lpDevicessid + " itemssid:" + lpDevice.getSwDeviceInfo().getSWDeviceStatus().getSsid());
             if (lpDevice.getSwDeviceInfo().getSWDeviceStatus().getSsid().trim().equals(lpDevicessid.trim())) {
                 return lpDevice;
             }
@@ -306,9 +354,9 @@ public class SWDeviceUtils {
 
     public static boolean masterDeviceListNotContainsActionList(List<SelectSWDeviceBean> slaveList) {
         boolean result = true;
-        for(SWDevice swDevice : SWDeviceManager.getInstance().getMasterDeviceList()){
-            for(SelectSWDeviceBean selectSWDeviceBean : slaveList){
-                if(selectSWDeviceBean.getSsid().equals(swDevice.getSwDeviceInfo().getSsid())){
+        for (SWDevice swDevice : SWDeviceManager.getInstance().getMasterDeviceList()) {
+            for (SelectSWDeviceBean selectSWDeviceBean : slaveList) {
+                if (selectSWDeviceBean.getSsid().equals(swDevice.getSwDeviceInfo().getSsid())) {
                     return false;
                 }
             }
@@ -316,36 +364,40 @@ public class SWDeviceUtils {
         return result;
     }
 
-    public static void slaveListKicOut(Activity activity,SWDevice masterDevice, List<SelectSWDeviceBean> swDeviceList, BaseCallback callback) {
+    public static void slaveListKicOut(Activity activity, SWDevice masterDevice, List<SelectSWDeviceBean> swDeviceList, BaseCallback callback) {
+        if(swDeviceList.size() == 0) return;
+        List<SelectSWDeviceBean> templist = new ArrayList<>();
+        templist.addAll(swDeviceList);
+        activity.runOnUiThread(() -> {
+            CountDownTimer countDownTimer = new CountDownTimer(60000, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    if (masterDeviceListContainsAllActionList(templist)) {
+                        callback.onResponse("success");
+                        cancel();
+                    }
+                }
+
+                @Override
+                public void onFinish() {
+                    callback.onResponse("success");
+                }
+            };
+            countDownTimer.start();
+        });
         //解绑多台设备
         for (SelectSWDeviceBean selectDevice : swDeviceList) {
-            SWDeviceUtils.slaveKicOut( masterDevice.getSwDeviceInfo().getSWDeviceStatus()
-                    .getApcli0(),selectDevice.getLpDeviceIp(), new SWDeviceUtils.BaseCallback() {
+            SWDeviceUtils.slaveKicOut(masterDevice.getSwDeviceInfo().getSWDeviceStatus()
+                    .getApcli0(), selectDevice.getLpDeviceIp(), new SWDeviceUtils.BaseCallback() {
                 @Override
                 public void onResponse(String result) {
-                    activity.runOnUiThread(() -> {
-                        CountDownTimer countDownTimer = new CountDownTimer(60000, 1000) {
-                            @Override
-                            public void onTick(long millisUntilFinished) {
-                                if (masterDeviceListContainsAllActionList(swDeviceList)) {
-                                    callback.onResponse("success");
-                                    cancel();
-                                }
-                            }
 
-                            @Override
-                            public void onFinish() {
-                                callback.onResponse("success");
-                            }
-                        };
-                        countDownTimer.start();
-                    });
                 }
 
                 @Override
                 public void onFailure(String msg) {
-                    Log.e("test","slaveKicOutf:" + msg);
-                    callback.onFailure(msg);
+                    LogUtils.e("test", "slaveKicOutf:" + msg);
+                    templist.remove(selectDevice);
                 }
             });
         }
@@ -353,9 +405,9 @@ public class SWDeviceUtils {
 
     private static boolean masterDeviceListContainsAllActionList(List<SelectSWDeviceBean> swDeviceList) {
         int size = swDeviceList.size();
-        for(SelectSWDeviceBean selectSWDeviceBean : swDeviceList) {
+        for (SelectSWDeviceBean selectSWDeviceBean : swDeviceList) {
             for (SWDevice swDevice : SWDeviceManager.getInstance().getMasterDeviceList()) {
-                if (swDevice.getSwDeviceInfo().getSsid().equals(selectSWDeviceBean.getSsid())){
+                if (swDevice.getSwDeviceInfo().getSsid().equals(selectSWDeviceBean.getSsid())) {
                     size--;
                 }
             }
@@ -489,7 +541,7 @@ public class SWDeviceUtils {
         OkHttp3Util.doGet("http://" + deviceIp + "/httpapi.asp?command=getStatusEx", new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.e("test", "NsdManagerongetDeviceInfoonFailure:" + e.getMessage());
+                LogUtils.e("test", "NsdManagerongetDeviceInfoonFailure:" + e.getMessage());
                 callback.onFailure(e.getMessage());
             }
 
@@ -497,12 +549,12 @@ public class SWDeviceUtils {
             public void onResponse(Call call, Response response) throws IOException {
                 try {
                     String result = response.body().string();
-                    Log.e("test", "NsdManagerongetDeviceInfo:" + result);
+                    LogUtils.e("test", "NsdManagerongetDeviceInfo:" + result);
                     DeviceInfoBean deviceInfoBean = new Gson().fromJson(result, DeviceInfoBean.class);
                     callback.onResponse(deviceInfoBean);
                 } catch (Exception e) {
                     callback.onFailure(e.getMessage());
-                    Log.e("test", "NsdManagerongetDeviceInfoException:" + e.getMessage());
+                    LogUtils.e("test", "NsdManagerongetDeviceInfoException:" + e.getMessage());
                 }
             }
         });
@@ -513,7 +565,7 @@ public class SWDeviceUtils {
         OkHttp3Util.doGet("http://" + deviceIp + "/httpapi.asp?command=getPlayerStatus", new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.e("test", "NsdManagerongetDevicePlayStatusonFailure:" + e.getMessage());
+                LogUtils.e("test", "NsdManagerongetDevicePlayStatusonFailure:" + e.getMessage());
                 callback.onFailure(e.getMessage());
             }
 
@@ -522,11 +574,11 @@ public class SWDeviceUtils {
                 try {
                     String result = response.body().string();
                     PlayStatusBean deviceInfoBean = new Gson().fromJson(result, PlayStatusBean.class);
-                    Log.e("test", "NsdManagerongetDevicePlayStatus:" + result);
+                    LogUtils.e("test", "NsdManagerongetDevicePlayStatus:" + result);
                     callback.onResponse(deviceInfoBean);
                 } catch (Exception e) {
                     callback.onFailure(e.getMessage());
-                    Log.e("test", "NsdManageronggetDevicePlayStatusException:" + e.getMessage());
+                    LogUtils.e("test", "NsdManageronggetDevicePlayStatusException:" + e.getMessage());
                 }
             }
         });
@@ -559,7 +611,7 @@ public class SWDeviceUtils {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = new String(response.body().bytes());
-                Log.e("test", "getMvRomDownloadStatus:" + result);
+                LogUtils.e("test", "getMvRomDownloadStatus:" + result);
                 try {
                     JSONObject jsonObject = new JSONObject(result);
                     SwanRomDownloadStatusResultBean bean = new SwanRomDownloadStatusResultBean();

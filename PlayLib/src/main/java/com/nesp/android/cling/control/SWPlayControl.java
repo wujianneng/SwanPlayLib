@@ -19,6 +19,7 @@ import com.nesp.android.cling.control.callback.ControlReceiveCallback;
 import com.nesp.android.cling.entity.*;
 import com.nesp.android.cling.listener.LPDevicePlayerListener;
 import com.nesp.android.cling.service.manager.SWDeviceManager;
+import com.nesp.android.cling.util.LogUtils;
 import com.nesp.android.cling.util.SWDeviceUtils;
 import com.nesp.android.cling.util.LPMSUtil;
 import com.nesp.android.cling.util.LPXmlUtil;
@@ -91,7 +92,7 @@ public class SWPlayControl implements IPlayControl {
         stop(new ControlCallback() { // 1、 停止当前播放视频
             @Override
             public void success(IResponse response) {
-                Log.e(TAG, "playAudio createQueue");
+                LogUtils.e(TAG, "playAudio createQueue");
                 createQueue(SWPlayControl.getMediaData(0, lpPlayItemList), new LPDevicePlayerListener() {
                     @Override
                     public void onSuccess(String var1) {
@@ -167,14 +168,14 @@ public class SWPlayControl implements IPlayControl {
             var5 = new UnsignedIntegerFourBytes((long) statusItem.getPlayIndex());
             controlPointImpl.execute(new PlayQueueWithIndex(avtService, statusItem.getPlaylistName(), var5) {
                 public void failure(ActionInvocation arg0, UpnpResponse arg1, String defaultMsg) {
-                    Log.e(TAG, "playAudio playQueueWithIndex execute failure：" + defaultMsg);
+                    LogUtils.e(TAG, "playAudio playQueueWithIndex execute failure：" + defaultMsg);
                     if (Utils.isNotNull(listener)) {
                         listener.onFailure(new Exception(defaultMsg));
                     }
                 }
 
                 public void success(ActionInvocation invocation) {
-                    Log.e(TAG, "playAudio playQueueWithIndex execute success:" + invocation.getOutputMap().toString());
+                    LogUtils.e(TAG, "playAudio playQueueWithIndex execute success:" + invocation.getOutputMap().toString());
                     if (Utils.isNotNull(listener)) {
                         listener.onSuccess(invocation.getOutputMap().toString());
                     }
@@ -211,14 +212,14 @@ public class SWPlayControl implements IPlayControl {
             var5 = new UnsignedIntegerFourBytes((long) index);
             controlPointImpl.execute(new PlayQueueWithIndex(avtService, LPPlayQueueType.LP_CURRENT_QUEUE.getValue(), var5) {
                 public void failure(ActionInvocation arg0, UpnpResponse arg1, String defaultMsg) {
-                    Log.e(TAG, "playAudio playQueueWithIndex execute failure：" + defaultMsg);
+                    LogUtils.e(TAG, "playAudio playQueueWithIndex execute failure：" + defaultMsg);
                     if (Utils.isNotNull(listener)) {
                         listener.onFailure(new Exception(defaultMsg));
                     }
                 }
 
                 public void success(ActionInvocation invocation) {
-                    Log.e(TAG, "playAudio playQueueWithIndex execute success:" + invocation.getOutputMap().toString());
+                    LogUtils.e(TAG, "playAudio playQueueWithIndex execute success:" + invocation.getOutputMap().toString());
                     if (Utils.isNotNull(listener)) {
                         listener.onSuccess(invocation.getOutputMap().toString());
                     }
@@ -239,7 +240,7 @@ public class SWPlayControl implements IPlayControl {
         controlPointImpl.execute(new AppendTracksInQueue(avtService, queueContext) {
             public void failure(ActionInvocation arg0, UpnpResponse arg1, String arg2) {
                 super.failure(arg0, arg1, arg2);
-                Log.e(TAG, "appendTracksInQueuefailure:" + arg2);
+                LogUtils.e(TAG, "appendTracksInQueuefailure:" + arg2);
                 if (Utils.isNotNull(listener)) {
                     listener.onFailure(new Exception(arg2));
                 }
@@ -247,7 +248,7 @@ public class SWPlayControl implements IPlayControl {
             }
 
             public void success(ActionInvocation arg0) {
-                Log.e(TAG, "appendTracksInQueuesuccess:");
+                LogUtils.e(TAG, "appendTracksInQueuesuccess:");
                 super.success(arg0);
                 if (Utils.isNotNull(listener)) {
                     listener.onSuccess(arg0.toString());
@@ -296,13 +297,13 @@ public class SWPlayControl implements IPlayControl {
             if (Utils.isNull(controlPointImpl)) {
                 return;
             }
-            Log.e(TAG, "playAudio createQueue execute:" + (String) var5.get(0));
+            LogUtils.e(TAG, "playAudio createQueue execute:" + (String) var5.get(0));
             controlPointImpl.execute(new CreateQueue(avtService, (String) var5.get(0)) {
 
                 @Override
                 public void success(ActionInvocation invocation) {
                     super.success(invocation);
-                    Log.e(TAG, "playAudio createQueue execute success:" + invocation.getOutputMap().toString());
+                    LogUtils.e(TAG, "playAudio createQueue execute success:" + invocation.getOutputMap().toString());
                     if (Utils.isNotNull(listener)) {
                         playQueueWithIndex(controlPointImpl, var4, avtService, listener);
                         if (var4.getAppendCount() >= 1 && var5.size() >= 1) {
@@ -331,7 +332,7 @@ public class SWPlayControl implements IPlayControl {
 
                 @Override
                 public void failure(ActionInvocation invocation, UpnpResponse operation, String defaultMsg) {
-                    Log.e(TAG, "playAudio createQueue execute failure：" + defaultMsg + " state:" + avtService.getServiceType());
+                    LogUtils.e(TAG, "playAudio createQueue execute failure：" + defaultMsg + " state:" + avtService.getServiceType());
                     if (listener != null) {
                         listener.onFailure(new Exception(defaultMsg));
                     }
@@ -514,8 +515,13 @@ public class SWPlayControl implements IPlayControl {
     }
 
 
+    /**
+     *
+     * @param currentProgress seek到的位置(单位:毫秒)
+     * @param callback
+     */
     @Override
-    public void seek(int currentProgressPercent, final ControlCallback callback) {
+    public void seek(int currentProgress, final ControlCallback callback) {
         final Service avtService = SWDeviceUtils.findServiceFromSelectedDevice(SWDeviceManager.AV_TRANSPORT_SERVICE);
         if (Utils.isNull(avtService)) {
             return;
@@ -526,8 +532,8 @@ public class SWPlayControl implements IPlayControl {
             return;
         }
 
-        String time = Utils.getStringTime2(currentProgressPercent);
-        Log.e(TAG, "seek->pos: " + currentProgressPercent + ", time: " + time);
+        String time = "00:" + Utils.getStringTime2(currentProgress);
+        LogUtils.e(TAG, "seek->pos: " + currentProgress + ", time: " + time);
         controlPointImpl.execute(new Seek(avtService, time) {
 
             @Override
@@ -916,11 +922,11 @@ public class SWPlayControl implements IPlayControl {
                     if (dataMap != null && dataMap.size() != 0) {
                         PlayList playList = new PlayList();
                         String s = dataMap.get("QueueContext").toString();
-                        Log.e("test", "getCurrentPlaylistsuccess： " + dataMap.toString());
+                        LogUtils.e("test", "getCurrentPlaylistsuccess： " + dataMap.toString());
                         LPPlayMusicList lpPlayMusicList = LPXmlUtil.convert2CurrentQueueItem(s);
-                        Log.e("test", "getCurrentPlaylistsuccess1： " + (lpPlayMusicList.getList().size() == 0));
+                        LogUtils.e("test", "getCurrentPlaylistsuccess1： " + lpPlayMusicList.getList().size());
                         if (lpPlayMusicList.getList().size() == 0) {
-                            Log.e("test", "getCurrentPlaylistsuccess2： " + s);
+                            LogUtils.e("test", "getCurrentPlaylistsuccess2： " + s);
                             XmlToJson xmlToJson = new XmlToJson.Builder(s).build();
                             try {
                                 JSONObject jsonObject = new JSONObject(xmlToJson.toString().replaceAll("\\\\", "").
@@ -950,15 +956,15 @@ public class SWPlayControl implements IPlayControl {
                                 playList.TrackNumber = playList.trackList.size();
 
                             } catch (Exception e) {
-                                Log.e("test", "getCurrentPlaylistsuccessf: " + e.getMessage());
+                                LogUtils.e("test", "getCurrentPlaylistsuccessf: " + e.getMessage());
                             }
                         } else {
                             playList.TrackNumber = lpPlayMusicList.getList().size();
                             playList.LastPlayIndex = lpPlayMusicList.getIndex();
                             playList.trackList = lpPlayMusicList.getList();
-                            Log.e("test", "getCurrentPlaylistsuccess3： " + new Gson().toJson(playList));
+                            LogUtils.e("test", "getCurrentPlaylistsuccess3： " + new Gson().toJson(playList));
                         }
-                        Log.e("test", "getCurrentPlaylistsuccess4： " + new Gson().toJson(playList));
+                        LogUtils.e("test", "getCurrentPlaylistsuccess4： " + new Gson().toJson(playList));
                         callback.onSuccess(playList);
                     }
                 }
@@ -966,7 +972,7 @@ public class SWPlayControl implements IPlayControl {
 
             @Override
             public void failure(ActionInvocation invocation, UpnpResponse operation, String defaultMsg) {
-                Log.e("test", "getCurrentPlaylistfailure： " + defaultMsg);
+                LogUtils.e("test", "getCurrentPlaylistfailure： " + defaultMsg);
                 if (Utils.isNotNull(callback)) {
                     callback.onFailed(defaultMsg);
                 }
@@ -1040,7 +1046,7 @@ public class SWPlayControl implements IPlayControl {
         Res res = new Res(new MimeType(ProtocolInfo.WILDCARD, ProtocolInfo.WILDCARD), size, playlist.get(playIndex).getTrackUrl());
         MusicTrack musicTrack = new MusicTrack("id", "0", playlist.get(playIndex).getTrackName(), playlist.get(playIndex).getTrackArtist(), "resolution", "resolution", res);
         String mediaData = createItemMetadata(musicTrack);
-        Log.e(TAG, "metadata: " + mediaData);
+        LogUtils.e(TAG, "metadata: " + mediaData);
         return mediaData;
     }
 
@@ -1184,7 +1190,7 @@ public class SWPlayControl implements IPlayControl {
                                 var10002.setList(list);
                                 var10002.setHeader(lpPlayHeader);
                                 var20.add(createXmlString(var10002));
-                                Log.e("test","listList:" + listList.size() + " list:" + list.size());
+                                LogUtils.e("test","listList:" + listList.size() + " list:" + list.size());
                             }
                         }
 
@@ -1197,7 +1203,7 @@ public class SWPlayControl implements IPlayControl {
                             lpPlayMediaData.setAppendCount(0);
                         }
 
-                        Log.e("test","playMusicSingleSource:" + lpitemlist.size() + " lpitemlist1:" + lpitemlist1.size() + " lpitemlist3:" +
+                        LogUtils.e("test","playMusicSingleSource:" + lpitemlist.size() + " lpitemlist1:" + lpitemlist1.size() + " lpitemlist3:" +
                                 lpitemlist3.size() + " lpPlayMediaData:" + lpPlayMediaData.getAppendCount());
                     }
 
@@ -1222,7 +1228,7 @@ public class SWPlayControl implements IPlayControl {
     }
 
     public static void appendStrings(StringBuffer var0, String var1) {
-        Log.e("LPQueueXmlCreator", "..." + var1);
+        LogUtils.e("LPQueueXmlCreator", "..." + var1);
         var0.append(var1);
     }
 
@@ -1350,7 +1356,7 @@ public class SWPlayControl implements IPlayControl {
                 protocolinfo = String.format("protocolInfo=\"%s:%s:%s:%s\"", pi.getProtocol(), pi.getNetwork(), pi.getContentFormatMimeType(), pi
                         .getAdditionalInfo());
             }
-            Log.e(TAG, "protocolinfo: " + protocolinfo);
+            LogUtils.e(TAG, "protocolinfo: " + protocolinfo);
 
             // resolution, extra info, not adding yet
             String resolution = "";

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import com.nesp.android.cling.Intents;
+import com.nesp.android.cling.util.LogUtils;
 import com.nesp.android.cling.util.Utils;
 import org.teleal.cling.model.gena.GENASubscription;
 import org.teleal.cling.model.meta.Service;
@@ -30,7 +31,7 @@ public class RenderingControlSubscriptionCallback extends BaseSubscriptionCallba
 
     @Override
     protected void eventReceived(GENASubscription subscription) {
-        Log.e(TAG, "SubscriptioneventReceived:" + subscription.toString());
+        LogUtils.e(TAG, "SubscriptioneventReceived:" + subscription.toString());
         Map<String, StateVariableValue> values = subscription.getCurrentValues();
         if (Utils.isNull(values)) {
             return;
@@ -43,7 +44,7 @@ public class RenderingControlSubscriptionCallback extends BaseSubscriptionCallba
         }
 
         String lastChangeValue = values.get("LastChange").toString();
-        Log.e(TAG, "LastChange:" + lastChangeValue);
+        LogUtils.e(TAG, "LastChange:" + lastChangeValue);
         LastChange lastChange;
         try {
             lastChange = new LastChange(new RenderingControlLastChangeParser(), lastChangeValue);
@@ -53,7 +54,7 @@ public class RenderingControlSubscriptionCallback extends BaseSubscriptionCallba
 
                 volume = lastChange.getEventedValue(0, RenderingControlVariable.Volume.class).getValue().getVolume();
 
-                Log.e(TAG, "onVolumeChange volume: " + volume);
+                LogUtils.e(TAG, "onVolumeChange volume: " + volume);
                 Intent intent = new Intent(Intents.ACTION_VOLUME_CALLBACK);
                 intent.putExtra(Intents.EXTRA_VOLUME, volume);
                 mContext.sendBroadcast(intent);

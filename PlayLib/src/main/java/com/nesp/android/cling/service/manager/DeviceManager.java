@@ -41,7 +41,7 @@ public class DeviceManager implements IDeviceManager {
         mSelectedDevice = (SWDevice) selectedDevice;
 
         // 重置选中状态
-        Collection<SWDevice> SWDeviceList = com.nesp.android.cling.entity.SWDeviceList.getInstance().getClingDeviceList();
+        Collection<SWDevice> SWDeviceList = SWDeviceManager.getInstance().getMasterDeviceList();
         if (Utils.isNotNull(SWDeviceList)) {
             for (SWDevice device : SWDeviceList) {
                 device.setSelected(false);
