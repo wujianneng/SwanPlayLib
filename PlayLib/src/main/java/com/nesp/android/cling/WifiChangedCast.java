@@ -26,12 +26,14 @@ public class WifiChangedCast extends BroadcastReceiver {
                 SWDeviceManager.getInstance().getMasterDeviceList().clear();
                 EventBus.getDefault().post(SWDeviceManager.REFRESH_LIST_UI_KEY);
                 SWDeviceManager.getInstance().refreshDevicesList();
+                EventBus.getDefault().post(SWDeviceManager.HIDE_ASK_CONNECT_DIALOG);
             } else if (arg01 != NetworkInfo.State.DISCONNECTED && arg01 != NetworkInfo.State.UNKNOWN) {
                 arg01 = NetworkInfo.State.CONNECTING;
             }else {
                 SWDeviceManager.getInstance().getMasterDeviceList().clear();
                 EventBus.getDefault().post(SWDeviceManager.REFRESH_LIST_UI_KEY);
                 SWDeviceManager.getInstance().refreshDevicesList();
+                EventBus.getDefault().post(SWDeviceManager.HIDE_ASK_CONNECT_DIALOG);
             }
         }
     }

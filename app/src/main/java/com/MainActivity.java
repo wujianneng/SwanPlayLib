@@ -189,6 +189,9 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
     }
 
     private void initListeners() {
+        SWDeviceManager.getInstance().setOnRemoveMasterDeviceListener(swDeviceList ->  mDevicesAdapter.notifyDataSetChanged());
+        SWDeviceManager.getInstance().setOnAddOneMasterDeviceListener(swDevice -> mDevicesAdapter.notifyDataSetChanged());
+
         mDeviceList.setOnItemClickListener((parent, view, position, id) -> {
             // 选择连接设备
             SWDevice item = (SWDevice) mDevicesAdapter.getItem(position);

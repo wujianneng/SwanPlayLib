@@ -24,6 +24,7 @@ import com.nesp.android.cling.entity.SlaveBean;
 import com.nesp.android.cling.util.LogUtils;
 import com.nesp.android.cling.util.OkHttp3Util;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

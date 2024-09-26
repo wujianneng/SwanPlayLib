@@ -91,6 +91,7 @@ public class SWDeviceManager implements ISWManager {
      * eventbus控制ui更新主设备列表ui的key
      */
     public final static String REFRESH_LIST_UI_KEY = "refresh_list_ui_key";
+    public final static String HIDE_ASK_CONNECT_DIALOG = "hideAskConnectDialog";
     private static SWDeviceManager INSTANCE = null;
 
     private ClingUpnpService mUpnpService;
@@ -169,7 +170,7 @@ public class SWDeviceManager implements ISWManager {
     /**
      * 删除重复添加的主设备
      */
-    public static void removeDuplicationDevices() {
+    public void removeDuplicationDevices() {
         Map<String, Integer> mutrimap = new HashMap<>();
         for (SWDevice swDevice : SWDeviceManager.getInstance().getMasterDeviceList()) {
             if (swDevice == null) continue;
@@ -189,7 +190,69 @@ public class SWDeviceManager implements ISWManager {
                 }
             }
         }
-        SWDeviceManager.getInstance().removeSomeMasterDeviceList(mutriDevices);
+        removeSomeMasterDevices(mutriDevices);
+    }
+
+    public void removeSomeMasterDevices(List<SWDevice> swDeviceList) {
+//        if(false){
+        if(swDeviceList.size() == 0) return;
+        LogUtils.e("removeSomeMasterDevices");
+        if (mActivity != null && onRemoveMasterDeviceListener != null) {
+            mActivity.runOnUiThread(() -> {
+                LogUtils.e("removeSomeMasterDevices2");
+                masterDevices.removeAll(swDeviceList);
+                onRemoveMasterDeviceListener.onRemoveMasterDevice(swDeviceList);
+                offLineDeviceList.clear();
+            });
+        } else {
+            masterDevices.removeAll(swDeviceList);
+            EventBus.getDefault().post(REFRESH_LIST_UI_KEY);
+            offLineDeviceList.clear();
+        }
+    }
+
+    public void addOneMasterDevice(SWDevice swDevice) {
+//        if(false){
+        if(swDevice == null) return;
+        if (mActivity != null && onAddOneMasterDeviceListener != null) {
+            mActivity.runOnUiThread(() -> {
+                masterDevices.add(swDevice);
+                onAddOneMasterDeviceListener.onAddOneMasterDevice(swDevice);
+            });
+        } else {
+            masterDevices.add(swDevice);
+            EventBus.getDefault().post(REFRESH_LIST_UI_KEY);
+        }
+    }
+
+    OnRemoveMasterDeviceListener onRemoveMasterDeviceListener;
+
+    public void setOnRemoveMasterDeviceListener(OnRemoveMasterDeviceListener listener) {
+        onRemoveMasterDeviceListener = listener;
+    }
+
+    public interface OnRemoveMasterDeviceListener {
+        void onRemoveMasterDevice(List<SWDevice> swDeviceList);
+    }
+
+    OnAddMasterDeviceListener onAddMasterDeviceListener;
+
+    public void setOnAddMasterDeviceListener(OnAddMasterDeviceListener listener) {
+        onAddMasterDeviceListener = listener;
+    }
+
+    public interface OnAddMasterDeviceListener {
+        void onAddMasterDevice(List<SWDevice> swDeviceList);
+    }
+
+    OnAddOneMasterDeviceListener onAddOneMasterDeviceListener;
+
+    public void setOnAddOneMasterDeviceListener(OnAddOneMasterDeviceListener listener) {
+        onAddOneMasterDeviceListener = listener;
+    }
+
+    public interface OnAddOneMasterDeviceListener {
+        void onAddOneMasterDevice(SWDevice swDevice);
     }
 
 
@@ -276,19 +339,22 @@ public class SWDeviceManager implements ISWManager {
 
     public void removeSomeMasterDeviceList(List<SWDevice> list) {
         masterDevices.removeAll(list);
-        for(SWDevice swDevice : list){
-            mUpnpService.getRegistry().removeDevice(new UDN(swDevice.getUuid()));
-        }
-        EventBus.getDefault().post(SWDeviceManager.REFRESH_LIST_UI_KEY);
+    }
+
+    public void addSomeMasterDeviceList(List<SWDevice> list) {
+        masterDevices.addAll(list);
+    }
+
+    public void addOneMasterDeviceList(SWDevice swDevice) {
+        masterDevices.add(swDevice);
     }
 
     Gson gson = new Gson();
 
     public void runOhterInfoExTask() {
         if (isPauseAllTask) return;
-        removeSomeMasterDeviceList(offLineDeviceList);
+        removeSomeMasterDevices(offLineDeviceList);
         removeDuplicationDevices();
-        offLineDeviceList.clear();
         if (SWDeviceManager.getInstance().getMasterDeviceList().size() != 0)
             try {
                 for (SWDevice SWDevice : SWDeviceManager.getInstance().getMasterDeviceList()) {
@@ -303,13 +369,13 @@ public class SWDeviceManager implements ISWManager {
 
                         @Override
                         public void onFailure(String msg) {
-                            LogUtils.e("test", "testOnlinef:" + SWDevice.getSwDeviceInfo().getSWDeviceStatus().getDeviceName() + " e:" + msg);
-                            int OnLineTestFailTimes = SWDevice.getOnLineTestFailTimes() + 1;
-                            SWDevice.setOnLineTestFailTimes(OnLineTestFailTimes);
-                            if (OnLineTestFailTimes >= 2)
-                                offLineDeviceList.add(SWDevice);
-
+//                            int OnLineTestFailTimes = SWDevice.getOnLineTestFailTimes() + 1;
+//                            SWDevice.setOnLineTestFailTimes(OnLineTestFailTimes);
+//                            if (OnLineTestFailTimes >= 2)
                             offLineDeviceList.add(SWDevice);
+                            LogUtils.e("test", "testOnlinef:" + SWDevice.getSwDeviceInfo().getSWDeviceStatus().getDeviceName()
+                                    + " e:" + msg);
+                            removeSomeMasterDevices(offLineDeviceList);
                         }
                     });
                 }
@@ -350,11 +416,12 @@ public class SWDeviceManager implements ISWManager {
                             for (SlaveBean.SlaveListDTO slaveListDTO : slaveBean.getSlave_list()) {
                                 if (swDevice.getSwDeviceInfo().getSWDeviceStatus().getSsid().equals(slaveListDTO.getSsid())) {
                                     SWDeviceManager.getInstance().offLineDeviceList.add(swDevice);
+                                    removeSomeMasterDevices(offLineDeviceList);
                                 }
                             }
                         }
                         if (SWDeviceManager.getInstance().offLineDeviceList.size() != 0) {
-                            removeSomeMasterDeviceList(SWDeviceManager.getInstance().offLineDeviceList);
+                            removeSomeMasterDevices(offLineDeviceList);
                         }
                         swDeviceInfo.setSWDeviceStatus(swDeviceStatus);
                         swDevice.setSwDeviceInfo(swDeviceInfo);
@@ -812,6 +879,7 @@ public class SWDeviceManager implements ISWManager {
         }
     }
 
+
     public void setOnRefreshSearchDevicesListener(OnRefreshSearchDevicesListener listener) {
         this.onRefreshSearchDevicesListener = listener;
     }
@@ -875,8 +943,7 @@ public class SWDeviceManager implements ISWManager {
                                 SWDevice.setMediaInfo(null);
                             }
                             if (!contain(SWDevice.getDevice(), masterDevices)) {
-                                masterDevices.add(SWDevice);
-                                mUpnpService.getRegistry().addDevice((RemoteDevice) SWDevice.getDevice());
+                                addOneMasterDevice(SWDevice);
                                 SWDeviceManager.getInstance().removeDuplicationDevices();
                             }
                         }
@@ -999,7 +1066,6 @@ public class SWDeviceManager implements ISWManager {
         stopTask();
         mUpnpService.onDestroy();
         mDeviceManager.destroy();
-        masterDevices.clear();
-        EventBus.getDefault().post(SWDeviceManager.REFRESH_LIST_UI_KEY);
+        removeSomeMasterDevices(masterDevices);
     }
 }
