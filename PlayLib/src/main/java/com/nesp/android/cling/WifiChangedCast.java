@@ -23,15 +23,13 @@ public class WifiChangedCast extends BroadcastReceiver {
             LogUtils.e("LINKPLAY_SDK", "wifi changed and State=" + arg01);
             if (arg01 == NetworkInfo.State.CONNECTED) {
                 LogUtils.e("LINKPLAY_SDK", "wifi changed and State=reInit()" + arg01);
-                SWDeviceManager.getInstance().getMasterDeviceList().clear();
-                EventBus.getDefault().post(SWDeviceManager.REFRESH_LIST_UI_KEY);
+                SWDeviceManager.getInstance().removeSomeMasterDevices(SWDeviceManager.getInstance().getMasterDeviceList());
                 SWDeviceManager.getInstance().refreshDevicesList();
                 EventBus.getDefault().post(SWDeviceManager.HIDE_ASK_CONNECT_DIALOG);
             } else if (arg01 != NetworkInfo.State.DISCONNECTED && arg01 != NetworkInfo.State.UNKNOWN) {
                 arg01 = NetworkInfo.State.CONNECTING;
             }else {
-                SWDeviceManager.getInstance().getMasterDeviceList().clear();
-                EventBus.getDefault().post(SWDeviceManager.REFRESH_LIST_UI_KEY);
+                SWDeviceManager.getInstance().removeSomeMasterDevices(SWDeviceManager.getInstance().getMasterDeviceList());
                 SWDeviceManager.getInstance().refreshDevicesList();
                 EventBus.getDefault().post(SWDeviceManager.HIDE_ASK_CONNECT_DIALOG);
             }

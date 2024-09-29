@@ -106,7 +106,11 @@ public class SWDeviceManager implements ISWManager {
     public void pauseAllTask(boolean isPauseAllTask) {
         this.isPauseAllTask = isPauseAllTask;
         if (!isPauseAllTask) {
-            runOhterInfoExTask();
+            if (positionTimer == null || infoTimer == null) {
+                init(mActivity);
+            } else {
+                runOhterInfoExTask();
+            }
         }
     }
 
@@ -195,13 +199,13 @@ public class SWDeviceManager implements ISWManager {
 
     public void removeSomeMasterDevices(List<SWDevice> swDeviceList) {
 //        if(false){
-        if(swDeviceList.size() == 0) return;
+        if (swDeviceList.size() == 0) return;
         LogUtils.e("removeSomeMasterDevices");
-        if (mActivity != null && onRemoveMasterDeviceListener != null) {
+        if (mActivity != null && onMasterDeviceChangeListener != null) {
             mActivity.runOnUiThread(() -> {
                 LogUtils.e("removeSomeMasterDevices2");
                 masterDevices.removeAll(swDeviceList);
-                onRemoveMasterDeviceListener.onRemoveMasterDevice(swDeviceList);
+                onMasterDeviceChangeListener.onChangeMasterDeviceList();
                 offLineDeviceList.clear();
             });
         } else {
@@ -213,11 +217,11 @@ public class SWDeviceManager implements ISWManager {
 
     public void addOneMasterDevice(SWDevice swDevice) {
 //        if(false){
-        if(swDevice == null) return;
-        if (mActivity != null && onAddOneMasterDeviceListener != null) {
+        if (swDevice == null) return;
+        if (mActivity != null && onMasterDeviceChangeListener != null) {
             mActivity.runOnUiThread(() -> {
                 masterDevices.add(swDevice);
-                onAddOneMasterDeviceListener.onAddOneMasterDevice(swDevice);
+                onMasterDeviceChangeListener.onChangeMasterDeviceList();
             });
         } else {
             masterDevices.add(swDevice);
@@ -225,34 +229,14 @@ public class SWDeviceManager implements ISWManager {
         }
     }
 
-    OnRemoveMasterDeviceListener onRemoveMasterDeviceListener;
+    OnMasterDeviceListChangeListener onMasterDeviceChangeListener;
 
-    public void setOnRemoveMasterDeviceListener(OnRemoveMasterDeviceListener listener) {
-        onRemoveMasterDeviceListener = listener;
+    public void setOnMasterDeviceListChangeListener(OnMasterDeviceListChangeListener listener) {
+        onMasterDeviceChangeListener = listener;
     }
 
-    public interface OnRemoveMasterDeviceListener {
-        void onRemoveMasterDevice(List<SWDevice> swDeviceList);
-    }
-
-    OnAddMasterDeviceListener onAddMasterDeviceListener;
-
-    public void setOnAddMasterDeviceListener(OnAddMasterDeviceListener listener) {
-        onAddMasterDeviceListener = listener;
-    }
-
-    public interface OnAddMasterDeviceListener {
-        void onAddMasterDevice(List<SWDevice> swDeviceList);
-    }
-
-    OnAddOneMasterDeviceListener onAddOneMasterDeviceListener;
-
-    public void setOnAddOneMasterDeviceListener(OnAddOneMasterDeviceListener listener) {
-        onAddOneMasterDeviceListener = listener;
-    }
-
-    public interface OnAddOneMasterDeviceListener {
-        void onAddOneMasterDevice(SWDevice swDevice);
+    public interface OnMasterDeviceListChangeListener {
+        void onChangeMasterDeviceList();
     }
 
 
@@ -337,18 +321,6 @@ public class SWDeviceManager implements ISWManager {
         return masterDevices;
     }
 
-    public void removeSomeMasterDeviceList(List<SWDevice> list) {
-        masterDevices.removeAll(list);
-    }
-
-    public void addSomeMasterDeviceList(List<SWDevice> list) {
-        masterDevices.addAll(list);
-    }
-
-    public void addOneMasterDeviceList(SWDevice swDevice) {
-        masterDevices.add(swDevice);
-    }
-
     Gson gson = new Gson();
 
     public void runOhterInfoExTask() {
@@ -390,122 +362,155 @@ public class SWDeviceManager implements ISWManager {
             deviceInfoTask.work();
         }
         if (SWDeviceManager.getInstance().getMasterDeviceList() != null && SWDeviceManager.getInstance().getMasterDeviceList().size() != 0) {
-            for (SWDevice swDevice : SWDeviceManager.getInstance().getMasterDeviceList()) {
-                if (swDevice == null) continue;
-                SWDeviceUtils.getControlDeviceInfo(swDevice.getDevice(), new ControlCallback() {
-                    @Override
-                    public void success(IResponse response) {
-                        ClingGetControlDeviceInfoResponse getControlDeviceInfoResponse = (ClingGetControlDeviceInfoResponse) response;
-                        Map<String, ActionArgumentValue> map = getControlDeviceInfoResponse.info;
-                        LogUtils.e("test", "getSWDeviceStatus:" + map.toString());
+            try {
+                for (SWDevice swDevice : SWDeviceManager.getInstance().getMasterDeviceList()) {
+                    if (swDevice == null) continue;
+                    SWDeviceUtils.getControlDeviceInfo(swDevice.getDevice(), new ControlCallback() {
+                        @Override
+                        public void success(IResponse response) {
+                            ClingGetControlDeviceInfoResponse getControlDeviceInfoResponse = (ClingGetControlDeviceInfoResponse) response;
+                            Map<String, ActionArgumentValue> map = getControlDeviceInfoResponse.info;
+                            LogUtils.e("test", "getSWDeviceStatus:" + map.toString());
 
-                        SWDeviceInfo swDeviceInfo = new SWDeviceInfo();
-                        swDeviceInfo.setMultiType(map.get("MultiType").toString());
-                        swDeviceInfo.setRouter(map.get("Router").toString());
-                        swDeviceInfo.setSsid(map.get("Ssid").toString());
-                        swDeviceInfo.setSlaveMask(map.get("SlaveMask").toString());
-                        swDeviceInfo.setCurrentVolume(map.get("CurrentVolume").toString());
-                        swDeviceInfo.setCurrentMute(map.get("CurrentMute").toString());
-                        swDeviceInfo.setCurrentChannel(map.get("CurrentChannel").toString());
-                        String slaveListStr = map.get("SlaveList").toString();
-                        String statusStr = map.get("Status").toString();
-                        SlaveBean slaveBean = gson.fromJson(slaveListStr, SlaveBean.class);
-                        SWDeviceStatus swDeviceStatus = gson.fromJson(statusStr, SWDeviceStatus.class);
-                        swDeviceInfo.setSlaveList(slaveBean.getSlave_list());
-                        for (SWDevice swDevice : SWDeviceManager.getInstance().getMasterDeviceList()) {
-                            for (SlaveBean.SlaveListDTO slaveListDTO : slaveBean.getSlave_list()) {
-                                if (swDevice.getSwDeviceInfo().getSWDeviceStatus().getSsid().equals(slaveListDTO.getSsid())) {
-                                    SWDeviceManager.getInstance().offLineDeviceList.add(swDevice);
-                                    removeSomeMasterDevices(offLineDeviceList);
+                            SWDeviceInfo swDeviceInfo = new SWDeviceInfo();
+                            swDeviceInfo.setMultiType(map.get("MultiType").toString());
+                            swDeviceInfo.setRouter(map.get("Router").toString());
+                            swDeviceInfo.setSsid(map.get("Ssid").toString());
+                            swDeviceInfo.setSlaveMask(map.get("SlaveMask").toString());
+                            swDeviceInfo.setCurrentVolume(map.get("CurrentVolume").toString());
+                            swDeviceInfo.setCurrentMute(map.get("CurrentMute").toString());
+                            swDeviceInfo.setCurrentChannel(map.get("CurrentChannel").toString());
+                            String slaveListStr = map.get("SlaveList").toString();
+                            String statusStr = map.get("Status").toString();
+                            SlaveBean slaveBean = gson.fromJson(slaveListStr, SlaveBean.class);
+                            SWDeviceStatus swDeviceStatus = gson.fromJson(statusStr, SWDeviceStatus.class);
+                            swDeviceInfo.setSlaveList(slaveBean.getSlave_list());
+                            try {
+                                for (SWDevice swDevice : SWDeviceManager.getInstance().getMasterDeviceList()) {
+                                    for (SlaveBean.SlaveListDTO slaveListDTO : slaveBean.getSlave_list()) {
+                                        if (swDevice.getSwDeviceInfo().getSWDeviceStatus().getSsid().equals(slaveListDTO.getSsid())) {
+                                            SWDeviceManager.getInstance().offLineDeviceList.add(swDevice);
+                                            removeSomeMasterDevices(offLineDeviceList);
+                                        }
+                                    }
                                 }
+                            } catch (ConcurrentModificationException e) {
+
                             }
-                        }
-                        if (SWDeviceManager.getInstance().offLineDeviceList.size() != 0) {
-                            removeSomeMasterDevices(offLineDeviceList);
-                        }
-                        swDeviceInfo.setSWDeviceStatus(swDeviceStatus);
-                        swDevice.setSwDeviceInfo(swDeviceInfo);
-                        SWDeviceUtils.getDevicePlayerStatus(swDevice.getIp(), new SWDeviceUtils.GetDevicePlayerStatusCallback() {
-                            @Override
-                            public void onResponse(PlayStatusBean playStatusBean) {
-                                if (swDevice.getSwDeviceInfo().getSWDeviceStatus().getHardware().contains("SWAN")) {
-                                    int lastposex = playStatusBean.getCurpos() == null ? 0 : Integer.parseInt(playStatusBean.getCurpos());
-                                    int lasttolposex = playStatusBean.getTotlen() == null ? 0 : Integer.parseInt(playStatusBean.getTotlen());
-                                    playStatusBean.setCurpos(lastposex * 1000 + "");
-                                    playStatusBean.setTotlen(lasttolposex * 1000 + "");
-                                }
-                                swDevice.setPlayStatusBean(playStatusBean);
-                                SWDeviceUtils.getDeviceMediaInfo(swDevice.getDevice(), new ControlReceiveCallback() {
-                                    @Override
-                                    public void receive(IResponse response) {
-                                        ClingMediaResponse mediaResponse = (ClingMediaResponse) response;
-                                        MediaInfo mediaInfo = mediaResponse.getResponse();
-                                        LPMediaInfo lpMediaInfo = new LPMediaInfo();
-                                        lpMediaInfo.parseMetaData(mediaInfo.getCurrentURIMetaData());
-                                        try {
-                                            MusicDataBean.DataBean musicDataBean = gson.fromJson(URLDecoder.decode(lpMediaInfo.getAlbumArtURI(),
-                                                    "UTF-8"), MusicDataBean.DataBean.class);
-                                            LogUtils.e("parse", "Current URI metadata: " + gson.toJson(musicDataBean));
-                                            if (musicDataBean != null) {
-                                                musicDataBean.setAlbum(lpMediaInfo.getAlbum());
-                                                musicDataBean.setCreator(lpMediaInfo.getCreator());
-                                                musicDataBean.setMediaType(lpMediaInfo.getMediaType());
-                                                if (swDevice != null && (swDevice.getMediaInfo() == null || !swDevice.getMediaInfo().getPlayUrl().equals(musicDataBean.getPlayUrl())))
-                                                    swDevice.setMediaInfo(musicDataBean);
-                                                if (deviceInfoTask != null && (swDevice == null || getSelectedDevice() == null
-                                                        || swDevice.getUuid().equals(getSelectedDevice().getUuid()))) {
-                                                    deviceInfoTask.work();
-                                                    EventBus.getDefault().post(REFRESH_LIST_UI_KEY);
+                            if (SWDeviceManager.getInstance().offLineDeviceList.size() != 0) {
+                                removeSomeMasterDevices(offLineDeviceList);
+                            }
+                            swDeviceInfo.setSWDeviceStatus(swDeviceStatus);
+                            swDevice.setSwDeviceInfo(swDeviceInfo);
+                            SWDeviceUtils.getDevicePlayerStatus(swDevice.getIp(), new SWDeviceUtils.GetDevicePlayerStatusCallback() {
+                                @Override
+                                public void onResponse(PlayStatusBean playStatusBean) {
+                                    if (swDevice.getSwDeviceInfo().getSWDeviceStatus().getHardware().contains("SWAN")) {
+                                        int lastposex = playStatusBean.getCurpos() == null ? 0 : Integer.parseInt(playStatusBean.getCurpos());
+                                        int lasttolposex = playStatusBean.getTotlen() == null ? 0 : Integer.parseInt(playStatusBean.getTotlen());
+                                        playStatusBean.setCurpos(lastposex * 1000 + "");
+                                        playStatusBean.setTotlen(lasttolposex * 1000 + "");
+                                    }
+                                    swDevice.setPlayStatusBean(playStatusBean);
+                                    SWDeviceUtils.getDeviceMediaInfo(swDevice.getDevice(), new ControlReceiveCallback() {
+                                        @Override
+                                        public void receive(IResponse response) {
+                                            ClingMediaResponse mediaResponse = (ClingMediaResponse) response;
+                                            MediaInfo mediaInfo = mediaResponse.getResponse();
+                                            LPMediaInfo lpMediaInfo = new LPMediaInfo();
+                                            lpMediaInfo.parseMetaData(mediaInfo.getCurrentURIMetaData());
+                                            try {
+                                                MusicDataBean.DataBean musicDataBean = gson.fromJson(URLDecoder.decode(lpMediaInfo.getAlbumArtURI(),
+                                                        "UTF-8"), MusicDataBean.DataBean.class);
+                                                LogUtils.e("parse", "Current URI metadata: " + gson.toJson(musicDataBean));
+                                                if (musicDataBean != null) {
+                                                    musicDataBean.setAlbum(lpMediaInfo.getAlbum());
+                                                    musicDataBean.setCreator(lpMediaInfo.getCreator());
+                                                    musicDataBean.setMediaType(lpMediaInfo.getMediaType());
+                                                    if (swDevice != null && (swDevice.getMediaInfo() == null || !swDevice.getMediaInfo().getPlayUrl().equals(musicDataBean.getPlayUrl())))
+                                                        swDevice.setMediaInfo(musicDataBean);
+                                                    if (deviceInfoTask != null && (swDevice == null || getSelectedDevice() == null
+                                                            || swDevice.getUuid().equals(getSelectedDevice().getUuid()))) {
+                                                        deviceInfoTask.work();
+                                                        if (mActivity != null && onMasterDeviceChangeListener != null) {
+                                                            mActivity.runOnUiThread(() -> {
+                                                                onMasterDeviceChangeListener.onChangeMasterDeviceList();
+                                                            });
+                                                        } else {
+                                                            EventBus.getDefault().post(REFRESH_LIST_UI_KEY);
+                                                        }
+                                                    }
+                                                } else {
+                                                    if (swDevice != null)
+                                                        swDevice.setMediaInfo(null);
+                                                    if (deviceInfoTask != null && (swDevice == null || getSelectedDevice() == null
+                                                            || swDevice.getUuid().equals(getSelectedDevice().getUuid()))) {
+                                                        deviceInfoTask.work();
+                                                        if (mActivity != null && onMasterDeviceChangeListener != null) {
+                                                            mActivity.runOnUiThread(() -> {
+                                                                onMasterDeviceChangeListener.onChangeMasterDeviceList();
+                                                            });
+                                                        } else {
+                                                            EventBus.getDefault().post(REFRESH_LIST_UI_KEY);
+                                                        }
+                                                    }
                                                 }
-                                            } else {
+                                            } catch (Exception e) {
                                                 if (swDevice != null)
                                                     swDevice.setMediaInfo(null);
                                                 if (deviceInfoTask != null && (swDevice == null || getSelectedDevice() == null
                                                         || swDevice.getUuid().equals(getSelectedDevice().getUuid()))) {
                                                     deviceInfoTask.work();
-                                                    EventBus.getDefault().post(REFRESH_LIST_UI_KEY);
+                                                    if (mActivity != null && onMasterDeviceChangeListener != null) {
+                                                        mActivity.runOnUiThread(() -> {
+                                                            onMasterDeviceChangeListener.onChangeMasterDeviceList();
+                                                        });
+                                                    } else {
+                                                        EventBus.getDefault().post(REFRESH_LIST_UI_KEY);
+                                                    }
                                                 }
                                             }
-                                        } catch (Exception e) {
+                                        }
+
+                                        @Override
+                                        public void success(IResponse response) {
+
+                                        }
+
+                                        @Override
+                                        public void fail(IResponse response) {
                                             if (swDevice != null)
                                                 swDevice.setMediaInfo(null);
                                             if (deviceInfoTask != null && (swDevice == null || getSelectedDevice() == null
                                                     || swDevice.getUuid().equals(getSelectedDevice().getUuid()))) {
                                                 deviceInfoTask.work();
-                                                EventBus.getDefault().post(REFRESH_LIST_UI_KEY);
+                                                if (mActivity != null && onMasterDeviceChangeListener != null) {
+                                                    mActivity.runOnUiThread(() -> {
+                                                        onMasterDeviceChangeListener.onChangeMasterDeviceList();
+                                                    });
+                                                } else {
+                                                    EventBus.getDefault().post(REFRESH_LIST_UI_KEY);
+                                                }
                                             }
                                         }
-                                    }
+                                    });
+                                }
 
-                                    @Override
-                                    public void success(IResponse response) {
+                                @Override
+                                public void onFailure(String msg) {
 
-                                    }
+                                }
+                            });
+                        }
 
-                                    @Override
-                                    public void fail(IResponse response) {
-                                        if (swDevice != null)
-                                            swDevice.setMediaInfo(null);
-                                        if (deviceInfoTask != null && (swDevice == null || getSelectedDevice() == null
-                                                || swDevice.getUuid().equals(getSelectedDevice().getUuid()))) {
-                                            deviceInfoTask.work();
-                                        }
-                                    }
-                                });
-                            }
+                        @Override
+                        public void fail(IResponse response) {
 
-                            @Override
-                            public void onFailure(String msg) {
+                        }
+                    });
+                }
+            } catch (ConcurrentModificationException e) {
 
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void fail(IResponse response) {
-
-                    }
-                });
             }
         }
     }
