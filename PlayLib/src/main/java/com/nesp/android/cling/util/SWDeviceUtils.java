@@ -43,6 +43,7 @@ import org.teleal.cling.support.model.PositionInfo;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -270,8 +271,7 @@ public class SWDeviceUtils {
 
     public static void slaveListKicIn(Activity activity, SWDevice masterDevice, List<SelectSWDeviceBean> slaveList, BaseCallback callback) {
         if(slaveList.size() == 0) return;
-        List<SelectSWDeviceBean> templist = new ArrayList<>();
-        templist.addAll(slaveList);
+        List<SelectSWDeviceBean> templist = new ArrayList<>(slaveList);
         activity.runOnUiThread(() -> {
             CountDownTimer countDownTimer = new CountDownTimer(100000, 2000) {
                 @Override
@@ -366,8 +366,7 @@ public class SWDeviceUtils {
 
     public static void slaveListKicOut(Activity activity, SWDevice masterDevice, List<SelectSWDeviceBean> swDeviceList, BaseCallback callback) {
         if(swDeviceList.size() == 0) return;
-        List<SelectSWDeviceBean> templist = new ArrayList<>();
-        templist.addAll(swDeviceList);
+        List<SelectSWDeviceBean> templist = new ArrayList<>(swDeviceList);
         activity.runOnUiThread(() -> {
             CountDownTimer countDownTimer = new CountDownTimer(60000, 1000) {
                 @Override
