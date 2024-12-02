@@ -17,20 +17,27 @@ import com.nesp.android.cling.entity.ClingResponse;
 import com.nesp.android.cling.entity.DeviceInfoBean;
 import com.nesp.android.cling.entity.IControlPoint;
 import com.nesp.android.cling.entity.IDevice;
+import com.nesp.android.cling.entity.MusicDataBean;
 import com.nesp.android.cling.entity.PlayStatusBean;
 import com.nesp.android.cling.entity.SWDevice;
 
 import com.nesp.android.cling.entity.SelectSWDeviceBean;
 import com.nesp.android.cling.entity.SlaveBean;
 import com.nesp.android.cling.entity.SwanRomDownloadStatusResultBean;
+import com.nesp.android.cling.service.callback.AVTransportSubscriptionCallback;
 import com.nesp.android.cling.service.manager.SWDeviceManager;
 import com.nesp.android.cling.service.manager.SWWiFiSetupManager;
 
+import org.greenrobot.eventbus.EventBus;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.teleal.cling.controlpoint.ControlPoint;
+import org.teleal.cling.controlpoint.SubscriptionCallback;
 import org.teleal.cling.model.action.ActionArgumentValue;
 import org.teleal.cling.model.action.ActionInvocation;
+import org.teleal.cling.model.gena.CancelReason;
+import org.teleal.cling.model.gena.GENASubscription;
 import org.teleal.cling.model.message.UpnpResponse;
 import org.teleal.cling.model.meta.Device;
 import org.teleal.cling.model.meta.Service;
@@ -38,6 +45,9 @@ import org.teleal.cling.model.types.ServiceId;
 import org.teleal.cling.model.types.ServiceType;
 import org.teleal.cling.support.avtransport.callback.GetMediaInfo;
 import org.teleal.cling.support.avtransport.callback.GetPositionInfo;
+import org.teleal.cling.support.avtransport.lastchange.AVTransportLastChangeParser;
+import org.teleal.cling.support.avtransport.lastchange.AVTransportVariable;
+import org.teleal.cling.support.lastchange.LastChange;
 import org.teleal.cling.support.model.MediaInfo;
 import org.teleal.cling.support.model.PositionInfo;
 
@@ -125,6 +135,66 @@ public class SWDeviceUtils {
         return (ControlPoint) controlPoint.getControlPoint();
     }
 
+    public static void getDeviceAVTransportInfo(SWDevice device,ControlReceiveCallback callback){
+        if (Utils.isNull(device)) {
+            return;
+        }
+        final Service avtService = SWDeviceUtils.findAVTServiceByDevice(device.getDevice());
+        if (Utils.isNull(avtService)) {
+            return;
+        }
+        final ControlPoint controlPointImpl = SWDeviceUtils.getControlPoint();
+        if (Utils.isNull(controlPointImpl)) {
+            return;
+        }
+
+        SubscriptionCallback mAVTransportSubscriptionCallback = new SubscriptionCallback(avtService) {
+            @Override
+            protected void failed(GENASubscription genaSubscription, UpnpResponse upnpResponse, Exception e, String s) {
+                if (Utils.isNotNull(callback)) {
+                    callback.fail(new ClingResponse(null, null, s));
+                }
+                LogUtils.e("SubscriptionAVTransport:failed:" + s);
+                getDeviceAVTransportInfo(device,callback);
+            }
+
+            @Override
+            protected void established(GENASubscription subscription) {
+                LogUtils.e("SubscriptionAVTransport:established:");
+            }
+
+            @Override
+            protected void ended(GENASubscription genaSubscription, CancelReason cancelReason, UpnpResponse upnpResponse) {
+                LogUtils.e("SubscriptionAVTransport:ended");
+            }
+
+            @Override
+            protected void eventReceived(GENASubscription subscription) {
+                Map values = subscription.getCurrentValues();
+                if (values != null && values.containsKey("LastChange")) {
+                    String lastChangeValue = values.get("LastChange").toString();
+                    try {
+                        String currentTrackURI = lastChangeValue.split("<CurrentTrackURI val=\"")[1].split("<AVTransportURI")[0].replace("\"/>", "").trim();
+                        String currentTrackMetaData = lastChangeValue.split("<CurrentTrackMetaData val=\"")[1].split("<PlaybackStorageMedium")[0].replace("\"/>", "").replace("\">", "");
+                        MediaInfo dataBean = new MediaInfo(currentTrackURI, currentTrackMetaData);
+                        LogUtils.e("SubscriptionAVTransport:eventReceived " + currentTrackURI + " currentTrackMetaData: " + currentTrackMetaData);
+                        if (Utils.isNotNull(callback)) {
+                            callback.receive(new ClingMediaResponse(null, dataBean));
+                        }
+                    }catch (ArrayIndexOutOfBoundsException e){
+
+                    }
+                }
+            }
+
+            @Override
+            protected void eventsMissed(GENASubscription genaSubscription, int i) {
+                LogUtils.e("SubscriptionAVTransport:eventsMissed");
+            }
+        };
+        controlPointImpl.execute(mAVTransportSubscriptionCallback);
+    }
+
     public static void getDevicePositionInfo(Device device, final ControlReceiveCallback callback) {
 
         final Service avtService = SWDeviceUtils.findAVTServiceByDevice(device);
@@ -153,7 +223,7 @@ public class SWDeviceUtils {
 
             @Override
             public void received(ActionInvocation invocation, PositionInfo info) {
-                Log.d("test", "SWPlayControl.received:info " + info);
+                Log.d("test", "SWPlayControl.received:PositionInfo " + info.getTrackMetaData());
                 if (Utils.isNotNull(callback)) {
                     callback.receive(new ClingPositionResponse(invocation, info));
                 }

@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -147,6 +149,26 @@ public class SWDeviceManager implements ISWManager {
                     mediaInfoTask.work(null, swDevice.getUuid());
             }
         });
+//        SWDeviceUtils.getDeviceAVTransportInfo(swDevice, new ControlReceiveCallback() {
+//            @Override
+//            public void receive(IResponse response) {
+//                ClingMediaResponse mediaResponse = (ClingMediaResponse) response;
+//                MediaInfo mediaInfo = mediaResponse.getResponse();
+//                LogUtils.e("getPositionInfodoreceive:" + mediaInfo.getNumberOfTracks());
+//                if (mediaInfoTask != null && swDevice != null)
+//                    mediaInfoTask.work(mediaInfo, swDevice.getUuid());
+//            }
+//
+//            @Override
+//            public void success(IResponse response) {
+//
+//            }
+//
+//            @Override
+//            public void fail(IResponse response) {
+//
+//            }
+//        });
     }
 
     public interface WorkPlayStatusTask {
@@ -185,15 +207,17 @@ public class SWDeviceManager implements ISWManager {
             }
         }
         List<SWDevice> mutriDevices = new ArrayList<>();
-        for (SWDevice swDevice : SWDeviceManager.getInstance().getMasterDeviceList()) {
-            if (swDevice != null && mutrimap.containsKey(swDevice.getUuid())) {
-                int count = mutrimap.get(swDevice.getUuid());
-                if (count > 1) {
-                    mutriDevices.add(swDevice);
-                    mutrimap.put(swDevice.getUuid(), count - 1);
+        try {
+            for (SWDevice swDevice : SWDeviceManager.getInstance().getMasterDeviceList()) {
+                if (swDevice != null && mutrimap.containsKey(swDevice.getUuid())) {
+                    int count = mutrimap.get(swDevice.getUuid());
+                    if (count > 1) {
+                        mutriDevices.add(swDevice);
+                        mutrimap.put(swDevice.getUuid(), count - 1);
+                    }
                 }
             }
-        }
+        }catch (ConcurrentModificationException e){}
         removeSomeMasterDevices(mutriDevices);
     }
 
@@ -329,27 +353,36 @@ public class SWDeviceManager implements ISWManager {
         removeDuplicationDevices();
         if (SWDeviceManager.getInstance().getMasterDeviceList().size() != 0)
             try {
-                for (SWDevice SWDevice : SWDeviceManager.getInstance().getMasterDeviceList()) {
-                    if (SWDevice == null) continue;
-                    RemoteDevice device1 = (RemoteDevice) SWDevice.getDevice();
-                    SWDeviceUtils.getDeviceInfo(device1.getIdentity().getDescriptorURL().getHost(), new SWDeviceUtils.GetDeviceInfoCallback() {
-                        @Override
-                        public void onResponse(DeviceInfoBean deviceInfoBean) {
-                            LogUtils.e("test", "testOnlines:" + SWDevice.getSwDeviceInfo().getSWDeviceStatus().getDeviceName());
-                            SWDevice.setOnLineTestFailTimes(0);
-                        }
+                for (SWDevice swDevice : SWDeviceManager.getInstance().getMasterDeviceList()) {
+                    if (swDevice == null) continue;
+                    if(!swDevice.isTestingOnline()) {
+                        RemoteDevice device1 = (RemoteDevice) swDevice.getDevice();
+                        swDevice.setTestingOnline(true);
+                        SWDeviceUtils.getDeviceInfo(device1.getIdentity().getDescriptorURL().getHost(), new SWDeviceUtils.GetDeviceInfoCallback() {
+                            @Override
+                            public void onResponse(DeviceInfoBean deviceInfoBean) {
+                                LogUtils.e("test", "testOnlines:" + swDevice.getSwDeviceInfo().getSWDeviceStatus().getDeviceName());
+                                swDevice.setTestingOnline(false);
+                                swDevice.setOnLineTestFailTimes(0);
+                            }
 
-                        @Override
-                        public void onFailure(String msg) {
-//                            int OnLineTestFailTimes = SWDevice.getOnLineTestFailTimes() + 1;
-//                            SWDevice.setOnLineTestFailTimes(OnLineTestFailTimes);
-//                            if (OnLineTestFailTimes >= 2)
-                            offLineDeviceList.add(SWDevice);
-                            LogUtils.e("test", "testOnlinef:" + SWDevice.getSwDeviceInfo().getSWDeviceStatus().getDeviceName()
-                                    + " e:" + msg);
-                            removeSomeMasterDevices(offLineDeviceList);
-                        }
-                    });
+                            @Override
+                            public void onFailure(String msg) {
+                                swDevice.setTestingOnline(false);
+                                int onLineTestFailTimes = swDevice.getOnLineTestFailTimes() + 1;
+                                swDevice.setOnLineTestFailTimes(onLineTestFailTimes);
+                                if (onLineTestFailTimes >= 2) {
+                                    offLineDeviceList.add(swDevice);
+                                    LogUtils.e("test", "testOnlinef:" + swDevice.getSwDeviceInfo().getSWDeviceStatus().getDeviceName()
+                                            + " e:" + msg);
+                                    if(deviceListChangedListener != null){
+                                        deviceListChangedListener.onDeviceOffLine(swDevice);
+                                    }
+                                }
+                                removeSomeMasterDevices(offLineDeviceList);
+                            }
+                        });
+                    }
                 }
             } catch (ConcurrentModificationException e) {
             }
@@ -418,29 +451,151 @@ public class SWDeviceManager implements ISWManager {
                                             ClingMediaResponse mediaResponse = (ClingMediaResponse) response;
                                             MediaInfo mediaInfo = mediaResponse.getResponse();
                                             LPMediaInfo lpMediaInfo = new LPMediaInfo();
-                                            lpMediaInfo.parseMetaData(mediaInfo.getCurrentURIMetaData());
-                                            try {
-                                                MusicDataBean.DataBean musicDataBean = gson.fromJson(URLDecoder.decode(lpMediaInfo.getAlbumArtURI(),
-                                                        "UTF-8"), MusicDataBean.DataBean.class);
-                                                LogUtils.e("parse", "Current URI metadata: " + gson.toJson(musicDataBean));
-                                                if (musicDataBean != null) {
-                                                    musicDataBean.setAlbum(lpMediaInfo.getAlbum());
-                                                    musicDataBean.setCreator(lpMediaInfo.getCreator());
-                                                    musicDataBean.setMediaType(lpMediaInfo.getMediaType());
-                                                    if (swDevice != null && (swDevice.getMediaInfo() == null || !swDevice.getMediaInfo().getPlayUrl().equals(musicDataBean.getPlayUrl())))
-                                                        swDevice.setMediaInfo(musicDataBean);
-                                                    if (deviceInfoTask != null && (swDevice == null || getSelectedDevice() == null
-                                                            || swDevice.getUuid().equals(getSelectedDevice().getUuid()))) {
-                                                        deviceInfoTask.work();
-                                                        if (mActivity != null && onMasterDeviceChangeListener != null) {
-                                                            mActivity.runOnUiThread(() -> {
-                                                                onMasterDeviceChangeListener.onChangeMasterDeviceList();
-                                                            });
-                                                        } else {
-                                                            EventBus.getDefault().post(REFRESH_LIST_UI_KEY);
+                                            if (isFromQQPlay(mediaInfo) || isFromNetEasyPlay(mediaInfo) || isFromKuGou(mediaInfo) || isFromSpotify(mediaInfo)) {
+                                                if (swDevice != null)
+                                                SWDeviceUtils.getDevicePositionInfo(swDevice.getDevice(), new ControlReceiveCallback() {
+                                                    @Override
+                                                    public void receive(IResponse response) {
+                                                        ClingPositionResponse clingPositionResponse = (ClingPositionResponse) response;
+                                                        PositionInfo positionInfo = clingPositionResponse.getResponse();
+                                                        if (isFromQQPlay(mediaInfo)) {
+                                                            lpMediaInfo.setMediaType("QPLAY");
+                                                        }
+                                                        if (isFromQQPlay(mediaInfo) || isFromNetEasyPlay(mediaInfo) || isFromSpotify(mediaInfo)) {
+                                                            lpMediaInfo.parseMetaData(positionInfo.getTrackMetaData());
+                                                        }else {
+                                                            lpMediaInfo.parseMetaData(mediaInfo.getCurrentURIMetaData());
+                                                        }
+                                                        try {
+                                                            MusicDataBean.DataBean musicDataBean = new MusicDataBean.DataBean();
+                                                            if(isFromNetEasyPlay(mediaInfo)){
+                                                                musicDataBean.setName(Utils.encodeNetEaseString(lpMediaInfo.getTitle()));
+                                                                musicDataBean.setArtist(Utils.encodeNetEaseString(lpMediaInfo.getArtist()));
+                                                                musicDataBean.setMusicType("网易云音乐");
+                                                            }else {
+                                                                if(SWDeviceManager.isFromKuGou(mediaInfo)){
+                                                                    musicDataBean.setArtist(mediaInfo.getCurrentURIMetaData().split("<upnp:artist><")[1].split("></upnp:artist>")[0]
+                                                                            .replace("![CDATA[","").replace("]]",""));
+                                                                }else {
+                                                                    musicDataBean.setArtist(lpMediaInfo.getArtist());
+                                                                }
+                                                                musicDataBean.setName(lpMediaInfo.getTitle());
+                                                            }
+                                                            if (isFromQQPlay(mediaInfo)) {
+                                                                musicDataBean.setMusicType("QQ音乐");
+                                                            }
+                                                            if (isFromKuGou(mediaInfo)) {
+                                                                musicDataBean.setMusicType("酷狗音乐");
+                                                            }
+                                                            if (SWDeviceManager.isFromSpotify(mediaInfo)) {
+                                                                musicDataBean.setMusicType("Spotify");
+                                                            }
+                                                            musicDataBean.setUploadType("外部音源");
+                                                            musicDataBean.setPlayUrl(TextUtils.isEmpty(lpMediaInfo.getPlayUri()) ? "外部音源:" + System.currentTimeMillis() : lpMediaInfo.getPlayUri());
+                                                            musicDataBean.setCoverUrl(lpMediaInfo.getAlbumArtURI());
+                                                            if (musicDataBean != null) {
+                                                                musicDataBean.setAlbum(lpMediaInfo.getAlbum());
+                                                                musicDataBean.setCreator(lpMediaInfo.getCreator());
+                                                                musicDataBean.setMediaType(lpMediaInfo.getMediaType());
+                                                                if (swDevice != null && (swDevice.getMediaInfo() == null ||
+                                                                        !swDevice.getMediaInfo().getPlayUrl().equals(musicDataBean.getPlayUrl()))) {
+                                                                    swDevice.setMediaInfo(musicDataBean);
+                                                                    LogUtils.e("test", "外部音源play:" + gson.toJson(musicDataBean));
+                                                                }
+                                                                if (deviceInfoTask != null && (swDevice == null || getSelectedDevice() == null
+                                                                        || swDevice.getUuid().equals(getSelectedDevice().getUuid()))) {
+                                                                    deviceInfoTask.work();
+                                                                    if (mActivity != null && onMasterDeviceChangeListener != null) {
+                                                                        mActivity.runOnUiThread(() -> {
+                                                                            onMasterDeviceChangeListener.onChangeMasterDeviceList();
+                                                                        });
+                                                                    } else {
+                                                                        EventBus.getDefault().post(REFRESH_LIST_UI_KEY);
+                                                                    }
+                                                                    LogUtils.e("test", "外部音源play2:" + gson.toJson(musicDataBean));
+                                                                }
+                                                            } else {
+                                                                if (swDevice != null)
+                                                                    swDevice.setMediaInfo(null);
+                                                                if (deviceInfoTask != null && (swDevice == null || getSelectedDevice() == null
+                                                                        || swDevice.getUuid().equals(getSelectedDevice().getUuid()))) {
+                                                                    deviceInfoTask.work();
+                                                                    if (mActivity != null && onMasterDeviceChangeListener != null) {
+                                                                        mActivity.runOnUiThread(() -> {
+                                                                            onMasterDeviceChangeListener.onChangeMasterDeviceList();
+                                                                        });
+                                                                    } else {
+                                                                        EventBus.getDefault().post(REFRESH_LIST_UI_KEY);
+                                                                    }
+                                                                }
+                                                            }
+
+                                                        } catch (Exception e) {
+                                                            if (swDevice != null)
+                                                                swDevice.setMediaInfo(null);
+                                                            if (deviceInfoTask != null && (swDevice == null || getSelectedDevice() == null
+                                                                    || swDevice.getUuid().equals(getSelectedDevice().getUuid()))) {
+                                                                deviceInfoTask.work();
+                                                                if (mActivity != null && onMasterDeviceChangeListener != null) {
+                                                                    mActivity.runOnUiThread(() -> {
+                                                                        onMasterDeviceChangeListener.onChangeMasterDeviceList();
+                                                                    });
+                                                                } else {
+                                                                    EventBus.getDefault().post(REFRESH_LIST_UI_KEY);
+                                                                }
+                                                            }
+                                                        }
+
+                                                    }
+
+                                                    @Override
+                                                    public void success(IResponse response) {
+
+                                                    }
+
+                                                    @Override
+                                                    public void fail(IResponse response) {
+
+                                                    }
+                                                });
+                                            } else {
+                                                lpMediaInfo.parseMetaData(mediaInfo.getCurrentURIMetaData());
+                                                try {
+                                                    MusicDataBean.DataBean musicDataBean = gson.fromJson(URLDecoder.decode(lpMediaInfo.getAlbumArtURI(),
+                                                            "UTF-8"), MusicDataBean.DataBean.class);
+                                                    if (musicDataBean != null) {
+                                                        musicDataBean.setAlbum(lpMediaInfo.getAlbum());
+                                                        musicDataBean.setCreator(lpMediaInfo.getCreator());
+                                                        musicDataBean.setMediaType(lpMediaInfo.getMediaType());
+                                                        if (swDevice != null && (swDevice.getMediaInfo() == null || !swDevice.getMediaInfo().getPlayUrl().equals(musicDataBean.getPlayUrl())))
+                                                            swDevice.setMediaInfo(musicDataBean);
+                                                        if (deviceInfoTask != null && (swDevice == null || getSelectedDevice() == null
+                                                                || swDevice.getUuid().equals(getSelectedDevice().getUuid()))) {
+                                                            deviceInfoTask.work();
+                                                            if (mActivity != null && onMasterDeviceChangeListener != null) {
+                                                                mActivity.runOnUiThread(() -> {
+                                                                    onMasterDeviceChangeListener.onChangeMasterDeviceList();
+                                                                });
+                                                            } else {
+                                                                EventBus.getDefault().post(REFRESH_LIST_UI_KEY);
+                                                            }
+                                                        }
+                                                    } else {
+                                                        if (swDevice != null)
+                                                            swDevice.setMediaInfo(null);
+                                                        if (deviceInfoTask != null && (swDevice == null || getSelectedDevice() == null
+                                                                || swDevice.getUuid().equals(getSelectedDevice().getUuid()))) {
+                                                            deviceInfoTask.work();
+                                                            if (mActivity != null && onMasterDeviceChangeListener != null) {
+                                                                mActivity.runOnUiThread(() -> {
+                                                                    onMasterDeviceChangeListener.onChangeMasterDeviceList();
+                                                                });
+                                                            } else {
+                                                                EventBus.getDefault().post(REFRESH_LIST_UI_KEY);
+                                                            }
                                                         }
                                                     }
-                                                } else {
+                                                } catch (Exception e) {
                                                     if (swDevice != null)
                                                         swDevice.setMediaInfo(null);
                                                     if (deviceInfoTask != null && (swDevice == null || getSelectedDevice() == null
@@ -455,21 +610,8 @@ public class SWDeviceManager implements ISWManager {
                                                         }
                                                     }
                                                 }
-                                            } catch (Exception e) {
-                                                if (swDevice != null)
-                                                    swDevice.setMediaInfo(null);
-                                                if (deviceInfoTask != null && (swDevice == null || getSelectedDevice() == null
-                                                        || swDevice.getUuid().equals(getSelectedDevice().getUuid()))) {
-                                                    deviceInfoTask.work();
-                                                    if (mActivity != null && onMasterDeviceChangeListener != null) {
-                                                        mActivity.runOnUiThread(() -> {
-                                                            onMasterDeviceChangeListener.onChangeMasterDeviceList();
-                                                        });
-                                                    } else {
-                                                        EventBus.getDefault().post(REFRESH_LIST_UI_KEY);
-                                                    }
-                                                }
                                             }
+
                                         }
 
                                         @Override
@@ -513,6 +655,59 @@ public class SWDeviceManager implements ISWManager {
 
             }
         }
+    }
+
+    public static boolean isFromQQPlay(MediaInfo mediaInfo){
+        if(TextUtils.isEmpty(mediaInfo.getCurrentURI())){
+            return false;
+        }
+        if(mediaInfo.getCurrentURI().contains("qplay:")){
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isFromKuGou(MediaInfo mediaInfo){
+        if(TextUtils.isEmpty(mediaInfo.getCurrentURI())){
+            return false;
+        }
+        if(mediaInfo.getCurrentURI().contains("http://fsandroid.tx.kugou")){
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isFromSpotify(MediaInfo mediaInfo){
+        if(TextUtils.isEmpty(mediaInfo.getCurrentURI())){
+            return false;
+        }
+        if(new Gson().toJson(mediaInfo).contains("spotify")){
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isFromNetEasyPlay(MediaInfo mediaInfo){
+        if(TextUtils.isEmpty(mediaInfo.getCurrentURI())){
+            if(TextUtils.isEmpty(mediaInfo.getCurrentURIMetaData())){
+                return false;
+            }
+            if(mediaInfo.getCurrentURIMetaData().contains("netease:musicId")){
+                return true;
+            }
+            return false;
+        }
+        if(mediaInfo.getCurrentURI().contains("jdyyaac/") || mediaInfo.getCurrentURI().contains("yyaac/")){
+            return true;
+        }else {
+            if(TextUtils.isEmpty(mediaInfo.getCurrentURIMetaData())){
+                return false;
+            }
+            if(mediaInfo.getCurrentURIMetaData().contains("netease:musicId")){
+                return true;
+            }
+        }
+        return false;
     }
 
     public void initSelectedDevice() {
@@ -813,7 +1008,9 @@ public class SWDeviceManager implements ISWManager {
         }
     };
 
+    DeviceListChangedListener deviceListChangedListener;
     public void setOnDeviceListChangedListener(DeviceListChangedListener deviceListChangedListener) {
+        this.deviceListChangedListener = deviceListChangedListener;
         this.mBrowseRegistryListener.setOnDeviceListChangedListener(deviceListChangedListener);
     }
 
@@ -939,7 +1136,19 @@ public class SWDeviceManager implements ISWManager {
                                         if (SWDevice.getMediaInfo() == null || !SWDevice.getMediaInfo().getPlayUrl().equals(musicDataBean.getPlayUrl()))
                                             SWDevice.setMediaInfo(musicDataBean);
                                     } else {
-                                        SWDevice.setMediaInfo(null);
+                                        if(lpMediaInfo.getAlbumArtURI() != null){
+                                            musicDataBean = new MusicDataBean.DataBean();
+                                            musicDataBean.setUploadType("外部音源");
+                                            musicDataBean.setAlbum(lpMediaInfo.getAlbum());
+                                            musicDataBean.setCreator(lpMediaInfo.getCreator());
+                                            musicDataBean.setMediaType(lpMediaInfo.getMediaType());
+                                            musicDataBean.setPlayUrl(TextUtils.isEmpty(lpMediaInfo.getPlayUri()) ? "外部音源:" + System.currentTimeMillis() : lpMediaInfo.getPlayUri());
+                                            musicDataBean.setCoverUrl(lpMediaInfo.getAlbumArtURI());
+                                            if (SWDevice.getMediaInfo() == null || !SWDevice.getMediaInfo().getPlayUrl().equals(musicDataBean.getPlayUrl()))
+                                                SWDevice.setMediaInfo(musicDataBean);
+                                        }else {
+                                            SWDevice.setMediaInfo(null);
+                                        }
                                     }
                                 } catch (Exception e) {
                                     SWDevice.setMediaInfo(null);

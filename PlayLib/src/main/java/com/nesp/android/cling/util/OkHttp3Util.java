@@ -41,10 +41,10 @@ public class OkHttp3Util {
                     int cacheSize = 10 * 1024 * 1024;
 
                     okHttpClient = new OkHttpClient.Builder()
-                            .connectTimeout(30, TimeUnit.MINUTES)
-                            .connectionPool(new ConnectionPool(4, 60, TimeUnit.SECONDS))
-                            .readTimeout(30, TimeUnit.MINUTES)
-                            .writeTimeout(30, TimeUnit.MINUTES)
+                            .connectTimeout(10, TimeUnit.SECONDS)
+                            .connectionPool(new ConnectionPool(1, 10, TimeUnit.SECONDS))
+                            .readTimeout(10, TimeUnit.SECONDS)
+                            .writeTimeout(10, TimeUnit.SECONDS)
                             .sslSocketFactory(SSLSocketClient.getSSLSocketFactory())
                             .hostnameVerifier(SSLSocketClient.getHostnameVerifier())
 //                            .cache(new Cache(sdcache.getAbsoluteFile(), cacheSize))//设置缓存

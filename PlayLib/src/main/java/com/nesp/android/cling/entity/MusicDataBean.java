@@ -1,6 +1,8 @@
 package com.nesp.android.cling.entity;
 
 
+import com.chad.library.adapter.base.entity.MultiItemEntity;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,9 +26,6 @@ public class MusicDataBean {
         this.dataBeanList = dataBeanList;
     }
 
-    public interface MultiItemEntity {
-        int getItemType();
-    }
 
     public static class DataBean implements MultiItemEntity {
         boolean isWyyPrivateRomaing = false;

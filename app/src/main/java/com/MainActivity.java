@@ -40,6 +40,7 @@ import com.nesp.android.cling.control.callback.ControlCallback;
 import com.nesp.android.cling.control.callback.ControlReceiveCallback;
 import com.nesp.android.cling.entity.ClingMediaResponse;
 import com.nesp.android.cling.entity.ClingPlayModeResponse;
+import com.nesp.android.cling.entity.ClingPositionResponse;
 import com.nesp.android.cling.entity.ClingTransportResponse;
 import com.nesp.android.cling.entity.DLANPlayState;
 import com.nesp.android.cling.entity.IDevice;
@@ -54,6 +55,7 @@ import com.nesp.android.cling.entity.SlaveBean;
 import com.nesp.android.cling.listener.DeviceListChangedListener;
 import com.nesp.android.cling.listener.LPDevicePlayerListener;
 import com.nesp.android.cling.service.manager.SWDeviceManager;
+import com.nesp.android.cling.util.LogUtils;
 import com.nesp.android.cling.util.SWDeviceUtils;
 import com.nesp.android.cling.util.Utils;
 import com.wujianneng.huiweilink.R;
@@ -63,6 +65,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.teleal.cling.model.meta.RemoteDevice;
 import org.teleal.cling.support.model.MediaInfo;
+import org.teleal.cling.support.model.PositionInfo;
 import org.teleal.cling.support.model.TransportInfo;
 
 import java.net.URLDecoder;
@@ -241,6 +244,11 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
             public void onDeviceRemoved(final IDevice device) {
                 Log.e("test", "onDeviceRemoved():" + device.toString());
             }
+
+            @Override
+            public void onDeviceOffLine(SWDevice device) {
+
+            }
         });
 
         SWDeviceManager.getInstance().setGetInfoTask(new SWDeviceManager.WorkPlayStatusTask() {
@@ -265,37 +273,113 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
                 } else {
                     SWDevice swDevice = (SWDevice) SWDeviceManager.getInstance().getSelectedDevice();
                     LPMediaInfo lpMediaInfo = new LPMediaInfo();
-                    lpMediaInfo.parseMetaData(positionInfo.getCurrentURIMetaData());
-                    try {
-                        MusicDataBean.DataBean musicDataBean = new Gson().fromJson(URLDecoder.decode(lpMediaInfo.getAlbumArtURI(),
-                                "UTF-8"), MusicDataBean.DataBean.class);
-                        if (musicDataBean != null && swDevice.getUuid().equals(fromUuid)) {
-                            musicDataBean.setAlbum(lpMediaInfo.getAlbum());
-                            musicDataBean.setCreator(lpMediaInfo.getCreator());
-                            musicDataBean.setMediaType(lpMediaInfo.getMediaType());
-                            if (swDevice.getMediaInfo() == null || !swDevice.getMediaInfo().getPlayUrl().equals(musicDataBean.getPlayUrl()))
-                                swDevice.setMediaInfo(musicDataBean);
-                            Message msg = new Message();
-                            msg.what = REFRESH_MEDIA_VIEW;
-                            msg.obj = musicDataBean;
-                            mHandler.sendMessage(msg);
-                            mHandler.sendEmptyMessage(REFRESH_LIST_VIEW);
-                        } else {
-                            swDevice.setMediaInfo(null);
+                    if (SWDeviceManager.isFromQQPlay(positionInfo) || SWDeviceManager.isFromNetEasyPlay(positionInfo) || SWDeviceManager.isFromKuGou(positionInfo)) {
+                        SWDeviceUtils.getDevicePositionInfo(swDevice.getDevice(), new ControlReceiveCallback() {
+                            @Override
+                            public void receive(IResponse response) {
+                                ClingPositionResponse clingPositionResponse = (ClingPositionResponse) response;
+                                PositionInfo mediainfo = clingPositionResponse.getResponse();
+                                if (SWDeviceManager.isFromQQPlay(positionInfo))
+                                    lpMediaInfo.setMediaType("QPLAY");
+                                lpMediaInfo.parseMetaData(mediainfo.getTrackMetaData());
+                                try {
+                                    MusicDataBean.DataBean musicDataBean = new MusicDataBean.DataBean();
+                                    if(SWDeviceManager.isFromNetEasyPlay(positionInfo)){
+                                        musicDataBean.setName(Utils.encodeNetEaseString(lpMediaInfo.getTitle()));
+                                        musicDataBean.setArtist(Utils.encodeNetEaseString(lpMediaInfo.getArtist()));
+                                        musicDataBean.setMusicType("网易云音乐");
+                                    }else {
+                                        musicDataBean.setName(lpMediaInfo.getTitle());
+                                        if (SWDeviceManager.isFromKuGou(positionInfo)) {
+                                            musicDataBean.setArtist(positionInfo.getCurrentURIMetaData().split("<upnp:artist><")[1].split("></upnp:artist>")[0]
+                                                    .replace("![CDATA[", "").replace("]]", ""));
+                                        } else {
+                                            musicDataBean.setArtist(lpMediaInfo.getArtist());
+                                        }
+                                    }
+                                    if (SWDeviceManager.isFromQQPlay(positionInfo)) {
+                                        musicDataBean.setMusicType("QQ音乐");
+                                    }
+                                    if (SWDeviceManager.isFromKuGou(positionInfo)) {
+                                        musicDataBean.setMusicType("酷狗音乐");
+                                    }
+                                    musicDataBean.setUploadType("外部音源");
+                                    musicDataBean.setPlayUrl(TextUtils.isEmpty(lpMediaInfo.getPlayUri()) ? "外部音源:" + System.currentTimeMillis() : lpMediaInfo.getPlayUri());
+                                    musicDataBean.setCoverUrl(lpMediaInfo.getAlbumArtURI());
+                                    if (musicDataBean != null && swDevice.getUuid().equals(fromUuid)) {
+                                        musicDataBean.setAlbum(lpMediaInfo.getAlbum());
+                                        musicDataBean.setCreator(lpMediaInfo.getCreator());
+                                        musicDataBean.setMediaType(lpMediaInfo.getMediaType());
+                                        if (swDevice.getMediaInfo() == null || !swDevice.getMediaInfo().getPlayUrl().equals(musicDataBean.getPlayUrl()))
+                                            swDevice.setMediaInfo(musicDataBean);
+                                        Message msg = new Message();
+                                        msg.what = REFRESH_MEDIA_VIEW;
+                                        msg.obj = musicDataBean;
+                                        mHandler.sendMessage(msg);
+                                        mHandler.sendEmptyMessage(REFRESH_LIST_VIEW);
+                                    } else {
+                                        swDevice.setMediaInfo(null);
+                                        Message msg = new Message();
+                                        msg.what = REFRESH_MEDIA_VIEW;
+                                        msg.obj = null;
+                                        mHandler.sendMessage(msg);
+                                        mHandler.sendEmptyMessage(REFRESH_LIST_VIEW);
+                                    }
+                                } catch (Exception e) {
+                                    SWDevice SWDevice = (SWDevice) SWDeviceManager.getInstance().getSelectedDevice();
+                                    SWDevice.setMediaInfo(null);
+                                    Message msg = new Message();
+                                    msg.what = REFRESH_MEDIA_VIEW;
+                                    msg.obj = null;
+                                    mHandler.sendMessage(msg);
+                                    mHandler.sendEmptyMessage(REFRESH_LIST_VIEW);
+                                }
+
+                            }
+
+                            @Override
+                            public void success(IResponse response) {
+
+                            }
+
+                            @Override
+                            public void fail(IResponse response) {
+
+                            }
+                        });
+                    }else {
+                        lpMediaInfo.parseMetaData(positionInfo.getCurrentURIMetaData());
+                        try {
+                            MusicDataBean.DataBean musicDataBean = new Gson().fromJson(URLDecoder.decode(lpMediaInfo.getAlbumArtURI(),
+                                    "UTF-8"), MusicDataBean.DataBean.class);
+                            if (musicDataBean != null && swDevice.getUuid().equals(fromUuid)) {
+                                musicDataBean.setAlbum(lpMediaInfo.getAlbum());
+                                musicDataBean.setCreator(lpMediaInfo.getCreator());
+                                musicDataBean.setMediaType(lpMediaInfo.getMediaType());
+                                if (swDevice.getMediaInfo() == null || !swDevice.getMediaInfo().getPlayUrl().equals(musicDataBean.getPlayUrl()))
+                                    swDevice.setMediaInfo(musicDataBean);
+                                Message msg = new Message();
+                                msg.what = REFRESH_MEDIA_VIEW;
+                                msg.obj = musicDataBean;
+                                mHandler.sendMessage(msg);
+                                mHandler.sendEmptyMessage(REFRESH_LIST_VIEW);
+                            } else {
+                                swDevice.setMediaInfo(null);
+                                Message msg = new Message();
+                                msg.what = REFRESH_MEDIA_VIEW;
+                                msg.obj = null;
+                                mHandler.sendMessage(msg);
+                                mHandler.sendEmptyMessage(REFRESH_LIST_VIEW);
+                            }
+                        } catch (Exception e) {
+                            SWDevice SWDevice = (SWDevice) SWDeviceManager.getInstance().getSelectedDevice();
+                            SWDevice.setMediaInfo(null);
                             Message msg = new Message();
                             msg.what = REFRESH_MEDIA_VIEW;
                             msg.obj = null;
                             mHandler.sendMessage(msg);
                             mHandler.sendEmptyMessage(REFRESH_LIST_VIEW);
                         }
-                    } catch (Exception e) {
-                        SWDevice SWDevice = (SWDevice) SWDeviceManager.getInstance().getSelectedDevice();
-                        SWDevice.setMediaInfo(null);
-                        Message msg = new Message();
-                        msg.what = REFRESH_MEDIA_VIEW;
-                        msg.obj = null;
-                        mHandler.sendMessage(msg);
-                        mHandler.sendEmptyMessage(REFRESH_LIST_VIEW);
                     }
                 }
             }

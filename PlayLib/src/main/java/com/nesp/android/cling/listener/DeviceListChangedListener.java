@@ -1,6 +1,7 @@
 package com.nesp.android.cling.listener;
 
 import com.nesp.android.cling.entity.IDevice;
+import com.nesp.android.cling.entity.SWDevice;
 
 /**
  * 说明：设备状态改变监听接口
@@ -21,4 +22,10 @@ public interface DeviceListChangedListener {
      * @param device    被移除的设备
      */
     void onDeviceRemoved(IDevice device);
+
+    /**
+     * 在已发现设备中 移除了某设备之后回调该接口
+     * @param device    被移除的设备
+     */
+    void onDeviceOffLine(SWDevice device);
 }

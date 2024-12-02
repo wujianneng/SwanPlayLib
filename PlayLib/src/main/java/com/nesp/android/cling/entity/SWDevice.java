@@ -17,6 +17,8 @@ public class SWDevice implements IDevice<Device> {
     /** 是否已选中 */
     private boolean isSelected;
 
+    private boolean isTestingOnline = false;
+
     /** 在线测试失败次数，超过2次就当下线处理 **/
     private int onLineTestFailTimes = 0;
 
@@ -40,6 +42,14 @@ public class SWDevice implements IDevice<Device> {
 
     public void setPlayStatusBean(PlayStatusBean playStatusBean) {
         this.playStatusBean = playStatusBean;
+    }
+
+    public boolean isTestingOnline() {
+        return isTestingOnline;
+    }
+
+    public void setTestingOnline(boolean testingOnline) {
+        isTestingOnline = testingOnline;
     }
 
     public int getOnLineTestFailTimes() {

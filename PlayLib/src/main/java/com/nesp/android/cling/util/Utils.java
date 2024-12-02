@@ -15,6 +15,25 @@ public class Utils {
         return !isNull(obj);
     }
 
+    public static String encodeNetEaseString(String unicodeStr) {
+        if(unicodeStr.contains(";") && unicodeStr.contains("&#")) {
+            String[] array = unicodeStr.split(";");
+            String result = "";
+            for (String item : array) {
+                String subStr = item.replace("&#", "");
+                try {
+                    int codePoint = Integer.parseInt(subStr);
+                    result += new String(Character.toChars(codePoint));
+                } catch (NumberFormatException e) {
+                    // Handle the exception if the substring is not a valid number
+                }
+            }
+            return result;
+        }else {
+            return unicodeStr;
+        }
+    }
+
     /**
      * 把时间戳转换成 00:00:00 格式
      * @param timeMs    时间戳

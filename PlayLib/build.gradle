@@ -38,6 +38,7 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.3.0-alpha01'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0-alpha01'
 //    api project(path: ':clinglibrary')
+    api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30'
 
     // Cling library
     implementation "androidx.lifecycle:lifecycle-process:2.2.0"

@@ -617,6 +617,7 @@ public class SWPlayControl implements IPlayControl {
     }
 
 
+
     @Override
     public void getMediaInfo(@Nullable ControlReceiveCallback callback) {
         final Service avtService = SWDeviceUtils.findServiceFromSelectedDevice(SWDeviceManager.AV_TRANSPORT_SERVICE);
