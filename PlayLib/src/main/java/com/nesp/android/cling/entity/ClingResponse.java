@@ -39,7 +39,7 @@ public class ClingResponse implements IResponse<ActionInvocation> {
 
     @Override
     public ActionInvocation getResponse() {
-        return null;
+        return mActionInvocation;
     }
 
     @Override

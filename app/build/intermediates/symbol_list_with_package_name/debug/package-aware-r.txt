@@ -1253,8 +1253,6 @@ dimen abc_text_size_subtitle_material_toolbar
 dimen abc_text_size_title_material
 dimen abc_text_size_title_material_toolbar
 dimen action_bar_size
-dimen activity_horizontal_margin
-dimen activity_vertical_margin
 dimen appcompat_dialog_background_inset
 dimen cardview_compat_inset_shadow
 dimen cardview_default_elevation
@@ -1719,7 +1717,6 @@ drawable df_cover
 drawable ic_action_dock
 drawable ic_clock_black_24dp
 drawable ic_keyboard_black_24dp
-drawable ic_launcher
 drawable ic_mtrl_checked_circle
 drawable ic_mtrl_chip_checked_black
 drawable ic_mtrl_chip_checked_circle
@@ -1767,7 +1764,6 @@ drawable sample_footer_loading_progress
 drawable test_custom_background
 drawable tooltip_frame_dark
 drawable tooltip_frame_light
-drawable utils_toast_bg
 id ALT
 id BOTTOM_END
 id BOTTOM_START
@@ -1836,7 +1832,6 @@ id action_menu_presenter
 id action_mode_bar
 id action_mode_bar_stub
 id action_mode_close_button
-id action_settings
 id action_text
 id actions
 id activity_chooser_view_content
@@ -2222,10 +2217,6 @@ id uniform
 id unlabeled
 id up
 id useLogo
-id utvBottomIconView
-id utvLeftIconView
-id utvRightIconView
-id utvTopIconView
 id view_offset_helper
 id view_tree_lifecycle_owner
 id view_tree_saved_state_registry_owner
@@ -2304,7 +2295,6 @@ layout abc_search_dropdown_item_icons_2line
 layout abc_search_view
 layout abc_select_dialog_material
 layout abc_tooltip
-layout activity_lp_custom_tabs_callback
 layout activity_main
 layout custom_dialog
 layout design_bottom_navigation_item
@@ -2396,8 +2386,6 @@ layout text_view_with_line_height_from_layout
 layout text_view_with_line_height_from_style
 layout text_view_with_theme_line_height
 layout text_view_without_line_height
-layout utils_toast_view
-menu main
 mipmap ic_launcher
 plurals mtrl_badge_content_description
 string abc_action_bar_home_description
@@ -2427,7 +2415,6 @@ string abc_searchview_description_voice
 string abc_shareactionprovider_share_with
 string abc_shareactionprovider_share_with_application
 string abc_toolbar_collapse_description
-string action_settings
 string app_name
 string appbar_scrolling_view_behavior
 string bottom_sheet_behavior
@@ -2441,22 +2428,12 @@ string error_icon_content_description
 string exposed_dropdown_menu_content_description
 string fab_transformation_scrim_behavior
 string fab_transformation_sheet_behavior
-string hello_world
 string hide_bottom_view_on_scroll_behavior
 string icon_content_description
 string item_view_role_description
-string linkplay
-string linkplay1
 string load_end
 string load_failed
 string loading
-string lp_custom_tabs_deep_link_host
-string lp_custom_tabs_deep_link_scheme
-string lpms_algorithm
-string lpms_android_key_store
-string lpms_cbc_transformation
-string lpms_gcm_transformation
-string lpms_ivparameterspec
 string material_clock_display_divider
 string material_clock_toggle_content_description
 string material_hour_selection
@@ -2527,7 +2504,6 @@ string selectedText
 string status_bar_notification_info_overflow
 string stop
 string volume
-style ActivityTranslucent
 style AlertDialog_AppCompat
 style AlertDialog_AppCompat_Light
 style AndroidThemeColorAccentYellow
@@ -2536,8 +2512,6 @@ style Animation_AppCompat_DropDownUp
 style Animation_AppCompat_Tooltip
 style Animation_Design_BottomSheetDialog
 style Animation_MaterialComponents_BottomSheetDialog
-style AppBaseTheme
-style AppTheme
 style Base_AlertDialog_AppCompat
 style Base_AlertDialog_AppCompat_Light
 style Base_Animation_AppCompat_Dialog

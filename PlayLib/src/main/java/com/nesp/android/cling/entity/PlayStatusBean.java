@@ -37,7 +37,7 @@ public class PlayStatusBean {
     private String alarmflag;
     private String plicount;
     private String plicurr;
-    private String vol;
+    private String vol = "0";
     private String mute;
 
     public String getType() {

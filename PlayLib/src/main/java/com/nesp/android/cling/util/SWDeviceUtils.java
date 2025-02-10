@@ -8,28 +8,26 @@ import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.nesp.android.cling.callback.GetControlDeviceInfo;
+import com.nesp.android.cling.callback.GetInfoEx;
 import com.nesp.android.cling.control.callback.ControlCallback;
 import com.nesp.android.cling.control.callback.ControlReceiveCallback;
 import com.nesp.android.cling.entity.ClingGetControlDeviceInfoResponse;
+import com.nesp.android.cling.entity.ClingGetInfoResponse;
 import com.nesp.android.cling.entity.ClingMediaResponse;
 import com.nesp.android.cling.entity.ClingPositionResponse;
 import com.nesp.android.cling.entity.ClingResponse;
 import com.nesp.android.cling.entity.DeviceInfoBean;
 import com.nesp.android.cling.entity.IControlPoint;
 import com.nesp.android.cling.entity.IDevice;
-import com.nesp.android.cling.entity.MusicDataBean;
+import com.nesp.android.cling.entity.IResponse;
 import com.nesp.android.cling.entity.PlayStatusBean;
+import com.nesp.android.cling.entity.PlayStatusBeanSwanHardware;
 import com.nesp.android.cling.entity.SWDevice;
-
 import com.nesp.android.cling.entity.SelectSWDeviceBean;
 import com.nesp.android.cling.entity.SlaveBean;
 import com.nesp.android.cling.entity.SwanRomDownloadStatusResultBean;
-import com.nesp.android.cling.service.callback.AVTransportSubscriptionCallback;
 import com.nesp.android.cling.service.manager.SWDeviceManager;
-import com.nesp.android.cling.service.manager.SWWiFiSetupManager;
 
-import org.greenrobot.eventbus.EventBus;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.teleal.cling.controlpoint.ControlPoint;
@@ -40,20 +38,19 @@ import org.teleal.cling.model.gena.CancelReason;
 import org.teleal.cling.model.gena.GENASubscription;
 import org.teleal.cling.model.message.UpnpResponse;
 import org.teleal.cling.model.meta.Device;
+import org.teleal.cling.model.meta.LocalService;
 import org.teleal.cling.model.meta.Service;
+import org.teleal.cling.model.meta.StateVariable;
+import org.teleal.cling.model.state.StateVariableValue;
 import org.teleal.cling.model.types.ServiceId;
 import org.teleal.cling.model.types.ServiceType;
 import org.teleal.cling.support.avtransport.callback.GetMediaInfo;
 import org.teleal.cling.support.avtransport.callback.GetPositionInfo;
-import org.teleal.cling.support.avtransport.lastchange.AVTransportLastChangeParser;
-import org.teleal.cling.support.avtransport.lastchange.AVTransportVariable;
-import org.teleal.cling.support.lastchange.LastChange;
 import org.teleal.cling.support.model.MediaInfo;
 import org.teleal.cling.support.model.PositionInfo;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -135,7 +132,7 @@ public class SWDeviceUtils {
         return (ControlPoint) controlPoint.getControlPoint();
     }
 
-    public static void getDeviceAVTransportInfo(SWDevice device,ControlReceiveCallback callback){
+    public static void getDeviceAVTransportInfo(SWDevice device, ControlReceiveCallback callback) {
         if (Utils.isNull(device)) {
             return;
         }
@@ -155,7 +152,7 @@ public class SWDeviceUtils {
                     callback.fail(new ClingResponse(null, null, s));
                 }
                 LogUtils.e("SubscriptionAVTransport:failed:" + s);
-                getDeviceAVTransportInfo(device,callback);
+                getDeviceAVTransportInfo(device, callback);
             }
 
             @Override
@@ -181,7 +178,7 @@ public class SWDeviceUtils {
                         if (Utils.isNotNull(callback)) {
                             callback.receive(new ClingMediaResponse(null, dataBean));
                         }
-                    }catch (ArrayIndexOutOfBoundsException e){
+                    } catch (ArrayIndexOutOfBoundsException e) {
 
                     }
                 }
@@ -193,6 +190,85 @@ public class SWDeviceUtils {
             }
         };
         controlPointImpl.execute(mAVTransportSubscriptionCallback);
+    }
+
+
+    public static void getGetInfoEx(Device device, final ControlReceiveCallback callback) {
+
+        final Service avtService = SWDeviceUtils.findAVTServiceByDevice(device);
+        if (Utils.isNull(avtService)) {
+            return;
+        }
+        GetInfoEx getInfoEx = new GetInfoEx(avtService) {
+            @Override
+            public void failure(ActionInvocation invocation, UpnpResponse operation, String defaultMsg) {
+                Log.d("test", "SWPlayControl.failure:getGetInfoEx " + defaultMsg);
+                if (Utils.isNotNull(callback)) {
+                    callback.fail(new ClingResponse(invocation, operation, defaultMsg));
+                }
+            }
+
+            @Override
+            public void success(ActionInvocation invocation) {
+                super.success(invocation);
+                if (Utils.isNotNull(callback)) {
+                    Log.d("test", "SWPlayControl.success:getGetInfoEx " + invocation.getOutputMap().toString());
+                    PlayStatusBean deviceInfoBean = new PlayStatusBean();
+                    if (invocation.getOutputMap().containsKey("RelTime"))
+                        deviceInfoBean.setCurpos(Utils.getIntTime(invocation.getOutputMap().get("RelTime").toString()) + "");
+                    else
+                        deviceInfoBean.setCurpos("0");
+                    if (invocation.getOutputMap().containsKey("TrackDuration"))
+                        deviceInfoBean.setTotlen(Utils.getIntTime(invocation.getOutputMap().get("TrackDuration").toString()) + "");
+                    else
+                        deviceInfoBean.setTotlen("0");
+                    if (invocation.getOutputMap().containsKey("LoopMode"))
+                        deviceInfoBean.setLoop(invocation.getOutputMap().get("LoopMode").toString());
+                    else
+                        deviceInfoBean.setLoop("0");
+                    if (invocation.getOutputMap().containsKey("CurrentTransportState")) {
+                        deviceInfoBean.setStatus(invocation.getOutputMap().get("CurrentTransportState").toString());
+                        if(deviceInfoBean.getStatus().equals("PLAYING")){
+                            deviceInfoBean.setStatus("play");
+                        }else if(deviceInfoBean.getStatus().equals("PAUSED_PLAYBACK")){
+                            deviceInfoBean.setStatus("pause");
+                        }else if(deviceInfoBean.getStatus().equals("LOADING")){
+                            deviceInfoBean.setStatus("load");
+                        }else {
+                            deviceInfoBean.setStatus("stop");
+                        }
+                    }else
+                        deviceInfoBean.setStatus("stop");
+//                deviceInfoBean.setAlarmflag(deviceInfoBeanswan.getAlarmflag());
+//                deviceInfoBean.setAlbum(deviceInfoBeanswan.getAlbum());
+//                deviceInfoBean.setArtist(deviceInfoBeanswan.getArtist());
+//                deviceInfoBean.setEq(deviceInfoBeanswan.getEq());
+//                deviceInfoBean.setMode(deviceInfoBeanswan.getMode());
+//                deviceInfoBean.setMute(deviceInfoBeanswan.getMute());
+//                deviceInfoBean.setOffset_pts(deviceInfoBeanswan.getOffset_pts());
+//                deviceInfoBean.setPlicount(deviceInfoBeanswan.getPlicount());
+//                deviceInfoBean.setPlicurr(deviceInfoBeanswan.getPlicurr());
+//                deviceInfoBean.setTitle(deviceInfoBeanswan.getTitle());
+//                deviceInfoBean.setType(deviceInfoBeanswan.getType());
+                    if (invocation.getOutputMap().containsKey("CurrentChannel"))
+                        deviceInfoBean.setCh(invocation.getOutputMap().get("CurrentChannel").toString());
+                    else
+                        deviceInfoBean.setCh("0");
+                    if (invocation.getOutputMap().containsKey("CurrentVolume"))
+                        deviceInfoBean.setVol(invocation.getOutputMap().get("CurrentVolume").toString());
+                    else
+                        deviceInfoBean.setVol("0");
+                    callback.success(new ClingGetInfoResponse(invocation,deviceInfoBean));
+                }
+            }
+
+        };
+
+        ControlPoint controlPointImpl = SWDeviceUtils.getControlPoint();
+        if (Utils.isNull(controlPointImpl)) {
+            return;
+        }
+        controlPointImpl.execute(getInfoEx);
     }
 
     public static void getDevicePositionInfo(Device device, final ControlReceiveCallback callback) {
@@ -234,7 +310,6 @@ public class SWDeviceUtils {
         if (Utils.isNull(controlPointImpl)) {
             return;
         }
-
         controlPointImpl.execute(getPositionInfo);
     }
 
@@ -340,7 +415,7 @@ public class SWDeviceUtils {
     }
 
     public static void slaveListKicIn(Activity activity, SWDevice masterDevice, List<SelectSWDeviceBean> slaveList, BaseCallback callback) {
-        if(slaveList.size() == 0) return;
+        if (slaveList.size() == 0) return;
         List<SelectSWDeviceBean> templist = new ArrayList<>(slaveList);
         activity.runOnUiThread(() -> {
             CountDownTimer countDownTimer = new CountDownTimer(100000, 2000) {
@@ -403,7 +478,7 @@ public class SWDeviceUtils {
                         @Override
                         public void onFailure(String msg) {
                             templist.remove(swDevice);
-                            LogUtils.e("test", "同步onFailure:" + msg + " device:" + swDevice.getLpDeviceName()) ;
+                            LogUtils.e("test", "同步onFailure:" + msg + " device:" + swDevice.getLpDeviceName());
                         }
                     });
 
@@ -435,7 +510,7 @@ public class SWDeviceUtils {
     }
 
     public static void slaveListKicOut(Activity activity, SWDevice masterDevice, List<SelectSWDeviceBean> swDeviceList, BaseCallback callback) {
-        if(swDeviceList.size() == 0) return;
+        if (swDeviceList.size() == 0) return;
         List<SelectSWDeviceBean> templist = new ArrayList<>(swDeviceList);
         activity.runOnUiThread(() -> {
             CountDownTimer countDownTimer = new CountDownTimer(60000, 1000) {
@@ -629,9 +704,29 @@ public class SWDeviceUtils {
         });
     }
 
-    public static void getDevicePlayerStatus(String deviceIp, GetDevicePlayerStatusCallback callback) {
+    public static void getDevicePlayerStatus(SWDevice swDevice, GetDevicePlayerStatusCallback callback) {
+//        SWDeviceUtils.getGetInfoEx(swDevice.getDevice(), new ControlReceiveCallback() {
+//            @Override
+//            public void receive(IResponse response) {
+//
+//            }
+//
+//            @Override
+//            public void success(IResponse response) {
+//                ClingGetInfoResponse clingResponse = (ClingGetInfoResponse) response;
+//                PlayStatusBean playStatusBean = clingResponse.info;
+//                callback.onResponse(playStatusBean);
+//            }
+//
+//            @Override
+//            public void fail(IResponse response) {
+//                callback.onFailure(response.getResponse().toString());
+//            }
+//        });
+
+
         //http方式获取设备播放状态
-        OkHttp3Util.doGet("http://" + deviceIp + "/httpapi.asp?command=getPlayerStatus", new Callback() {
+        OkHttp3Util.doGet("http://" + swDevice.getIp()+ "/httpapi.asp?command=getPlayerStatus", new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 LogUtils.e("test", "NsdManagerongetDevicePlayStatusonFailure:" + e.getMessage());
@@ -642,9 +737,31 @@ public class SWDeviceUtils {
             public void onResponse(Call call, Response response) throws IOException {
                 try {
                     String result = response.body().string();
-                    PlayStatusBean deviceInfoBean = new Gson().fromJson(result, PlayStatusBean.class);
-                    LogUtils.e("test", "NsdManagerongetDevicePlayStatus:" + result);
-                    callback.onResponse(deviceInfoBean);
+                    if(swDevice.getSwDeviceInfo().getSWDeviceStatus().getHardware().contains("Swan")){
+                        PlayStatusBeanSwanHardware deviceInfoBeanswan = new Gson().fromJson(result, PlayStatusBeanSwanHardware.class);
+                        PlayStatusBean deviceInfoBean = new PlayStatusBean();
+                        deviceInfoBean.setCurpos(deviceInfoBeanswan.getCurpos());
+                        deviceInfoBean.setTotlen(deviceInfoBeanswan.getTotlen());
+                        deviceInfoBean.setLoop(deviceInfoBeanswan.getLoop());
+                        deviceInfoBean.setStatus(deviceInfoBeanswan.getStatus());
+                        deviceInfoBean.setCh(deviceInfoBeanswan.getCh());
+                        deviceInfoBean.setAlarmflag(deviceInfoBeanswan.getAlarmflag());
+                        deviceInfoBean.setAlbum(deviceInfoBeanswan.getAlbum());
+                        deviceInfoBean.setArtist(deviceInfoBeanswan.getArtist());
+                        deviceInfoBean.setEq(deviceInfoBeanswan.getEq());
+                        deviceInfoBean.setMode(deviceInfoBeanswan.getMode());
+                        deviceInfoBean.setMute(deviceInfoBeanswan.getMute());
+                        deviceInfoBean.setOffset_pts(deviceInfoBeanswan.getOffset_pts());
+                        deviceInfoBean.setPlicount(deviceInfoBeanswan.getPlicount());
+                        deviceInfoBean.setPlicurr(deviceInfoBeanswan.getPlicurr());
+                        deviceInfoBean.setTitle(deviceInfoBeanswan.getTitle());
+                        deviceInfoBean.setType(deviceInfoBeanswan.getType());
+                        deviceInfoBean.setVol(deviceInfoBeanswan.getVol());
+                        callback.onResponse(deviceInfoBean);
+                    }else {
+                        PlayStatusBean deviceInfoBean = new Gson().fromJson(result, PlayStatusBean.class);
+                        callback.onResponse(deviceInfoBean);
+                    }
                 } catch (Exception e) {
                     callback.onFailure(e.getMessage());
                     LogUtils.e("test", "NsdManageronggetDevicePlayStatusException:" + e.getMessage());

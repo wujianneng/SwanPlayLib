@@ -4,27 +4,15 @@ import android.content.Context;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
-import android.util.Log;
 
-import com.android.wiimu.f.a;
 import com.google.gson.Gson;
-import com.linkplay.core.app.LPDeviceManager;
-import com.linkplay.core.utils.LPWiFiResultUtils;
-import com.linkplay.log.LinkplayLog;
-import com.linkplay.network.HttpRequestUtils;
-import com.linkplay.network.IOkHttpRequestCallback;
-import com.linkplay.network.OkHttpResponseItem;
-import com.linkplay.request.RequestItem;
-import com.linkplay.request.RequestItem.Builder;
-import com.linkplay.wifisetup.LPApItem;
-import com.linkplay.wifisetup.LPApListListener;
+import com.nesp.android.cling.callback.LPApListListener;
+import com.nesp.android.cling.entity.LPApItem;
 import com.nesp.android.cling.entity.SWDevice;
-
-import com.nesp.android.cling.entity.SlaveBean;
+import com.nesp.android.cling.util.LPWiFiResultUtils;
 import com.nesp.android.cling.util.LogUtils;
 import com.nesp.android.cling.util.OkHttp3Util;
 
-import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -146,7 +134,28 @@ public class SWWiFiSetupManager {
         }
     }
 
-    public void connectToWiFi(LPApItem apitem, String apitemPwd, final SWWiFiSetupListener listener) {
+    public static String a(byte[] src) {
+        StringBuilder var1;
+        var1 = new StringBuilder("");
+        if (src == null) {
+            return null;
+        } else if (src.length <= 0) {
+            return "";
+        } else {
+            for(int var2 = 0; var2 < src.length; ++var2) {
+                String var3;
+                if ((var3 = Integer.toHexString(src[var2] & 255)).length() < 2) {
+                    var1.append(0);
+                }
+
+                var1.append(var3);
+            }
+
+            return var1.toString();
+        }
+    }
+
+    public void connectToWiFi(Context context,LPApItem apitem, String apitemPwd, final SWWiFiSetupListener listener) {
         if (this.curDevice != null) {
             targetApItem = apitem;
             String var5 = apitem.SSID;
@@ -161,7 +170,7 @@ public class SWWiFiSetupManager {
                 var8 = "OPEN";
                 var6 = "";
             } else {
-                var6 = a.a(apitemPwd.getBytes());
+                var6 = a(apitemPwd.getBytes());
                 var7 = apitem.Encry;
                 var8 = apitem.Auth;
             }
@@ -171,7 +180,6 @@ public class SWWiFiSetupManager {
             OkHttp3Util.doGet("http://" + curDevice.getIp() + "/httpapi.asp?command=" + var11, new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    LinkplayLog.i("SWWiFiSetupManager", "connectToWiFi onFailure:" + e.getLocalizedMessage());
                     if (listener != null) {
                         listener.SWWiFiSetupFailed("1002");
                     }
@@ -182,13 +190,12 @@ public class SWWiFiSetupManager {
                     if (response == null) {
                         this.onFailure(call,new EOFException());
                     } else {
-                        LinkplayLog.i("SWWiFiSetupManager", "connectToWiFi onSuccess");
                         if (searchTimer != null) {
                             searchTimer.cancel();
                             searchTimer = null;
                         }
 
-                        searchTimer = new SearchTimer(curDevice, listener);
+                        searchTimer = new SearchTimer(curDevice, listener,context);
                         searchTimer.search();
                     }
                 }
@@ -202,14 +209,13 @@ public class SWWiFiSetupManager {
         void SWWiFiSetupFailed(String var1);
     }
 
-    public void retryCheckWithTime(int timeout, SWWiFiSetupListener listener) {
-        LinkplayLog.i("SWWiFiSetupManager", "retryCheckWithTime");
+    public void retryCheckWithTime(Context context,int timeout, SWWiFiSetupListener listener) {
         if (this.searchTimer != null) {
             this.searchTimer.cancel();
             this.searchTimer = null;
         }
 
-        this.searchTimer = new SearchTimer(this.curDevice, listener);
+        this.searchTimer = new SearchTimer(this.curDevice, listener,context);
         if (timeout <= 0) {
             timeout = 30000;
         }
@@ -222,10 +228,12 @@ public class SWWiFiSetupManager {
         private static long TIMEOUT = 50000L;
         private SWDevice device;
         private SWWiFiSetupListener listener;
+        Context context;
 
-        public SearchTimer(SWDevice device, SWWiFiSetupListener listener) {
+        public SearchTimer(SWDevice device, SWWiFiSetupListener listener,Context context) {
             this.device = device;
             this.listener = listener;
+            this.context = context;
         }
 
         public void setTimeout(int timeout) {
@@ -233,7 +241,6 @@ public class SWWiFiSetupManager {
         }
 
         public void search() {
-            LPDeviceManager.getInstance().clear();
             final long var1 = System.currentTimeMillis();
             this.schedule(new TimerTask() {
                 public void run() {
@@ -243,13 +250,13 @@ public class SWWiFiSetupManager {
                             return;
                         }
 
-                        WifiInfo var1x = LPWiFiResultUtils.getCurrentWifiInfo();
+                        WifiInfo var1x = LPWiFiResultUtils.getCurrentWifiInfo(context);
                         if (var1x == null) {
                             SearchTimer.this.listener.SWWiFiSetupFailed("1002");
                             return;
                         }
 
-                        if (!a.a(SWWiFiSetupManager.targetApItem.SSID).equals(LPWiFiResultUtils.makeSSIDNoneQuoted(var1x.getSSID()))) {
+                        if (!LPWiFiResultUtils.a(SWWiFiSetupManager.targetApItem.SSID).equals(LPWiFiResultUtils.makeSSIDNoneQuoted(var1x.getSSID()))) {
                             SWWiFiSetupManager.SearchTimer.this.listener.SWWiFiSetupFailed("1001");
                         } else {
                             SearchTimer.this.listener.SWWiFiSetupFailed("1002");

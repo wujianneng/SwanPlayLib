@@ -24,7 +24,6 @@ allprojects {
         maven {
             url 'http://4thline.org/m2'
         }
-        maven { url "https://artifactory.linkplay.co:4443/artifactory/linkplay-maven-snapshot/" }
     }
 }
 

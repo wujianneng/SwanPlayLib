@@ -14,12 +14,6 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
-import com.linkplay.bonjour.model.LinkplayConstants;
-import com.linkplay.core.app.LPDeviceManager;
-import com.linkplay.core.app.LPDeviceManagerParam;
-import com.linkplay.core.clingx.LPSearchControlPoint;
-import com.linkplay.lpmdpkit.callback.LPPrintLogCallback;
-import com.linkplay.lpmdpkit.utils.LPLogUtil;
 import com.nesp.android.cling.WifiChangedCast;
 import com.nesp.android.cling.control.SWPlayControl;
 import com.nesp.android.cling.control.callback.ControlCallback;
@@ -28,6 +22,7 @@ import com.nesp.android.cling.entity.ClingControlPoint;
 import com.nesp.android.cling.entity.ClingGetControlDeviceInfoResponse;
 import com.nesp.android.cling.entity.ClingMediaResponse;
 import com.nesp.android.cling.entity.ClingPositionResponse;
+import com.nesp.android.cling.entity.ClingResponse;
 import com.nesp.android.cling.entity.DeviceInfoBean;
 import com.nesp.android.cling.entity.IControlPoint;
 import com.nesp.android.cling.entity.IResponse;
@@ -296,23 +291,13 @@ public class SWDeviceManager implements ISWManager {
                             playStatusTask.work(swDevice);
                         }
                     }
-                    SWDeviceUtils.getDevicePlayerStatus(swDevice.getIp(), new SWDeviceUtils.GetDevicePlayerStatusCallback() {
+                    SWDeviceUtils.getDevicePlayerStatus(swDevice,new SWDeviceUtils.GetDevicePlayerStatusCallback() {
                         @Override
                         public void onResponse(PlayStatusBean playStatusBean) {
                             SWDevice swDevice = getSelectedDevice();
                             PlayStatusBean lastbean = swDevice.getPlayStatusBean();
                             if (lastbean != null && playStatusBean != null) {
                                 if (!swDevice.getSwDeviceInfo().getSWDeviceStatus().getHardware().contains("SWAN")) {
-                                    int lastpos = lastbean.getCurpos() == null ? 0 : Integer.parseInt(lastbean.getCurpos());
-                                    int thispos = playStatusBean.getCurpos() == null ? 0 : Integer.parseInt(playStatusBean.getCurpos());
-                                    if (Math.abs(thispos - lastpos) < 5000) {
-                                        playStatusBean.setCurpos(lastbean.getCurpos());
-                                    }
-                                } else {
-                                    int lastposex = lastbean.getCurpos() == null ? 0 : Integer.parseInt(lastbean.getCurpos());
-                                    int lasttolposex = playStatusBean.getTotlen() == null ? 0 : Integer.parseInt(playStatusBean.getTotlen());
-                                    playStatusBean.setCurpos(lastposex * 1000 + "");
-                                    playStatusBean.setTotlen(lasttolposex * 1000 + "");
                                     int lastpos = lastbean.getCurpos() == null ? 0 : Integer.parseInt(lastbean.getCurpos());
                                     int thispos = playStatusBean.getCurpos() == null ? 0 : Integer.parseInt(playStatusBean.getCurpos());
                                     if (Math.abs(thispos - lastpos) < 5000) {
@@ -435,15 +420,9 @@ public class SWDeviceManager implements ISWManager {
                             }
                             swDeviceInfo.setSWDeviceStatus(swDeviceStatus);
                             swDevice.setSwDeviceInfo(swDeviceInfo);
-                            SWDeviceUtils.getDevicePlayerStatus(swDevice.getIp(), new SWDeviceUtils.GetDevicePlayerStatusCallback() {
+                            SWDeviceUtils.getDevicePlayerStatus(swDevice,new SWDeviceUtils.GetDevicePlayerStatusCallback() {
                                 @Override
                                 public void onResponse(PlayStatusBean playStatusBean) {
-                                    if (swDevice.getSwDeviceInfo().getSWDeviceStatus().getHardware().contains("SWAN")) {
-                                        int lastposex = playStatusBean.getCurpos() == null ? 0 : Integer.parseInt(playStatusBean.getCurpos());
-                                        int lasttolposex = playStatusBean.getTotlen() == null ? 0 : Integer.parseInt(playStatusBean.getTotlen());
-                                        playStatusBean.setCurpos(lastposex * 1000 + "");
-                                        playStatusBean.setTotlen(lasttolposex * 1000 + "");
-                                    }
                                     swDevice.setPlayStatusBean(playStatusBean);
                                     SWDeviceUtils.getDeviceMediaInfo(swDevice.getDevice(), new ControlReceiveCallback() {
                                         @Override
@@ -994,8 +973,6 @@ public class SWDeviceManager implements ISWManager {
             swDeviceManager.setUpnpService(beyondUpnpService);
             swDeviceManager.setDeviceManager(new DeviceManager());
             swDeviceManager.getRegistry().addListener(mBrowseRegistryListener);
-            LPSearchControlPoint.getInstance();
-            LPSearchControlPoint.upnpservice = binder;
             //Search on service created.
             swDeviceManager.searchDevices();
 
@@ -1015,50 +992,17 @@ public class SWDeviceManager implements ISWManager {
     }
 
     Activity mActivity;
-    LPDeviceManager lpDeviceManager;
 
     public void init(Activity activity) {
         this.mActivity = activity;
-        LPDeviceManagerParam param = new LPDeviceManagerParam();
-        param.context = activity.getApplication();
-        param.appid = "";
-        List<String> mdnsServiceTypes = new ArrayList<>();
-        mdnsServiceTypes.add(LinkplayConstants.regType);
-        param.mdnsServiceTypes = mdnsServiceTypes;
-        param.registerMaintainMaxAgeSeconds = 30;
-        lpDeviceManager = LPDeviceManager.getInstance();
-        lpDeviceManager.init(param);
-
-        LPLogUtil.init(new LPPrintLogCallback() {
-            @Override
-            public void i(String s, String s1) {
-                LogUtils.e("test", "LPLogUtilI:" + s1);
-            }
-
-            @Override
-            public void d(String s, String s1) {
-                LogUtils.e("test", "LPLogUtilD:" + s1);
-            }
-
-            @Override
-            public void e(String s, String s1) {
-                LogUtils.e("test", "LPLogUtilE:" + s1);
-            }
-
-            @Override
-            public void v(String s, String s1) {
-                LogUtils.e("test", "LPLogUtilV:" + s1);
-            }
-
-            @Override
-            public void w(String s, String s1) {
-                LogUtils.e("test", "LPLogUtilW:" + s1);
-            }
-        });
 
         bindServices(activity);
         createBroadcast(activity);
         SWDeviceManager.getInstance().executeTask();
+    }
+
+    public Context getContext(){
+        return mActivity;
     }
 
     private void bindServices(Activity activity) {
@@ -1275,8 +1219,6 @@ public class SWDeviceManager implements ISWManager {
             this.mActivity.unbindService(mUpnpServiceConnection);
             this.mActivity.unregisterReceiver(wifiChangedCast);
         }
-        lpDeviceManager.clear();
-        lpDeviceManager.stop();
         stopTask();
         mUpnpService.onDestroy();
         mDeviceManager.destroy();

@@ -55,7 +55,6 @@ import com.nesp.android.cling.entity.SlaveBean;
 import com.nesp.android.cling.listener.DeviceListChangedListener;
 import com.nesp.android.cling.listener.LPDevicePlayerListener;
 import com.nesp.android.cling.service.manager.SWDeviceManager;
-import com.nesp.android.cling.util.LogUtils;
 import com.nesp.android.cling.util.SWDeviceUtils;
 import com.nesp.android.cling.util.Utils;
 import com.wujianneng.huiweilink.R;
@@ -137,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         EventBus.getDefault().register(this);
 
         SWDeviceManager.getInstance().init(this);
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -236,7 +236,6 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         SWDeviceManager.getInstance().setOnDeviceListChangedListener(new DeviceListChangedListener() {
             @Override
             public void onDeviceAdded(final IDevice device) {
-                Log.e("test", "onDeviceAdded():" + ((SWDevice) device).getDevice().getDetails().getSsidName());
                 mHandler.sendEmptyMessage(REFRESH_LIST_VIEW);
             }
 
@@ -447,7 +446,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
     private void getDevicePlayerStatus() {
         if (SWDeviceManager.getInstance().getSelectedDevice() != null) {
             RemoteDevice remoteDevice = (RemoteDevice) ((SWDevice) SWDeviceManager.getInstance().getSelectedDevice()).getDevice();
-            SWDeviceUtils.getDevicePlayerStatus(remoteDevice.getIdentity().getDescriptorURL().getHost(), new SWDeviceUtils.GetDevicePlayerStatusCallback() {
+            SWDeviceUtils.getDevicePlayerStatus(SWDeviceManager.getInstance().getSelectedDevice(), new SWDeviceUtils.GetDevicePlayerStatusCallback() {
                 @Override
                 public void onResponse(PlayStatusBean deviceInfoBean) {
                     SWDevice SWDevice = (SWDevice) SWDeviceManager.getInstance().getSelectedDevice();
