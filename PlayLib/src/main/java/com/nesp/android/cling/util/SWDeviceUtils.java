@@ -737,7 +737,9 @@ public class SWDeviceUtils {
             public void onResponse(Call call, Response response) throws IOException {
                 try {
                     String result = response.body().string();
-                    if(swDevice.getSwDeviceInfo().getSWDeviceStatus().getHardware().contains("Swan")){
+                    LogUtils.e("test", "NsdManagerongetDevicePlayStatusonResponse:" + result);
+                    if(isSwanHardwareAndOldVersion(swDevice.getSwDeviceInfo().getSWDeviceStatus().getHardware(),
+                            swDevice.getSwDeviceInfo().getSWDeviceStatus().getFirmware())){
                         PlayStatusBeanSwanHardware deviceInfoBeanswan = new Gson().fromJson(result, PlayStatusBeanSwanHardware.class);
                         PlayStatusBean deviceInfoBean = new PlayStatusBean();
                         deviceInfoBean.setCurpos(deviceInfoBeanswan.getCurpos());
@@ -758,9 +760,11 @@ public class SWDeviceUtils {
                         deviceInfoBean.setType(deviceInfoBeanswan.getType());
                         deviceInfoBean.setVol(deviceInfoBeanswan.getVol());
                         callback.onResponse(deviceInfoBean);
+                        LogUtils.e("test", "isSwanHardwareAndOldVersion1" );
                     }else {
                         PlayStatusBean deviceInfoBean = new Gson().fromJson(result, PlayStatusBean.class);
                         callback.onResponse(deviceInfoBean);
+                        LogUtils.e("test", "isSwanHardwareAndOldVersion2:" +  deviceInfoBean.getCurpos() + " Hardware:" + swDevice.getSwDeviceInfo().getSWDeviceStatus().getHardware());
                     }
                 } catch (Exception e) {
                     callback.onFailure(e.getMessage());
@@ -768,6 +772,31 @@ public class SWDeviceUtils {
                 }
             }
         });
+    }
+
+    private static boolean isSwanHardwareAndOldVersion(String hardware,String firmware){
+        return (hardware.contains("SWAN")) && isFirstFirmwareVersionLarger("1.3.90",firmware);
+    }
+
+    private static boolean isFirstFirmwareVersionLarger(String firstVersion,String version){
+        LogUtils.e("test", "isFirstFirmwareVersionLarger:" + firstVersion + " version:" + version);
+        String[] list1 = firstVersion.split("\\.");
+        String[] list2 = version.split("\\.");
+        LogUtils.e("test", "isFirstFirmwareVersionLarger1:" + list1[2] + " list2:" + list2[2]);
+        int a0 = Integer.parseInt(list1[0]);
+        int a1 = Integer.parseInt(list1[1]);
+        int a2 = Integer.parseInt(list1[2]);
+        int b0 = Integer.parseInt(list2[0]);
+        int b1 = Integer.parseInt(list2[1]);
+        int b2 = Integer.parseInt(list2[2]);
+        if(a0 < b0) return false;
+        if(a0 > b0) return true;
+        if(a1 < b1) return false;
+        if(a1 > b1) return true;
+        if(a2 < b2) return false;
+        if(a2 > b2) return true;
+        if(a2 == b2) return false;
+        return true;
     }
 
 

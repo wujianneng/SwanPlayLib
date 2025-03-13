@@ -737,31 +737,31 @@ public class SWDeviceManager implements ISWManager {
     }
 
 
-    String customQuery = "M-SEARCH * HTTP/1.1" + "\r\n" +
-            "St: ssdp:wiimudevice" + "\r\n" + // Use this for all UPnP Devices (DEFAULT)
-            "Host: 239.255.255.250:1900" + "\r\n" +
-            "Mx: 3" + "\r\n" +
-//            "USER-AGENT: 3"+ "\r\n" +
-            //"ST: urn:schemas-upnp-org:service:AVTransport:1" + "\r\n" + // Use for Sonos
-            //"ST: urn:schemas-upnp-org:device:InternetGatewayDevice:1" + "\r\n" + // Use for Routers
-            "Man: \"ssdp:discover\"" + "\r\n" +
-            "\r\n";
+//    String customQuery = "M-SEARCH * HTTP/1.1" + "\r\n" +
+//            "St: ssdp:wiimudevice" + "\r\n" + // Use this for all UPnP Devices (DEFAULT)
+//            "Host: 239.255.255.250:1900" + "\r\n" +
+//            "Mx: 3" + "\r\n" +
+////            "USER-AGENT: 3"+ "\r\n" +
+//            //"ST: urn:schemas-upnp-org:service:AVTransport:1" + "\r\n" + // Use for Sonos
+//            //"ST: urn:schemas-upnp-org:device:InternetGatewayDevice:1" + "\r\n" + // Use for Routers
+//            "Man: \"ssdp:discover\"" + "\r\n" +
+//            "\r\n";
     int customPort = 1900;
     String customAddress = "239.255.255.250";
-    String customQuery2 = "M-SEARCH * HTTP/1.1" + "\r\n" +
-            "St: ssdp:wiimudevice" + "\r\n" + // Use this for all UPnP Devices (DEFAULT)
-            "Host: 239.255.255.250:1900" + "\r\n" +
-            "Mx: 3" + "\r\n" +
-            "Man: \"ssdp:discover\"" + "\r\n" +
-            "\r\n";
+//    String customQuery2 = "M-SEARCH * HTTP/1.1" + "\r\n" +
+//            "St: ssdp:wiimudevice" + "\r\n" + // Use this for all UPnP Devices (DEFAULT)
+//            "Host: 239.255.255.250:1900" + "\r\n" +
+//            "Mx: 3" + "\r\n" +
+//            "Man: \"ssdp:discover\"" + "\r\n" +
+//            "\r\n";
     int customPort2 = 1900;
     String customAddress2 = "229.255.255.250";
-    String customQuery3 = "M-SEARCH * HTTP/1.1" + "\r\n" +
-            "St: ssdp:wiimudevice" + "\r\n" + // Use this for all UPnP Devices (DEFAULT)
-            "Host: 239.255.255.250:1900" + "\r\n" +
-            "Mx: 3" + "\r\n" +
-            "Man: \"ssdp:discover\"" + "\r\n" +
-            "\r\n";
+//    String customQuery3 = "M-SEARCH * HTTP/1.1" + "\r\n" +
+//            "St: ssdp:wiimudevice" + "\r\n" + // Use this for all UPnP Devices (DEFAULT)
+//            "Host: 239.255.255.250:1900" + "\r\n" +
+//            "Mx: 3" + "\r\n" +
+//            "Man: \"ssdp:discover\"" + "\r\n" +
+//            "\r\n";
     int customPort3 = 5353;
     String customAddress3 = "224.0.0.251";
 

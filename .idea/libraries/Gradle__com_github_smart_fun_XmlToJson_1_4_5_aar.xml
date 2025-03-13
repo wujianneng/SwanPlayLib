@@ -16,6 +16,9 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/dce40ee8f4c3b9152b4391e9a627267f/jetified-XmlToJson-1.4.5/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/dce40ee8f4c3b9152b4391e9a627267f/jetified-XmlToJson-1.4.5/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/dce40ee8f4c3b9152b4391e9a627267f/jetified-XmlToJson-1.4.5/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/678715c402f973aa7f8c2a407d856b28/jetified-XmlToJson-1.4.5/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/678715c402f973aa7f8c2a407d856b28/jetified-XmlToJson-1.4.5/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/678715c402f973aa7f8c2a407d856b28/jetified-XmlToJson-1.4.5/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
